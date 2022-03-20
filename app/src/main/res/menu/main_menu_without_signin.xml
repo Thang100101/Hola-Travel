@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+    <item
+        android:icon="@drawable/icon_search"
+        app:showAsAction="always"
+        android:title="Search"
+        ></item>
+    <item
+        android:title="Đăng nhập"
+        ></item>
+    <item
+        android:title="Thoát"
+        ></item>
+
+</menu>

@@ -1,7 +1,10 @@
 package com.example.app_hola;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -14,7 +17,7 @@ import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
     //Khai báo
-    Button btnExit, btnAccess, btnSignin, btnRegist;
+    Button btnExit, btnAccess, btnSignin, btnRegist, btnSignout, btnAnotherUser;
     TextView txtTile;
     LinearLayout mainLayout;
     Animation anim_bot_to_top,alpha;
@@ -30,9 +33,34 @@ public class MainActivity extends AppCompatActivity {
         btnExit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                finish();
+                acceptOut();
+
             }
         });
+
+        btnAccess.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent home = new Intent(MainActivity.this,Home.class);
+                startActivity(home);
+                overridePendingTransition(R.anim.alpha_type_2,R.anim.alpha_type_2);
+            }
+        });
+
+        btnSignin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Signin();
+            }
+        });
+
+        btnRegist.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Regist();
+            }
+        });
+
         CountDownTimer timer = new CountDownTimer(3000,3000) {
             @Override
             public void onTick(long l) {
@@ -60,18 +88,12 @@ public class MainActivity extends AppCompatActivity {
         timer.start();
         startAnim();
 
-        btnAccess.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent home = new Intent(MainActivity.this,Home.class);
-                startActivity(home);
-                overridePendingTransition(R.anim.alpha_type_2,R.anim.alpha_type_2);
-            }
-        });
     }
     //Ánh xạ
     private void Mapping()
     {
+        btnSignout = (Button) findViewById(R.id.btn_signout);
+        btnAnotherUser = (Button) findViewById(R.id.btn_anotheruser) ;
         btnExit = (Button) findViewById(R.id.btn_exit);
         btnAccess = (Button) findViewById(R.id.btn_access);
         btnSignin = (Button) findViewById(R.id.btn_signin);
@@ -88,5 +110,45 @@ public class MainActivity extends AppCompatActivity {
         btnAccess.startAnimation(anim_bot_to_top);
         btnRegist.startAnimation(anim_bot_to_top);
         btnSignin.startAnimation(anim_bot_to_top);
+        btnAnotherUser.startAnimation(anim_bot_to_top);
+        btnSignout.startAnimation(anim_bot_to_top);
+    }
+
+    //Dialog
+    private void acceptOut()
+    {
+
+        AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+        dialog.setTitle("Khoan đã!!");
+        dialog.setMessage("Bạn có chắc chắn muốn thoát không?");
+        dialog.setIcon(R.drawable.icon_crying);
+        dialog.setPositiveButton("Có", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                MainActivity.this.finish();
+            }
+        });
+        dialog.setNegativeButton("Không", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+            }
+        });
+        dialog.show();
+
+    }
+
+    //Signin
+    private void Signin()
+    {
+        Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.dialog_signin);
+        dialog.show();
+    }
+
+    //Regit
+    private void Regist(){
+        Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.dialog_regist);
+        dialog.show();
     }
 }
