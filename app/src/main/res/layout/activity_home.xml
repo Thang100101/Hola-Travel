@@ -5,8 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@drawable/background_type_2"
-    tools:context=".Home">
+    android:background="@drawable/background_type_3"
+    tools:context=".HomeActivity">
 
     <HorizontalScrollView
         android:id="@+id/hScrollView"
@@ -127,7 +127,16 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:orientation="vertical"
-                    ></LinearLayout>
+                    android:padding="5dp"
+                    >
+                    <Button
+                        android:id="@+id/btn_home"
+                        android:background="@drawable/icon_home"
+                        android:layout_width="50dp"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        ></Button>
+                </LinearLayout>
                 <LinearLayout
                     android:layout_weight="1"
                     android:layout_width="0dp"
@@ -148,7 +157,16 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:orientation="vertical"
-                    ></LinearLayout>
+                    android:padding="5dp"
+                    >
+                    <Button
+                        android:id="@+id/btn_your_review"
+                        android:background="@drawable/icon_book"
+                        android:layout_width="50dp"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        ></Button>
+                </LinearLayout>
 
             </LinearLayout>
 

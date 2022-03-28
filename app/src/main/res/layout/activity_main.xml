@@ -99,9 +99,25 @@
             >
             <LinearLayout
                 android:layout_width="0dp"
+                android:layout_weight="1"
                 android:layout_height="match_parent"
-                android:layout_weight="7"
                 ></LinearLayout>
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="6"
+                >
+                <TextView
+                    android:id="@+id/txt_user"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:textSize="20dp"
+                    android:gravity="bottom|center"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    ></TextView>
+            </LinearLayout>
+
             <LinearLayout
                 android:layout_weight="1"
                 android:layout_width="0dp"

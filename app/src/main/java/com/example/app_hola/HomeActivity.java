@@ -1,6 +1,7 @@
 package com.example.app_hola;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -8,31 +9,60 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.HorizontalScrollView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 
-public class Home extends AppCompatActivity {
+public class HomeActivity extends AppCompatActivity {
     HorizontalScrollView hScrollView;
     Button btnUpload;
     ArrayList<Content> listContent = new ArrayList<Content>();
     ListView listViewContent;
+    ActionBar actionBar;
+    boolean search =false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         Mapping();
         addList();
+
+        //Thay đổi UI của action bar
+        actionBar = getSupportActionBar();
+        actionBar.setBackgroundDrawable(getDrawable(R.drawable.background_actionbar));
+        actionBar.setTitle("");
+        actionBar.setLogo(R.drawable.logo_3);
+        actionBar.setDisplayShowHomeEnabled(true);
+        actionBar.setDisplayUseLogoEnabled(true);
+
         ListViewContent adapter = new ListViewContent(listContent,this);
         listViewContent.setAdapter(adapter);
         btnUpload.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                Toast.makeText(Home.this, "Đăng bài", Toast.LENGTH_SHORT).show();
+                Toast.makeText(HomeActivity.this, "Đăng bài", Toast.LENGTH_SHORT).show();
                 return false;
+            }
+        });
+        listViewContent.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                TextView txt = (TextView) view.findViewById(R.id.txt_content);
+                Toast.makeText(HomeActivity.this, ""+txt.getText()
+                        , Toast.LENGTH_SHORT).show();
+            }
+        });
+        btnUpload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(HomeActivity.this, CreateReviewActivity.class);
+                startActivity(intent);
             }
         });
     }
@@ -60,6 +90,7 @@ public class Home extends AppCompatActivity {
         listContent.add(new Content(R.drawable.ninh_binh,"Review về Ninh Bình", "10/01/2001"));
     }
 
+    //Tạo và bắt sự kiện cho menu
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu,menu);
@@ -71,8 +102,24 @@ public class Home extends AppCompatActivity {
         switch (item.getItemId())
         {
             case R.id.menu_profile:
-                Intent profile = new Intent(Home.this, Profile.class);
+                Intent profile = new Intent(HomeActivity.this, ProfileActivity.class);
                 startActivity(profile);
+                break;
+            case R.id.menu_search:
+                if(search==false) {
+                    actionBar.setDisplayShowHomeEnabled(false);
+                    actionBar.setDisplayUseLogoEnabled(false);
+                    actionBar.setDisplayShowCustomEnabled(true);
+                    actionBar.setCustomView(R.layout.search_view);
+                    search = true;
+                }
+                else
+                {
+                    actionBar.setDisplayShowHomeEnabled(true);
+                    actionBar.setDisplayUseLogoEnabled(true);
+                    actionBar.setDisplayShowCustomEnabled(false);
+                    search=false;
+                }
                 break;
         }
         return super.onOptionsItemSelected(item);
