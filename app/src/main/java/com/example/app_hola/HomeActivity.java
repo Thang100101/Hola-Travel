@@ -6,11 +6,16 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputFilter;
+import android.text.Spanned;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.HorizontalScrollView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -65,6 +70,7 @@ public class HomeActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
     }
 
     private void Mapping(){
@@ -111,6 +117,17 @@ public class HomeActivity extends AppCompatActivity {
                     actionBar.setDisplayUseLogoEnabled(false);
                     actionBar.setDisplayShowCustomEnabled(true);
                     actionBar.setCustomView(R.layout.search_view);
+                    EditText editSearch = (EditText) findViewById(R.id.edit_search);
+                    editSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+                        @Override
+                        public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+                            if(i == EditorInfo.IME_ACTION_SEARCH)
+                            {
+                                Toast.makeText(HomeActivity.this, "Search!!", Toast.LENGTH_SHORT).show();
+                            }
+                            return false;
+                        }
+                    });
                     search = true;
                 }
                 else
@@ -123,5 +140,9 @@ public class HomeActivity extends AppCompatActivity {
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void testFilter(){
+
     }
 }

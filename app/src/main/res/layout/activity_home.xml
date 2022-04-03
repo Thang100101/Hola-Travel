@@ -99,7 +99,7 @@
         >
         <ListView
             android:id="@+id/listContent"
-            android:layout_weight="11"
+            android:layout_weight="10.5"
             android:layout_marginTop="10dp"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -107,7 +107,7 @@
         </ListView>
         <LinearLayout
             android:orientation="vertical"
-            android:layout_weight="1"
+            android:layout_weight="1.5"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             >
@@ -120,7 +120,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
-                android:weightSum="3"
+                android:weightSum="5"
                 >
                 <LinearLayout
                     android:layout_weight="1"
@@ -131,9 +131,24 @@
                     >
                     <Button
                         android:id="@+id/btn_home"
-                        android:background="@drawable/icon_home"
+                        android:background="@drawable/icon_home_3"
                         android:layout_width="50dp"
-                        android:layout_height="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_gravity="center"
+                        ></Button>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:padding="5dp"
+                    >
+                    <Button
+                        android:id="@+id/btn_upload_2"
+                        android:background="@drawable/icon_update_4"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
                         android:layout_gravity="center"
                         ></Button>
                 </LinearLayout>
@@ -146,9 +161,24 @@
                     >
                     <Button
                         android:id="@+id/btn_upload"
-                        android:background="@drawable/icon_upload"
+                        android:background="@drawable/icon_update_4"
                         android:layout_width="50dp"
-                        android:layout_height="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_gravity="center"
+                        ></Button>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:padding="5dp"
+                    >
+                    <Button
+                        android:id="@+id/btn_upload_3"
+                        android:background="@drawable/icon_update_4"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
                         android:layout_gravity="center"
                         ></Button>
                 </LinearLayout>
@@ -161,9 +191,9 @@
                     >
                     <Button
                         android:id="@+id/btn_your_review"
-                        android:background="@drawable/icon_book"
+                        android:background="@drawable/icon_book_2"
                         android:layout_width="50dp"
-                        android:layout_height="match_parent"
+                        android:layout_height="50dp"
                         android:layout_gravity="center"
                         ></Button>
                 </LinearLayout>

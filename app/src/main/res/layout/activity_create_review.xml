@@ -19,6 +19,7 @@
         android:layout_height="wrap_content"
         android:textColor="@color/black"
         android:textSize="20dp"
+        android:textStyle="bold"
         ></EditText>
     <LinearLayout
         android:layout_width="match_parent"
@@ -61,7 +62,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:layout_margin="5dp"
-                android:background="@drawable/icon_image"
+                android:background="@drawable/icon_image_3"
                 >
                 <Button
                     android:layout_width="match_parent"
@@ -74,7 +75,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:layout_margin="5dp"
-                android:background="@drawable/icon_tag_3"
+                android:background="@drawable/icon_tag_4"
                 >
                 <Button
                     android:layout_width="match_parent"
@@ -87,7 +88,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:layout_margin="5dp"
-                android:background="@drawable/icon_location"
+                android:background="@drawable/icon_location_3"
                 >
                 <Button
                     android:layout_width="match_parent"
