@@ -6,8 +6,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.InputFilter;
-import android.text.Spanned;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,6 +18,8 @@ import android.widget.HorizontalScrollView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.app_hola.ObjectForApp.Content;
 
 import java.util.ArrayList;
 
@@ -46,8 +46,6 @@ public class HomeActivity extends AppCompatActivity {
         actionBar.setDisplayShowHomeEnabled(true);
         actionBar.setDisplayUseLogoEnabled(true);
 
-        ListViewContent adapter = new ListViewContent(listContent,this);
-        listViewContent.setAdapter(adapter);
         btnUpload.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
@@ -58,9 +56,7 @@ public class HomeActivity extends AppCompatActivity {
         listViewContent.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                TextView txt = (TextView) view.findViewById(R.id.txt_content);
-                Toast.makeText(HomeActivity.this, ""+txt.getText()
-                        , Toast.LENGTH_SHORT).show();
+
             }
         });
         btnUpload.setOnClickListener(new View.OnClickListener() {
@@ -79,21 +75,6 @@ public class HomeActivity extends AppCompatActivity {
         listViewContent = (ListView) findViewById(R.id.listContent);
     }
     private void addList(){
-        listContent.add(new Content(R.drawable.ha_noi,"Review về Hà nội", "10/01/2001"));
-        listContent.add(new Content(R.drawable.ha_giang,"Review về Hà Giang", "10/01/2001"));
-        listContent.add(new Content(R.drawable.sa_pa,"Review về Sapa", "10/01/2001"));
-        listContent.add(new Content(R.drawable.vinh_ha_long,"Review về Vịnh Hạ Long", "10/01/2001"));
-        listContent.add(new Content(R.drawable.ninh_binh,"Review về Ninh Bình", "10/01/2001"));
-        listContent.add(new Content(R.drawable.ha_noi,"Review về Hà nội", "10/01/2001"));
-        listContent.add(new Content(R.drawable.ha_giang,"Review về Hà Giang", "10/01/2001"));
-        listContent.add(new Content(R.drawable.sa_pa,"Review về Sapa", "10/01/2001"));
-        listContent.add(new Content(R.drawable.vinh_ha_long,"Review về Vịnh Hạ Long", "10/01/2001"));
-        listContent.add(new Content(R.drawable.ninh_binh,"Review về Ninh Bình", "10/01/2001"));
-        listContent.add(new Content(R.drawable.ha_noi,"Review về Hà nội", "10/01/2001"));
-        listContent.add(new Content(R.drawable.ha_giang,"Review về Hà Giang", "10/01/2001"));
-        listContent.add(new Content(R.drawable.sa_pa,"Review về Sapa", "10/01/2001"));
-        listContent.add(new Content(R.drawable.vinh_ha_long,"Review về Vịnh Hạ Long", "10/01/2001"));
-        listContent.add(new Content(R.drawable.ninh_binh,"Review về Ninh Bình", "10/01/2001"));
     }
 
     //Tạo và bắt sự kiện cho menu

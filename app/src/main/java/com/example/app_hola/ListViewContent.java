@@ -10,6 +10,8 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.app_hola.ObjectForApp.Content;
+
 import java.util.ArrayList;
 
 public class ListViewContent extends BaseAdapter {
@@ -46,9 +48,8 @@ public class ListViewContent extends BaseAdapter {
         TextView txtDate = (TextView) view.findViewById(R.id.txt_date);
         TextView txtContent = (TextView) view.findViewById(R.id.txt_content);
         Content content = (Content)listContent.get(i);
-        imgContent.setImageResource(content.getImageContent());
         txtDate.setText(content.getDate());
-        txtContent.setText(content.getMainContent());
+        txtContent.setText(content.getTitle());
 
         animation = AnimationUtils.loadAnimation(context,R.anim.alpha_type_2);
         view.startAnimation(animation);
