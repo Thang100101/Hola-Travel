@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "341679032695",
+    "project_id": "hola-travel",
+    "storage_bucket": "hola-travel.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:341679032695:android:0ed76c7f11dade0993b972",
+        "android_client_info": {
+          "package_name": "com.example.app_hola"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "341679032695-2947bhi37ij9sot55o9hcu76at5kkne3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDqIvpLtd62g7ilCBTdhPJDA4fDc8ZW5Ls"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "341679032695-2947bhi37ij9sot55o9hcu76at5kkne3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

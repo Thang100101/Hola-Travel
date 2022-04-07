@@ -15,14 +15,17 @@
         android:id="@+id/menu_profile"
         ></item>
     <item
+        android:id="@+id/menu_noti"
         android:title="Message"
         android:icon="@drawable/icon_bell"
         app:showAsAction="always"
         ></item>
     <item
+        android:id="@+id/menu_signout"
         android:title="Đăng xuất"
         ></item>
     <item
+        android:id="@+id/menu_exit"
         android:title="Thoát"
         ></item>
 

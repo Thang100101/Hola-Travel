@@ -5,6 +5,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -20,9 +21,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity {
+import java.io.Serializable;
+
+public class MainActivity extends AppCompatActivity implements Serializable{
     //Khai báo
-    Button btnExit, btnAccess, btnSignin, btnRegist, btnSignout, btnAnotherUser;
+    Button btnExit, btnAccess, btnSignin, btnRegist, btnAnotherUser;
     TextView txtTile, txtUser;
     LinearLayout mainLayout;
     Animation anim_bot_to_top,alpha;
@@ -37,6 +40,14 @@ public class MainActivity extends AppCompatActivity {
         Mapping();
         CheckHaveSignin();
 
+        Intent intent = getIntent();
+        boolean signin = intent.getBooleanExtra("signin",false);
+        if(signin)
+            Signin(MainActivity.this);
+        boolean signout = intent.getBooleanExtra("signout",false);
+        if(signout)
+            Signout();
+
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
@@ -46,7 +57,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 acceptOut();
-
             }
         });
 
@@ -62,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
         btnSignin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Signin();
+                Signin(MainActivity.this);
             }
         });
 
@@ -73,19 +83,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        btnSignout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                SharedPreferences.Editor edit = prefer.edit();
-                edit.remove("user");
-                edit.remove("pass");
-                edit.remove("checkrmb");
-                edit.putBoolean("havesignin",false);
-                edit.commit();
-                ChangeMainButton(false);
-                txtUser.setText("");
-            }
-        });
 
         btnAnotherUser.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -97,43 +94,18 @@ public class MainActivity extends AppCompatActivity {
                 edit.commit();
                 ChangeMainButton(false);
                 txtUser.setText("");
-                Signin();
+                Signin(MainActivity.this);
             }
         });
 
         //Chạy chữ chào mừng
-        CountDownTimer timer = new CountDownTimer(3000,3000) {
-            @Override
-            public void onTick(long l) {
-                if(check==0)
-                {
-                    txtTile.setText("Chào mừng bạn đến với Hola");
-                    txtTile.startAnimation(alpha);
-                    mainLayout.setBackgroundResource(R.drawable.background_type_1);
-                    check=1;
-                }
-                else
-                {
-                    txtTile.setText("Đăng kí để nhận đặc quyền của thành viên nhé!!");
-                    txtTile.startAnimation(alpha);
-                    mainLayout.setBackgroundResource(R.drawable.background_type_2);
-                    check=0;
-                }
-            }
-
-            @Override
-            public void onFinish() {
-                this.start();
-            }
-        };
-        timer.start();
+        runWellcome();
         startAnim();
 
     }
     //Ánh xạ
     private void Mapping()
     {
-        btnSignout = (Button) findViewById(R.id.btn_signout);
         btnAnotherUser = (Button) findViewById(R.id.btn_anotheruser) ;
         btnExit = (Button) findViewById(R.id.btn_exit);
         btnAccess = (Button) findViewById(R.id.btn_access);
@@ -153,7 +125,6 @@ public class MainActivity extends AppCompatActivity {
         btnRegist.startAnimation(anim_bot_to_top);
         btnSignin.startAnimation(anim_bot_to_top);
         btnAnotherUser.startAnimation(anim_bot_to_top);
-        btnSignout.startAnimation(anim_bot_to_top);
     }
 
     //Dialog thoát
@@ -167,7 +138,13 @@ public class MainActivity extends AppCompatActivity {
         dialog.setPositiveButton("Có", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                MainActivity.this.finish();
+                Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+                startActivity(intent);
+
+                Intent startMain = new Intent(Intent.ACTION_MAIN);
+                startMain.addCategory(Intent.CATEGORY_HOME);
+                startActivity(startMain);
+                finish();
             }
         });
         dialog.setNegativeButton("Không", new DialogInterface.OnClickListener() {
@@ -176,7 +153,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         dialog.show();
-
     }
 
     @Override
@@ -186,9 +162,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //Dialog đăng nhập
-    private void Signin()
+    public void Signin(Context context)
     {
-        Dialog dialog = new Dialog(this);
+        Dialog dialog = new Dialog(context);
         dialog.setContentView(R.layout.dialog_signin);
         dialog.show();
         //Mapping
@@ -215,6 +191,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if(CheckSignin(editUser.getText().toString(), editPass.getText().toString()))
                 {
+                    ///Lưu thông tin cho lần sau
                     if(cbRemember.isChecked())
                     {
                         SharedPreferences.Editor edit = prefer.edit();
@@ -238,10 +215,12 @@ public class MainActivity extends AppCompatActivity {
                         txtUser.setText("Tài khoản " + editUser.getText().toString());
                         dialog.dismiss();
                     }
+                    Intent intent = new Intent(getApplicationContext(),HomeActivity.class);
+                    startActivity(intent);
                 }
                 else
                 {
-                    Toast.makeText(MainActivity.this, "Tài khoản hoặc mật khẩu không chính xác", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Tài khoản hoặc mật khẩu không chính xác", Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -290,17 +269,56 @@ public class MainActivity extends AppCompatActivity {
     {
         if(signin)
         {
-            btnSignout.setVisibility(View.VISIBLE);
             btnAnotherUser.setVisibility(View.VISIBLE);
             btnSignin.setVisibility(View.GONE);
             btnRegist.setVisibility(View.GONE);
         }
         else
         {
-            btnSignout.setVisibility(View.GONE);
             btnAnotherUser.setVisibility(View.GONE);
             btnSignin.setVisibility(View.VISIBLE);
             btnRegist.setVisibility(View.VISIBLE);
         }
+    }
+
+    //Chạy TextView chào mừng
+    private void runWellcome(){
+        CountDownTimer timer = new CountDownTimer(3000,3000) {
+            @Override
+            public void onTick(long l) {
+                if(check==0)
+                {
+                    txtTile.setText("Chào mừng bạn đến với Hola");
+                    txtTile.startAnimation(alpha);
+                    mainLayout.setBackgroundResource(R.drawable.background_type_1);
+                    check=1;
+                }
+                else
+                {
+                    txtTile.setText("Đăng kí để nhận đặc quyền của thành viên nhé!!");
+                    txtTile.startAnimation(alpha);
+                    mainLayout.setBackgroundResource(R.drawable.background_type_2);
+                    check=0;
+                }
+            }
+
+            @Override
+            public void onFinish() {
+                this.start();
+            }
+        };
+        timer.start();
+    }
+
+    ///Đăng xuất
+    private void Signout(){
+        SharedPreferences.Editor edit = prefer.edit();
+        edit.remove("user");
+        edit.remove("pass");
+        edit.remove("checkrmb");
+        edit.putBoolean("havesignin",false);
+        edit.commit();
+        ChangeMainButton(false);
+        txtUser.setText("");
     }
 }

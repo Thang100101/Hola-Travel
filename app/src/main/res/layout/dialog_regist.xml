@@ -38,7 +38,7 @@
             ></TextView>
     </LinearLayout>
     <EditText
-        android:id="@+id/btn_user"
+        android:id="@+id/edit_user"
         android:layout_marginRight="20dp"
         android:layout_marginLeft="20dp"
         android:layout_marginTop="10dp"
@@ -47,7 +47,7 @@
         android:hint="Tài khoản"
         ></EditText>
     <EditText
-        android:id="@+id/btn_pass"
+        android:id="@+id/edit_pass"
         android:layout_marginRight="20dp"
         android:layout_marginLeft="20dp"
         android:layout_marginTop="10dp"
@@ -57,7 +57,7 @@
         android:inputType="textPassword"
         ></EditText>
     <EditText
-        android:id="@+id/btn_confirm"
+        android:id="@+id/edit_confirm"
         android:layout_marginRight="20dp"
         android:layout_marginLeft="20dp"
         android:layout_marginTop="10dp"
