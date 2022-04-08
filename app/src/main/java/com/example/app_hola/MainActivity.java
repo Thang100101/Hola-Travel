@@ -1,5 +1,6 @@
 package com.example.app_hola;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,11 +22,17 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+
 import java.io.Serializable;
 
 
 public class MainActivity extends AppCompatActivity implements Serializable{
     //Khai báo
+    private FirebaseAuth mAuth;
     Button btnExit, btnAccess, btnSignin, btnRegist, btnAnotherUser;
     TextView txtTile, txtUser;
     LinearLayout mainLayout;
@@ -40,6 +47,7 @@ public class MainActivity extends AppCompatActivity implements Serializable{
         setContentView(R.layout.activity_main);
         Mapping();
         CheckHaveSignin();
+        mAuth = FirebaseAuth.getInstance();
 
         Intent intent = getIntent();
         boolean signin = intent.getBooleanExtra("signin",false);
@@ -156,6 +164,62 @@ public class MainActivity extends AppCompatActivity implements Serializable{
 //        super.onBackPressed();
     }
 
+    //Dialog đăng kí
+    private boolean regisStatus = false;
+    private void Regist(){
+        Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.dialog_regist);
+        dialog.show();
+        //Kiểm tra đăng kí
+        EditText editUser = (EditText) dialog.findViewById(R.id.edit_user);
+        EditText editPass = (EditText) dialog.findViewById(R.id.edit_pass);
+        EditText editConfirm = (EditText) dialog.findViewById(R.id.edit_confirm);
+        Button btnConfirm = (Button) dialog.findViewById(R.id.btn_submit);
+
+        btnConfirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                CheckRegist(editUser.getText().toString(),
+                        editPass.getText().toString(), editConfirm.getText().toString());
+                if (regisStatus){
+                    dialog.dismiss();
+                    Signin(MainActivity.this);
+                }
+            }
+        });
+    }
+    private void CheckRegist(String user, String pass, String confirm)
+    {
+        if(!pass.equals(confirm)){
+            Toast.makeText(MainActivity.this, "Mật khẩu không trùng khớp!", Toast.LENGTH_LONG).show();
+        }else if (pass.length() < 8) {
+            Toast.makeText(MainActivity.this, "Mật khẩu phải lớn hơn 8 kí tự", Toast.LENGTH_LONG).show();
+        }else {
+            register(user, pass);
+        }
+    }
+    private void register(String email, String password){
+        mAuth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Toast.makeText(MainActivity.this, "Successful.",
+                                    Toast.LENGTH_SHORT).show();
+                            mAuth.signOut();
+                            regisStatus = true;
+                            return;
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Toast.makeText(MainActivity.this, "Authentication failed.",
+                                    Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                    }
+                });
+    }
+
     //Dialog đăng nhập
     public void Signin(Context context)
     {
@@ -184,65 +248,50 @@ public class MainActivity extends AppCompatActivity implements Serializable{
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(CheckSignin(editUser.getText().toString(), editPass.getText().toString()))
-                {
-                    ///Lưu thông tin cho lần sau
-                    if(cbRemember.isChecked())
-                    {
-                        SharedPreferences.Editor edit = prefer.edit();
-                        edit.putString("user", editUser.getText().toString());
-                        edit.putString("pass", editPass.getText().toString());
-                        edit.putBoolean("checkrmb",true);
-                        edit.putBoolean("havesignin",true);
-                        edit.commit();
-                        ChangeMainButton(true);
-                        txtUser.setText("Tài khoản " + editUser.getText().toString());
-                        dialog.dismiss();
-                    }
-                    else
-                    {
-                        SharedPreferences.Editor edit = prefer.edit();
-                        edit.remove("user");
-                        edit.remove("pass");
-                        edit.remove("checkrmb");
-                        edit.commit();
-                        ChangeMainButton(true);
-                        txtUser.setText("Tài khoản " + editUser.getText().toString());
-                        dialog.dismiss();
-                    }
-                    Intent intent = new Intent(getApplicationContext(),HomeActivity.class);
-                    startActivity(intent);
-                }
-                else
-                {
-                    Toast.makeText(context, "Tài khoản hoặc mật khẩu không chính xác", Toast.LENGTH_SHORT).show();
-                }
-
+                CheckSignin(editUser.getText().toString(),
+                        editPass.getText().toString(), cbRemember.isChecked());
             }
         });
 
     }
-
-    //Dialog đăng kí
-    private void Regist(){
-        Dialog dialog = new Dialog(this);
-        dialog.setContentView(R.layout.dialog_regist);
-        dialog.show();
-        //Kiểm tra đăng kí
-
-    }
     ///Kiểm tra đăng nhập, đăng kí
-    private boolean CheckSignin(String user, String pass)
+    private void CheckSignin(String email, String password, boolean rememberStatus)
     {
-        if(user.equals("thang") && pass.equals("123"))
-            return true;
-        return false;
-    }
-    private boolean CheckRegist(String user, String pass, String confirm)
-    {
-        if(true && (pass.equals(confirm)))
-            return true;
-        return false;
+        mAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            if (rememberStatus){
+                                SharedPreferences.Editor edit = prefer.edit();
+                                edit.putString("user", email);
+                                edit.putString("pass", password);
+                                edit.putBoolean("checkrmb",true);
+                                edit.putBoolean("havesignin",true);
+                                edit.commit();
+                                ChangeMainButton(true);
+                                txtUser.setText("Tài khoản " + email);
+                            }
+                            else {
+                                SharedPreferences.Editor edit = prefer.edit();
+                                edit.remove("user");
+                                edit.remove("pass");
+                                edit.remove("checkrmb");
+                                edit.commit();
+                                ChangeMainButton(true);
+                                txtUser.setText("Tài khoản " + email);
+                            }
+                            Intent intent = new Intent(getApplicationContext(),HomeActivity.class);
+                            startActivity(intent);
+                            return;
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Toast.makeText(MainActivity.this, "Tài khoản hoặc mật khẩu không chính xác", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                    }
+                });
     }
 
     //Kiểm tra đã đăng nhập từ trước
