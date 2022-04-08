@@ -1,6 +1,7 @@
 package com.example.app_hola;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -26,10 +27,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.app_hola.ObjectForApp.Content;
+import com.google.firebase.FirebaseAppLifecycleListener;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.installations.FirebaseInstallationsApi;
 
 import java.util.ArrayList;
 
-public class HomeActivity extends AppCompatActivity {
+public class HomeActivity extends AppCompatActivity  {
     HorizontalScrollView hScrollView;
     Button btnUpload;
     ArrayList<Content> listContent = new ArrayList<Content>();
@@ -53,12 +61,14 @@ public class HomeActivity extends AppCompatActivity {
                 return false;
             }
         });
+
         listViewContent.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
             }
         });
+
         btnUpload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -66,6 +76,7 @@ public class HomeActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
 
     }
 
@@ -197,6 +208,5 @@ public class HomeActivity extends AppCompatActivity {
         dialog.show();
     }
 
-    //Dialog đăng nhập
 
 }

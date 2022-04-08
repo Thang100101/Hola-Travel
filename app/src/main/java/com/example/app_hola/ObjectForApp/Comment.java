@@ -10,6 +10,9 @@ public class Comment {
         this.mainContent = mainContent;
         Date = date;
     }
+
+    public Comment() {
+    }
     ///GET
 
     public String getID() {

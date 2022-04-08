@@ -8,6 +8,9 @@ public class ImageContent {
         ContentID = contentID;
     }
 
+    public ImageContent() {
+    }
+
     public String getLink() {
         return Link;
     }

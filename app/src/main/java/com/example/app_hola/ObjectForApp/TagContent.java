@@ -9,6 +9,9 @@ public class TagContent {
         this.contentID = contentID;
     }
 
+    public TagContent() {
+    }
+
     public String getID() {
         return ID;
     }

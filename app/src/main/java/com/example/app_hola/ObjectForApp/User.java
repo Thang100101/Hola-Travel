@@ -13,6 +13,9 @@ public class User {
         Password = password;
     }
 
+    public User() {
+    }
+
     public void addContent(Content content){
         listContent.add(content);
     }

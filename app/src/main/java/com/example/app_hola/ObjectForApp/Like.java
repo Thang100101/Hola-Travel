@@ -9,6 +9,9 @@ public class Like {
         this.contentID = contentID;
     }
 
+    public Like() {
+    }
+
     public String getID() {
         return ID;
     }

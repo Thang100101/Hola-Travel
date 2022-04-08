@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 import java.io.Serializable;
 
+
 public class MainActivity extends AppCompatActivity implements Serializable{
     //Khai báo
     Button btnExit, btnAccess, btnSignin, btnRegist, btnAnotherUser;
@@ -87,13 +88,7 @@ public class MainActivity extends AppCompatActivity implements Serializable{
         btnAnotherUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SharedPreferences.Editor edit = prefer.edit();
-                edit.remove("user");
-                edit.remove("pass");
-                edit.remove("checkrmb");
-                edit.commit();
-                ChangeMainButton(false);
-                txtUser.setText("");
+                Signout();
                 Signin(MainActivity.this);
             }
         });
@@ -234,6 +229,7 @@ public class MainActivity extends AppCompatActivity implements Serializable{
         dialog.setContentView(R.layout.dialog_regist);
         dialog.show();
         //Kiểm tra đăng kí
+
     }
     ///Kiểm tra đăng nhập, đăng kí
     private boolean CheckSignin(String user, String pass)

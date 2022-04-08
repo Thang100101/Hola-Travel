@@ -8,6 +8,9 @@ public class Tag {
         Name = name;
     }
 
+    public Tag() {
+    }
+
     public String getID() {
         return ID;
     }
