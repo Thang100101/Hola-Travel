@@ -28,6 +28,8 @@ import android.widget.Toast;
 
 import com.example.app_hola.ObjectForApp.Content;
 import com.google.firebase.FirebaseAppLifecycleListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -44,6 +46,8 @@ public class HomeActivity extends AppCompatActivity  {
     ListView listViewContent;
     ActionBar actionBar;
     SharedPreferences prefer;
+    FirebaseAuth mAuth;
+    FirebaseUser currentUser;
     boolean search =false;
 
     @Override
@@ -77,7 +81,6 @@ public class HomeActivity extends AppCompatActivity  {
             }
         });
 
-
     }
 
     private void Mapping(){
@@ -85,15 +88,17 @@ public class HomeActivity extends AppCompatActivity  {
         btnUpload = (Button) findViewById(R.id.btn_upload);
         listViewContent = (ListView) findViewById(R.id.listContent);
         prefer = getSharedPreferences("rememberlogin",MODE_PRIVATE);
-
+        mAuth = FirebaseAuth.getInstance();
+        currentUser = mAuth.getCurrentUser();
     }
+
     private void addList(){
     }
 
     //Tạo và bắt sự kiện cho menu
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if(true)
+        if(currentUser!=null)
             getMenuInflater().inflate(R.menu.main_menu,menu);
         else
             getMenuInflater().inflate(R.menu.main_menu_without_signin,menu);
@@ -138,6 +143,7 @@ public class HomeActivity extends AppCompatActivity  {
             case R.id.menu_signout:
                 Intent intent2 = new Intent(getApplicationContext(),MainActivity.class);
                 intent2.putExtra("signout",true);
+                mAuth.signOut();
                 startActivity(intent2);
                 finish();
                 break;
