@@ -7,7 +7,7 @@
     android:orientation="vertical"
     android:background="@drawable/background_type_1"
     android:id="@+id/main_layout"
-    tools:context=".MainActivity">
+    tools:context=".WellcomeActivity">
 
 
     <TextView
@@ -66,18 +66,18 @@
                 android:layout_width="200dp"
                 android:layout_height="70dp"
                 ></Button>
-            <Button
-                android:id="@+id/btn_anotheruser"
-                android:textColor="@color/black"
-                android:textSize="17dp"
-                android:text="Tài khoản khác"
-                android:background="@drawable/button_type_1"
-                android:layout_gravity="center"
-                android:layout_marginTop="10dp"
-                android:layout_width="200dp"
-                android:layout_height="70dp"
-                android:visibility="gone"
-                ></Button>
+<!--            <Button-->
+<!--                android:id="@+id/btn_anotheruser"-->
+<!--                android:textColor="@color/black"-->
+<!--                android:textSize="17dp"-->
+<!--                android:text="Tài khoản khác"-->
+<!--                android:background="@drawable/button_type_1"-->
+<!--                android:layout_gravity="center"-->
+<!--                android:layout_marginTop="10dp"-->
+<!--                android:layout_width="200dp"-->
+<!--                android:layout_height="70dp"-->
+<!--                android:visibility="gone"-->
+<!--                ></Button>-->
 <!--            <Button-->
 <!--                android:id="@+id/btn_signout"-->
 <!--                android:textColor="@color/black"-->

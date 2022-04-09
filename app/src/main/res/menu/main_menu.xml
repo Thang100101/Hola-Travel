@@ -25,6 +25,10 @@
         android:title="Đăng xuất"
         ></item>
     <item
+        android:id="@+id/menu_another"
+        android:title="Tài khoản khắc"
+        ></item>
+    <item
         android:id="@+id/menu_exit"
         android:title="Thoát"
         ></item>

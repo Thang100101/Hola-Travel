@@ -1,13 +1,10 @@
 package com.example.app_hola;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -19,7 +16,6 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.HorizontalScrollView;
 import android.widget.ListView;
@@ -27,15 +23,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.app_hola.ObjectForApp.Content;
-import com.google.firebase.FirebaseAppLifecycleListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.installations.FirebaseInstallationsApi;
 
 import java.util.ArrayList;
 
@@ -135,18 +124,24 @@ public class HomeActivity extends AppCompatActivity  {
                 acceptOut();
                 break;
             case R.id.menu_signin:
-                Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+                Intent intent = new Intent(getApplicationContext(), WellcomeActivity.class);
                 intent.putExtra("signin",true);
                 startActivity(intent);
                 finish();
                 break;
             case R.id.menu_signout:
-                Intent intent2 = new Intent(getApplicationContext(),MainActivity.class);
+                Intent intent2 = new Intent(getApplicationContext(), WellcomeActivity.class);
                 intent2.putExtra("signout",true);
                 mAuth.signOut();
                 startActivity(intent2);
                 finish();
                 break;
+            case R.id.menu_another:
+                Intent intent3 = new Intent(getApplicationContext(), WellcomeActivity.class);
+                intent3.putExtra("another",true);
+                mAuth.signOut();
+                startActivity(intent3);
+                finish();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -197,7 +192,7 @@ public class HomeActivity extends AppCompatActivity  {
         dialog.setPositiveButton("Có", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+                Intent intent = new Intent(getApplicationContext(), WellcomeActivity.class);
                 startActivity(intent);
 
                 Intent startMain = new Intent(Intent.ACTION_MAIN);

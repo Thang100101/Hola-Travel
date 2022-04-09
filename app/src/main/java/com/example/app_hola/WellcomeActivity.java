@@ -26,15 +26,14 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 import java.io.Serializable;
 
 
-public class MainActivity extends AppCompatActivity implements Serializable{
+public class WellcomeActivity extends AppCompatActivity implements Serializable{
     //Khai báo
     private FirebaseAuth mAuth;
-    Button btnExit, btnAccess, btnSignin, btnRegist, btnAnotherUser;
+    Button btnExit, btnAccess, btnSignin, btnRegist;
     TextView txtTile, txtUser;
     LinearLayout mainLayout;
     Animation anim_bot_to_top,alpha;
@@ -45,7 +44,7 @@ public class MainActivity extends AppCompatActivity implements Serializable{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_wellcome);
         Mapping();
         mAuth = FirebaseAuth.getInstance();
 
@@ -54,10 +53,17 @@ public class MainActivity extends AppCompatActivity implements Serializable{
         boolean signout = intent.getBooleanExtra("signout",false);
         if(signout)
             Signout();
+
         boolean signin = intent.getBooleanExtra("signin",false);
         if(signin)
-            Signin(MainActivity.this);
+            Signin(WellcomeActivity.this);
 
+        boolean anotherUser = intent.getBooleanExtra("another", false);
+        if(anotherUser)
+        {
+            Signout();
+            Signin(this);
+        }
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
@@ -73,7 +79,7 @@ public class MainActivity extends AppCompatActivity implements Serializable{
         btnAccess.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent home = new Intent(MainActivity.this, HomeActivity.class);
+                Intent home = new Intent(WellcomeActivity.this, HomeActivity.class);
                 startActivity(home);
                 overridePendingTransition(R.anim.alpha_type_2,R.anim.alpha_type_2);
             }
@@ -82,7 +88,7 @@ public class MainActivity extends AppCompatActivity implements Serializable{
         btnSignin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Signin(MainActivity.this);
+                Signin(WellcomeActivity.this);
             }
         });
 
@@ -94,13 +100,6 @@ public class MainActivity extends AppCompatActivity implements Serializable{
         });
 
 
-        btnAnotherUser.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Signout();
-                Signin(MainActivity.this);
-            }
-        });
 
         //Chạy chữ chào mừng
         runWellcome();
@@ -110,7 +109,7 @@ public class MainActivity extends AppCompatActivity implements Serializable{
     //Ánh xạ
     private void Mapping()
     {
-        btnAnotherUser = (Button) findViewById(R.id.btn_anotheruser) ;
+//        btnAnotherUser = (Button) findViewById(R.id.btn_anotheruser) ;
         btnExit = (Button) findViewById(R.id.btn_exit);
         btnAccess = (Button) findViewById(R.id.btn_access);
         btnSignin = (Button) findViewById(R.id.btn_signin);
@@ -129,7 +128,6 @@ public class MainActivity extends AppCompatActivity implements Serializable{
         btnAccess.startAnimation(anim_bot_to_top);
         btnRegist.startAnimation(anim_bot_to_top);
         btnSignin.startAnimation(anim_bot_to_top);
-        btnAnotherUser.startAnimation(anim_bot_to_top);
     }
 
     //Dialog thoát
@@ -143,7 +141,7 @@ public class MainActivity extends AppCompatActivity implements Serializable{
         dialog.setPositiveButton("Có", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+                Intent intent = new Intent(getApplicationContext(), WellcomeActivity.class);
                 startActivity(intent);
 
                 Intent startMain = new Intent(Intent.ACTION_MAIN);
@@ -194,20 +192,20 @@ public class MainActivity extends AppCompatActivity implements Serializable{
                 {
                     //Tiến hành đăng kí
                     mAuth.createUserWithEmailAndPassword(email, pass)
-                            .addOnCompleteListener(MainActivity.this, new OnCompleteListener<AuthResult>() {
+                            .addOnCompleteListener(WellcomeActivity.this, new OnCompleteListener<AuthResult>() {
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     if (task.isSuccessful()) {
                                         // Sign in success, update UI with the signed-in user's information
-                                        Toast.makeText(MainActivity.this, "Đăng kí thành công",
+                                        Toast.makeText(WellcomeActivity.this, "Đăng kí thành công",
                                                 Toast.LENGTH_SHORT).show();
                                         mAuth.signOut();
                                         dialog.dismiss();
-                                        Signin(MainActivity.this);
+                                        Signin(WellcomeActivity.this);
                                         return;
                                     } else {
                                         // If sign in fails, display a message to the user.
-                                        Toast.makeText(MainActivity.this,
+                                        Toast.makeText(WellcomeActivity.this,
                                                 "Tài khoản đã tồn tại hoặc không hợp lệ",
                                                 Toast.LENGTH_SHORT).show();
                                         return;
@@ -221,10 +219,10 @@ public class MainActivity extends AppCompatActivity implements Serializable{
     private boolean CheckRegist(String user, String pass, String confirm)
     {
         if(!pass.equals(confirm)){
-            Toast.makeText(MainActivity.this, "Mật khẩu không trùng khớp!", Toast.LENGTH_LONG).show();
+            Toast.makeText(WellcomeActivity.this, "Mật khẩu không trùng khớp!", Toast.LENGTH_LONG).show();
             return false;
         }else if (pass.length() < 8) {
-            Toast.makeText(MainActivity.this, "Mật khẩu phải lớn hơn 8 kí tự", Toast.LENGTH_LONG).show();
+            Toast.makeText(WellcomeActivity.this, "Mật khẩu phải lớn hơn 8 kí tự", Toast.LENGTH_LONG).show();
             return false;
         }else {
             return true;
@@ -298,7 +296,7 @@ public class MainActivity extends AppCompatActivity implements Serializable{
                             return;
                         } else {
                             // If sign in fails, display a message to the user.
-                            Toast.makeText(MainActivity.this, "Tài khoản hoặc mật khẩu không chính xác", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(WellcomeActivity.this, "Tài khoản hoặc mật khẩu không chính xác", Toast.LENGTH_SHORT).show();
                             return;
                         }
                     }
@@ -329,13 +327,11 @@ public class MainActivity extends AppCompatActivity implements Serializable{
     {
         if(signin)
         {
-            btnAnotherUser.setVisibility(View.VISIBLE);
             btnSignin.setVisibility(View.GONE);
             btnRegist.setVisibility(View.GONE);
         }
         else
         {
-            btnAnotherUser.setVisibility(View.GONE);
             btnSignin.setVisibility(View.VISIBLE);
             btnRegist.setVisibility(View.VISIBLE);
         }
