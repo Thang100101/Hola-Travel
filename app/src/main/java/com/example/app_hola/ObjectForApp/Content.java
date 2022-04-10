@@ -1,10 +1,7 @@
 package com.example.app_hola.ObjectForApp;
 
-import android.content.Context;
-import android.widget.Toast;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -16,7 +13,8 @@ import java.util.ArrayList;
 
 public class Content {
     ImageContent imageContent;
-    String mainContent, Title, userID, Location, ID;
+    String mainContent, Title, Location, ID;
+    User userID;
     String date;
     ArrayList<ImageContent> listImage = new ArrayList<ImageContent>();
     static DatabaseReference dataRef;
@@ -24,7 +22,7 @@ public class Content {
         dataRef = FirebaseDatabase.getInstance().getReference();
     }
 
-    public Content(ImageContent imageContent, String mainContent, String title, String userID, String ID, String date) {
+    public Content(ImageContent imageContent, String mainContent, String title, User userID, String ID, String date) {
         this.imageContent = imageContent;
         this.mainContent = mainContent;
         this.Title = title;
@@ -57,7 +55,7 @@ public class Content {
         return date;
     }
     public String getTitle() { return Title; }
-    public String getUserID() { return userID; }
+    public User getUserID() { return userID; }
     public String getLocation() { return Location; }
     public String getID() { return ID; }
     ////SET
@@ -75,7 +73,7 @@ public class Content {
         Title = title;
     }
 
-    public void setUserID(String userID) {
+    public void setUserID(User userID) {
         this.userID = userID;
     }
 

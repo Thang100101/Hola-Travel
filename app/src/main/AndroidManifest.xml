@@ -32,6 +32,9 @@
         <activity
             android:name=".HomeActivity"
             android:exported="false" />
+        <activity
+            android:name=".ReadContent"
+            android:exported="false" />
 
     </application>
 

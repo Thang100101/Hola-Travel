@@ -1,10 +1,5 @@
 package com.example.app_hola;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -22,30 +17,57 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.app_hola.ObjectForApp.Content;
+import com.example.app_hola.ObjectForApp.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class HomeActivity extends AppCompatActivity  {
+    public static final String EXTRA_MESSAGE="com.example.app_hola.MESSAGE";
     HorizontalScrollView hScrollView;
+    String txtUser,txtTitle,txtMaincontent,txtDate,txtLink;
+    String[] list;
     Button btnUpload;
+    List<Content> contents;
+    List<User> users;
     ArrayList<Content> listContent = new ArrayList<Content>();
     ListView listViewContent;
     ActionBar actionBar;
     SharedPreferences prefer;
     FirebaseAuth mAuth;
     FirebaseUser currentUser;
+    DatabaseReference reference;
+    ContentApdapter contentApdapter;
     boolean search =false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        listViewContent=(ListView) findViewById(R.id.listContent) ;
+        contents=new ArrayList<>();
+
+            contentApdapter = new ContentApdapter(this, contents);
+            listViewContent.setAdapter(contentApdapter);
+
         Mapping();
         addList();
         customActionBar();
+        getInfOfContent();
 
         btnUpload.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
@@ -58,7 +80,16 @@ public class HomeActivity extends AppCompatActivity  {
         listViewContent.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
+                Intent intent=new Intent(HomeActivity.this,ReadContent.class);
+                txtUser=contents.get(i).getUserID().getUsername();
+                txtDate=contents.get(i).getDate();
+                txtLink=contents.get(i).getImageContent().getLink();
+                txtMaincontent=contents.get(i).getMainContent();
+                txtTitle=contents.get(i).getTitle();
+                list=new String[]{txtTitle,txtUser,txtLink,txtDate,txtMaincontent};
+                intent.putExtra(EXTRA_MESSAGE,list);
+                startActivity(intent);
+                Toast.makeText(HomeActivity.this, list[1], Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -70,6 +101,45 @@ public class HomeActivity extends AppCompatActivity  {
             }
         });
 
+    }
+    private void getInfOfContent(){
+//        users=new ArrayList<>();
+//        reference= FirebaseDatabase.getInstance().getReference("Users");
+//        User user=new User("1951012131","thien@gmail.com","123456");
+//        reference.child("Thien's acount").setValue(user);
+//        reference=FirebaseDatabase.getInstance().getReference();
+//        ImageContent imageContent=new ImageContent("HaNoi.jfif","HaNoi");
+//        reference.child("ImageContents").child(imageContent.getContentID()).setValue(imageContent);
+//        Content content=new Content(imageContent,"Nội dung","Phong cảnh Hà Nội",user,"0","10/04/2022");
+//        reference.child("Contents").child(content.getID()).setValue(content);
+        reference= FirebaseDatabase.getInstance().getReference("Contents");
+        reference.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                contents.add(snapshot.getValue(Content.class));
+                contentApdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     private void Mapping(){
