@@ -1,6 +1,7 @@
 package com.example.app_hola;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -30,33 +31,45 @@ import com.google.firebase.auth.FirebaseAuth;
 import java.io.Serializable;
 
 
-public class MainActivity extends AppCompatActivity implements Serializable{
+public class WellcomeActivity extends AppCompatActivity implements Serializable{
     //Khai báo
     private FirebaseAuth mAuth;
-    Button btnExit, btnAccess, btnSignin, btnRegist, btnAnotherUser;
-    TextView txtTile, txtUser;
+    Button btnExit, btnAccess, btnSignin, btnRegist;
+    TextView txtTile;
     LinearLayout mainLayout;
     Animation anim_bot_to_top,alpha;
-    SharedPreferences prefer;
+    Dialog dialogSignin, dialogRegist, dialogLoading;
     int check=1;
+    int REQUEST_CODE = 1;
 
     //
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_wellcome);
         Mapping();
-        CheckHaveSignin();
         mAuth = FirebaseAuth.getInstance();
 
+//        CheckHaveSignin();
+
         Intent intent = getIntent();
-        boolean signin = intent.getBooleanExtra("signin",false);
-        if(signin)
-            Signin(MainActivity.this);
         boolean signout = intent.getBooleanExtra("signout",false);
+        boolean signin = intent.getBooleanExtra("signin",false);
+        boolean anotherUser = intent.getBooleanExtra("another", false);
         if(signout)
             Signout();
-
+        else if(signin)
+            Signin(WellcomeActivity.this);
+        else if(anotherUser)
+        {
+            Signout();
+            Signin(this);
+        }
+        else
+        {
+            Intent intentLogo = new Intent(getApplicationContext(), LogoActivity.class);
+            startActivityForResult(intentLogo, REQUEST_CODE);
+        }
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
@@ -72,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements Serializable{
         btnAccess.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent home = new Intent(MainActivity.this, HomeActivity.class);
+                Intent home = new Intent(WellcomeActivity.this, HomeActivity.class);
                 startActivity(home);
                 overridePendingTransition(R.anim.alpha_type_2,R.anim.alpha_type_2);
             }
@@ -81,7 +94,7 @@ public class MainActivity extends AppCompatActivity implements Serializable{
         btnSignin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Signin(MainActivity.this);
+                Signin(WellcomeActivity.this);
             }
         });
 
@@ -93,13 +106,6 @@ public class MainActivity extends AppCompatActivity implements Serializable{
         });
 
 
-        btnAnotherUser.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Signout();
-                Signin(MainActivity.this);
-            }
-        });
 
         //Chạy chữ chào mừng
         runWellcome();
@@ -109,16 +115,25 @@ public class MainActivity extends AppCompatActivity implements Serializable{
     //Ánh xạ
     private void Mapping()
     {
-        btnAnotherUser = (Button) findViewById(R.id.btn_anotheruser) ;
+//        btnAnotherUser = (Button) findViewById(R.id.btn_anotheruser) ;
         btnExit = (Button) findViewById(R.id.btn_exit);
         btnAccess = (Button) findViewById(R.id.btn_access);
         btnSignin = (Button) findViewById(R.id.btn_signin);
         btnRegist = (Button) findViewById(R.id.btn_regist);
         txtTile = (TextView) findViewById(R.id.txt_title);
-        txtUser = (TextView) findViewById(R.id.txt_user);
         mainLayout = (LinearLayout) findViewById(R.id.main_layout);
         anim_bot_to_top = AnimationUtils.loadAnimation(this,R.anim.bot_to_top_alpha);
         alpha = AnimationUtils.loadAnimation(this,R.anim.alpha);
+        mAuth = FirebaseAuth.getInstance();
+
+        dialogSignin = new Dialog(WellcomeActivity.this);
+        dialogSignin.setContentView(R.layout.dialog_signin);
+
+        dialogRegist = new Dialog(WellcomeActivity.this);
+        dialogRegist.setContentView(R.layout.dialog_regist);
+
+        dialogLoading = new Dialog(WellcomeActivity.this);
+        dialogLoading.setContentView(R.layout.dialog_loading);
     }
 
     //Chạy animation
@@ -127,7 +142,6 @@ public class MainActivity extends AppCompatActivity implements Serializable{
         btnAccess.startAnimation(anim_bot_to_top);
         btnRegist.startAnimation(anim_bot_to_top);
         btnSignin.startAnimation(anim_bot_to_top);
-        btnAnotherUser.startAnimation(anim_bot_to_top);
     }
 
     //Dialog thoát
@@ -141,7 +155,7 @@ public class MainActivity extends AppCompatActivity implements Serializable{
         dialog.setPositiveButton("Có", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+                Intent intent = new Intent(getApplicationContext(), WellcomeActivity.class);
                 startActivity(intent);
 
                 Intent startMain = new Intent(Intent.ACTION_MAIN);
@@ -165,129 +179,123 @@ public class MainActivity extends AppCompatActivity implements Serializable{
     }
 
     //Dialog đăng kí
-    private boolean regisStatus = false;
     private void Regist(){
-        Dialog dialog = new Dialog(this);
-        dialog.setContentView(R.layout.dialog_regist);
-        dialog.show();
+        dialogRegist.show();
         //Kiểm tra đăng kí
-        EditText editUser = (EditText) dialog.findViewById(R.id.edit_user);
-        EditText editPass = (EditText) dialog.findViewById(R.id.edit_pass);
-        EditText editConfirm = (EditText) dialog.findViewById(R.id.edit_confirm);
-        Button btnConfirm = (Button) dialog.findViewById(R.id.btn_submit);
+        EditText editUser = (EditText) dialogRegist.findViewById(R.id.edit_user);
+        EditText editPass = (EditText) dialogRegist.findViewById(R.id.edit_pass);
+        EditText editConfirm = (EditText) dialogRegist.findViewById(R.id.edit_confirm);
+        Button btnConfirm = (Button) dialogRegist.findViewById(R.id.btn_submit);
+        Button btnBack = (Button) dialogRegist.findViewById(R.id.btn_back);
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialogRegist.dismiss();
+            }
+        });
 
         btnConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                CheckRegist(editUser.getText().toString(),
-                        editPass.getText().toString(), editConfirm.getText().toString());
-                if (regisStatus){
-                    dialog.dismiss();
-                    Signin(MainActivity.this);
+                String email = editUser.getText().toString();
+                String pass = editPass.getText().toString();
+                String confirm = editConfirm.getText().toString();
+                if(CheckRegist(email, pass, confirm))
+                {
+                    //Tiến hành đăng kí
+                    dialogLoading.show();
+                    dialogRegist.hide();
+                    mAuth.createUserWithEmailAndPassword(email, pass)
+                            .addOnCompleteListener(WellcomeActivity.this, new OnCompleteListener<AuthResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                    if (task.isSuccessful()) {
+                                        // Sign in success, update UI with the signed-in user's information
+                                        Toast.makeText(WellcomeActivity.this, "Đăng kí thành công",
+                                                Toast.LENGTH_SHORT).show();
+                                        mAuth.signOut();
+                                        dialogRegist.dismiss();
+                                        Signin(WellcomeActivity.this);
+                                        dialogLoading.dismiss();
+                                        return;
+                                    } else {
+                                        // If sign in fails, display a message to the user.
+                                        Toast.makeText(WellcomeActivity.this,
+                                                "Tài khoản đã tồn tại hoặc không hợp lệ",
+                                                Toast.LENGTH_SHORT).show();
+                                        dialogLoading.dismiss();
+                                        dialogRegist.show();
+                                        return;
+                                    }
+                                }
+                            });
                 }
             }
         });
     }
-    private void CheckRegist(String user, String pass, String confirm)
+    private boolean CheckRegist(String user, String pass, String confirm)
     {
         if(!pass.equals(confirm)){
-            Toast.makeText(MainActivity.this, "Mật khẩu không trùng khớp!", Toast.LENGTH_LONG).show();
+            Toast.makeText(WellcomeActivity.this, "Mật khẩu không trùng khớp!", Toast.LENGTH_LONG).show();
+            return false;
         }else if (pass.length() < 8) {
-            Toast.makeText(MainActivity.this, "Mật khẩu phải lớn hơn 8 kí tự", Toast.LENGTH_LONG).show();
+            Toast.makeText(WellcomeActivity.this, "Mật khẩu phải lớn hơn 8 kí tự", Toast.LENGTH_LONG).show();
+            return false;
         }else {
-            register(user, pass);
+            return true;
         }
     }
-    private void register(String email, String password){
-        mAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Toast.makeText(MainActivity.this, "Successful.",
-                                    Toast.LENGTH_SHORT).show();
-                            mAuth.signOut();
-                            regisStatus = true;
-                            return;
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Toast.makeText(MainActivity.this, "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
-                            return;
-                        }
-                    }
-                });
-    }
+
 
     //Dialog đăng nhập
     public void Signin(Context context)
     {
-        Dialog dialog = new Dialog(context);
-        dialog.setContentView(R.layout.dialog_signin);
-        dialog.show();
+        dialogSignin.show();
         //Mapping
-        EditText editUser = (EditText) dialog.findViewById(R.id.edit_user);
-        EditText editPass = (EditText) dialog.findViewById(R.id.edit_pass);
-        Button btnSubmit = (Button) dialog.findViewById(R.id.btn_submit);
-        Button btnBack = (Button) dialog.findViewById(R.id.btn_back);
-        CheckBox cbRemember = (CheckBox) dialog.findViewById(R.id.cb_remember);
+        EditText editUser = (EditText) dialogSignin.findViewById(R.id.edit_user);
+        EditText editPass = (EditText) dialogSignin.findViewById(R.id.edit_pass);
+        Button btnSubmit = (Button) dialogSignin.findViewById(R.id.btn_submit);
+        Button btnBack = (Button) dialogSignin.findViewById(R.id.btn_back);
         // Kiểm tra đăng nhập
-        prefer = getSharedPreferences("rememberlogin",MODE_PRIVATE);
-
-        editUser.setText(prefer.getString("user",""));
-        editPass.setText(prefer.getString("pass",""));
-        cbRemember.setChecked(prefer.getBoolean("checkrmb",false));
 
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                dialog.dismiss();
+                dialogSignin.dismiss();
             }
         });
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 CheckSignin(editUser.getText().toString(),
-                        editPass.getText().toString(), cbRemember.isChecked());
+                        editPass.getText().toString());
             }
         });
 
     }
     ///Kiểm tra đăng nhập, đăng kí
-    private void CheckSignin(String email, String password, boolean rememberStatus)
+    private void CheckSignin(String email, String password)
     {
+        dialogLoading.show();
+        dialogSignin.hide();
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
-                            if (rememberStatus){
-                                SharedPreferences.Editor edit = prefer.edit();
-                                edit.putString("user", email);
-                                edit.putString("pass", password);
-                                edit.putBoolean("checkrmb",true);
-                                edit.putBoolean("havesignin",true);
-                                edit.commit();
-                                ChangeMainButton(true);
-                                txtUser.setText("Tài khoản " + email);
-                            }
-                            else {
-                                SharedPreferences.Editor edit = prefer.edit();
-                                edit.remove("user");
-                                edit.remove("pass");
-                                edit.remove("checkrmb");
-                                edit.commit();
-                                ChangeMainButton(true);
-                                txtUser.setText("Tài khoản " + email);
-                            }
+                            ChangeMainButton(true);
                             Intent intent = new Intent(getApplicationContext(),HomeActivity.class);
                             startActivity(intent);
+                            dialogLoading.dismiss();
+                            dialogSignin.dismiss();
                             return;
                         } else {
                             // If sign in fails, display a message to the user.
-                            Toast.makeText(MainActivity.this, "Tài khoản hoặc mật khẩu không chính xác", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(WellcomeActivity.this, "Tài khoản hoặc mật khẩu không chính xác",
+                                    Toast.LENGTH_SHORT).show();
+                            dialogLoading.dismiss();
+                            dialogSignin.show();
                             return;
                         }
                     }
@@ -295,32 +303,25 @@ public class MainActivity extends AppCompatActivity implements Serializable{
     }
 
     //Kiểm tra đã đăng nhập từ trước
-    private void CheckHaveSignin()
-    {
-        prefer = getSharedPreferences("rememberlogin",MODE_PRIVATE);
-        if(prefer.getBoolean("havesignin",false))
-        {
-            txtUser.setText("Tài khoản "+prefer.getString("user",""));
-            ChangeMainButton(true);
-        }
-        else
-        {
-            txtUser.setText("");
-            ChangeMainButton(false);
-        }
-    }
+//    private void CheckHaveSignin()
+//    {
+//        if(mAuth.getCurrentUser()!=null)
+//        {
+//            ChangeMainButton(true);
+//        }
+//        else
+//            ChangeMainButton(false);
+//    }
     //thay đổi button theo trạng thái
     private void ChangeMainButton(boolean signin)
     {
         if(signin)
         {
-            btnAnotherUser.setVisibility(View.VISIBLE);
             btnSignin.setVisibility(View.GONE);
             btnRegist.setVisibility(View.GONE);
         }
         else
         {
-            btnAnotherUser.setVisibility(View.GONE);
             btnSignin.setVisibility(View.VISIBLE);
             btnRegist.setVisibility(View.VISIBLE);
         }
@@ -357,13 +358,25 @@ public class MainActivity extends AppCompatActivity implements Serializable{
 
     ///Đăng xuất
     private void Signout(){
-        SharedPreferences.Editor edit = prefer.edit();
-        edit.remove("user");
-        edit.remove("pass");
-        edit.remove("checkrmb");
-        edit.putBoolean("havesignin",false);
-        edit.commit();
         ChangeMainButton(false);
-        txtUser.setText("");
+        mAuth.signOut();
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if(requestCode == REQUEST_CODE && resultCode == RESULT_OK && data!=null)
+        {
+            if(data.getBooleanExtra("havesignin",false)==true)
+            {
+                ChangeMainButton(true);
+                Intent intent = new Intent(getApplicationContext(),HomeActivity.class);
+                startActivity(intent);
+            }
+            else
+            {
+                ChangeMainButton(false);
+            }
+
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }

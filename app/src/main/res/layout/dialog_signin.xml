@@ -13,7 +13,7 @@
         android:weightSum="10"
         >
         <LinearLayout
-            android:layout_weight="1"
+            android:layout_weight="1.5"
             android:layout_width="0dp"
             android:padding="5dp"
             android:layout_height="match_parent"
@@ -27,7 +27,7 @@
         </LinearLayout>
 
         <TextView
-            android:layout_weight="8"
+            android:layout_weight="7"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="Đăng nhập"
@@ -56,15 +56,9 @@
         android:hint="Mật khẩu"
         android:inputType="textPassword"
         ></EditText>
-    <CheckBox
-        android:id="@+id/cb_remember"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:text="Lưu tài khoản"
-        android:textSize="20dp"
-        ></CheckBox>
+
     <Button
+        android:layout_marginTop="20dp"
         android:id="@+id/btn_submit"
         android:layout_width="100dp"
         android:layout_height="50dp"
