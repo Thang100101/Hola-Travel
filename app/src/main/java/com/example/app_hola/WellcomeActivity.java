@@ -23,12 +23,17 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.app_hola.ObjectForApp.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 
 public class WellcomeActivity extends AppCompatActivity implements Serializable{
@@ -213,10 +218,23 @@ public class WellcomeActivity extends AppCompatActivity implements Serializable{
                                         // Sign in success, update UI with the signed-in user's information
                                         Toast.makeText(WellcomeActivity.this, "Đăng kí thành công",
                                                 Toast.LENGTH_SHORT).show();
-                                        mAuth.signOut();
+
+                                        ///Tạo User
+                                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                                        Calendar calendar = Calendar.getInstance();
+                                        String birth = simpleDateFormat.format(calendar.getTime());
+                                        User user = new User(mAuth.getCurrentUser().getUid(),email,pass);
+                                        user.setBirth(birth);
+                                        user.setName("Chưa có tên");
+                                        user.setSex("Nam");
+                                        user.setAvatar("https://firebasestorage.googleapis.com/v0/b/hola-travel.appspot" +
+                                                ".com/o/avatar.png?alt=media&token=7733012b-0e01-4bcf-8e7b-cad46b2ef22c");
+                                        DatabaseReference dataRef = FirebaseDatabase.getInstance().getReference("Users");
+                                        dataRef.child(user.getUserID()).setValue(user);
                                         dialogRegist.dismiss();
-                                        Signin(WellcomeActivity.this);
                                         dialogLoading.dismiss();
+                                        Intent intent = new Intent(getApplicationContext(),HomeActivity.class);
+                                        startActivity(intent);
                                         return;
                                     } else {
                                         // If sign in fails, display a message to the user.

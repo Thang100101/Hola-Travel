@@ -22,7 +22,7 @@ public class LogoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_logo);
         imgLogo = (ImageView) findViewById(R.id.img_logo);
         mAuth = FirebaseAuth.getInstance();
-        Animation animation = AnimationUtils.loadAnimation(this,R.anim.alpha_type_3);
+        Animation animation = AnimationUtils.loadAnimation(this,R.anim.alpha);
         imgLogo.startAnimation(animation);
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
@@ -37,7 +37,7 @@ public class LogoActivity extends AppCompatActivity {
                     overridePendingTransition(R.anim.alpha_type_2,R.anim.alpha_type_2);
                     finish();
                 }
-            }, 3000);
+            }, 2000);
         }
         else
         {
@@ -50,7 +50,7 @@ public class LogoActivity extends AppCompatActivity {
                     overridePendingTransition(R.anim.alpha_type_2,R.anim.alpha_type_2);
                     finish();
                 }
-            }, 3000);
+            }, 2000);
         }
     }
 

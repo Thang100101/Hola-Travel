@@ -3,8 +3,8 @@ package com.example.app_hola.ObjectForApp;
 import java.util.ArrayList;
 
 public class User {
-    String userID, Username, Password, Birth, Sex;
-    ImageContent Avatar;
+    String userID, Name, Username, Password, Birth, Sex;
+    String Avatar;
     ArrayList<Content> listContent = new ArrayList<>();
 
     public User(String userID, String username, String password) {
@@ -44,9 +44,14 @@ public class User {
         return Sex;
     }
 
-    public ImageContent getAvatar() {
+    public String getAvatar() {
         return Avatar;
     }
+
+    public String getName() {
+        return Name;
+    }
+
 
     ///SET
 
@@ -71,7 +76,11 @@ public class User {
         Sex = sex;
     }
 
-    public void setAvatar(ImageContent avatar) {
+    public void setAvatar(String avatar) {
         Avatar = avatar;
+    }
+
+    public void setName(String name) {
+        Name = name;
     }
 }
