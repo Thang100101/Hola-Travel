@@ -1,5 +1,14 @@
 package com.example.app_hola.ObjectForApp;
 
+import android.content.Context;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -10,8 +19,9 @@ public class Content {
     String mainContent, Title, userID, Location, ID;
     String date;
     ArrayList<ImageContent> listImage = new ArrayList<ImageContent>();
-
+    static DatabaseReference dataRef;
     public Content() {
+        dataRef = FirebaseDatabase.getInstance().getReference();
     }
 
     public Content(ImageContent imageContent, String mainContent, String title, String userID, String ID, String date) {
@@ -21,6 +31,7 @@ public class Content {
         this.userID = userID;
         this.ID = ID;
         this.date = date;
+        dataRef = FirebaseDatabase.getInstance().getReference();
     }
 
     ///Thêm ảnh
@@ -86,8 +97,39 @@ public class Content {
         return  listContent;
     }
 
-    private int check=0;
-    public String setContent(){
-        return "";
+    private static int check;
+    public static void setContent(Content content){
+        check=0;
+        dataRef.child("Contents").push().setValue(content);
+        dataRef.child("Contents").addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                if (check==0) {
+                    check++;
+                    content.setID(snapshot.getKey());
+                }
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
+
 }

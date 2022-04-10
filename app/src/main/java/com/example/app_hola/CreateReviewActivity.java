@@ -13,7 +13,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.example.app_hola.ObjectForApp.Content;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 public class CreateReviewActivity extends AppCompatActivity {
+
+    Content content;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,13 +31,13 @@ public class CreateReviewActivity extends AppCompatActivity {
         actionBar.setTitle("Bài viết mới");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-
-
+        Content.setContent(content);
 
     }
 
     private void Mapping(){
-
+        content = new Content();
+        content.setTitle("Test");
     }
 
     //Tạo và bắt sự kiện cho menu

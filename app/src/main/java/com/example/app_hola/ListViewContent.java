@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.app_hola.ObjectForApp.Content;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -50,7 +51,7 @@ public class ListViewContent extends BaseAdapter {
         Content content = (Content)listContent.get(i);
         txtDate.setText(content.getDate());
         txtContent.setText(content.getTitle());
-
+        Picasso.get().load(content.getImageContent().getLink()).into(imgContent);
         animation = AnimationUtils.loadAnimation(context,R.anim.alpha_type_2);
         view.startAnimation(animation);
 
