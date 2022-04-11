@@ -18,15 +18,16 @@ import com.google.firebase.storage.StorageReference;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHolder> {
-    private List<ImageContent> imageContentList;
+    private ArrayList<ImageContent> imageContentList;
     private ViewPager2 viewPager2;
     private StorageReference storageReference;
     private DatabaseReference databaseReference;
 
-    public ImageAdapter(List<ImageContent> imageContentList, ViewPager2 viewPager2)
+    public ImageAdapter(ArrayList<ImageContent> imageContentList, ViewPager2 viewPager2)
     {
         this.imageContentList=imageContentList;
         this.viewPager2=viewPager2;
@@ -40,19 +41,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
 
     @Override
     public void onBindViewHolder(@NonNull ImageViewHolder holder, int position) {
-        storageReference=FirebaseStorage.getInstance().getReference(imageContentList.get(position).getLink());
-        storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-            @Override
-            public void onSuccess(Uri uri){
-                Picasso.get().load(uri).into(holder.imageView);
-
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-
-            }
-        });
+        Picasso.get().load(imageContentList.get(position).getLink()).into(holder.imageView);
 //        String name=imageContentList.get(position).getLink();
 //        File file=new File(name);
 //        Bitmap bitmap=BitmapFactory.decodeFile(file.getAbsolutePath());

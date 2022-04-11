@@ -9,12 +9,13 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Content {
+public class Content implements Serializable {
     ImageContent imageContent;
     String mainContent, Title, Location, ID;
-    User userID;
+    User user;
     String date;
     ArrayList<ImageContent> listImage = new ArrayList<ImageContent>();
     static DatabaseReference dataRef;
@@ -26,7 +27,7 @@ public class Content {
         this.imageContent = imageContent;
         this.mainContent = mainContent;
         this.Title = title;
-        this.userID = userID;
+        this.user = userID;
         this.ID = ID;
         this.date = date;
         dataRef = FirebaseDatabase.getInstance().getReference();
@@ -55,11 +56,19 @@ public class Content {
         return date;
     }
     public String getTitle() { return Title; }
-    public User getUserID() { return userID; }
+    public User getUser() { return user; }
     public String getLocation() { return Location; }
     public String getID() { return ID; }
+
+    public ArrayList<ImageContent> getListImage() {
+        return listImage;
+    }
     ////SET
 
+
+    public void setListImage(ArrayList<ImageContent> listImage) {
+        this.listImage = listImage;
+    }
 
     public void setImageContent(ImageContent imageContent) {
         this.imageContent = imageContent;
@@ -73,8 +82,8 @@ public class Content {
         Title = title;
     }
 
-    public void setUserID(User userID) {
-        this.userID = userID;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public void setLocation(String location) {

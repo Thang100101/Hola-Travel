@@ -15,13 +15,13 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
-public class ListViewContent extends BaseAdapter {
+public class ContentAdapter extends BaseAdapter {
     ArrayList<Content> listContent;
     Context context;
     LayoutInflater inflater;
     Animation animation;
 
-    public ListViewContent(ArrayList<Content> listContent, Context context) {
+    public ContentAdapter(ArrayList<Content> listContent, Context context) {
         this.listContent = listContent;
         this.context = context;
         this.inflater = (LayoutInflater.from(context)) ;
@@ -49,6 +49,7 @@ public class ListViewContent extends BaseAdapter {
         TextView txtDate = (TextView) view.findViewById(R.id.txt_date);
         TextView txtContent = (TextView) view.findViewById(R.id.txt_content);
         Content content = (Content)listContent.get(i);
+
         txtDate.setText(content.getDate());
         txtContent.setText(content.getTitle());
         Picasso.get().load(content.getImageContent().getLink()).into(imgContent);

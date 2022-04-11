@@ -1,11 +1,14 @@
 package com.example.app_hola.ObjectForApp;
 
-public class ImageContent {
-    String Link, ContentID;
+import java.io.Serializable;
 
-    public ImageContent(String link, String contentID) {
+public class ImageContent implements Serializable {
+    String ID, Link, ContentID;
+
+    public ImageContent(String id, String link, String contentID) {
         Link = link;
         ContentID = contentID;
+        this.ID = id;
     }
 
     public ImageContent() {
@@ -25,5 +28,13 @@ public class ImageContent {
 
     public void setContentID(String contentID) {
         ContentID = contentID;
+    }
+
+    public String getID() {
+        return ID;
+    }
+
+    public void setID(String ID) {
+        this.ID = ID;
     }
 }

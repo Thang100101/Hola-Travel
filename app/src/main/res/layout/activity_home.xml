@@ -129,13 +129,7 @@
                     android:orientation="vertical"
                     android:padding="5dp"
                     >
-                    <Button
-                        android:id="@+id/btn_home"
-                        android:background="@drawable/icon_home_3"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_gravity="center"
-                        ></Button>
+
                 </LinearLayout>
                 <LinearLayout
                     android:layout_weight="1"
@@ -145,8 +139,8 @@
                     android:padding="5dp"
                     >
                     <Button
-                        android:id="@+id/btn_upload_2"
-                        android:background="@drawable/icon_update_4"
+                        android:id="@+id/btn_home"
+                        android:background="@drawable/icon_home_3"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:layout_gravity="center"
@@ -175,8 +169,8 @@
                     android:padding="5dp"
                     >
                     <Button
-                        android:id="@+id/btn_upload_3"
-                        android:background="@drawable/icon_update_4"
+                        android:id="@+id/btn_your_review"
+                        android:background="@drawable/icon_book_2"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:layout_gravity="center"
@@ -189,13 +183,7 @@
                     android:orientation="vertical"
                     android:padding="5dp"
                     >
-                    <Button
-                        android:id="@+id/btn_your_review"
-                        android:background="@drawable/icon_book_2"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_gravity="center"
-                        ></Button>
+
                 </LinearLayout>
 
             </LinearLayout>

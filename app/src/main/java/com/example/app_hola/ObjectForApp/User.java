@@ -1,8 +1,9 @@
 package com.example.app_hola.ObjectForApp;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class User {
+public class User implements Serializable {
     String userID, Name, Username, Password, Birth, Sex;
     String Avatar;
     ArrayList<Content> listContent = new ArrayList<>();

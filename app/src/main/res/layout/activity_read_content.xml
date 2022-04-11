@@ -1,17 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@drawable/background_type_3">
-    <ScrollView
-        android:id="@+id/hScrollView_ReadContent"
-        android:layout_marginTop="5dp"
-        android:padding="7dp"
-        android:layout_width="match_parent"
-        android:layout_height="800dp"
-        android:scrollbars="none"
-        >
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="3500dp"
@@ -33,7 +26,7 @@
                 android:orientation="horizontal"
                 android:weightSum="3">
                 <ImageView
-                    android:id="@+id/imgContent"
+                    android:id="@+id/img_avatar"
                     android:layout_width="150dp"
                     android:layout_height="100dp"
                     android:layout_weight="1"/>
@@ -67,7 +60,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="20dp"
                 android:text="Nội dung"
-                android:background="@drawable/background_type_1"
+
                 />
             <LinearLayout
                 android:layout_width="match_parent"
@@ -80,33 +73,56 @@
                     android:paddingStart="80dp"
                     android:paddingEnd="80dp" />
             </LinearLayout>
-
             <LinearLayout
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                >
+                <Button
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:background="@drawable/icon_like"
+                    ></Button>
+                <TextView
+                    android:id="@+id/txt_like_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="100000"
+                    ></TextView>
+                <Button
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:background="@drawable/icon_cmt"
+                    ></Button>
+                <TextView
+                    android:id="@+id/txt_cmt_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="100000"
+                    ></TextView>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_marginTop="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
-                android:weightSum="2">
+                android:gravity="right">
                 <Button
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"
-                    android:background="@drawable/button_type_2"
-                    android:layout_width="125dp"
+                    android:id="@+id/btn_like"
+                    android:layout_width="70dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:text="Thích"
-                    android:textAllCaps="false"/>
+                    android:background="@drawable/icon_unlike"
+                    ></Button>
                 <Button
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"
-                    android:background="@drawable/button_type_2"
-                    android:layout_width="125dp"
+                    android:id="@+id/btn_cmt"
+                    android:layout_width="70dp"
                     android:layout_height="match_parent"
-                    android:text="Bình Luận"
-                    android:layout_weight="1"
-                    android:textAllCaps="false"/>
+                    android:background="@drawable/icon_cmt"
+                    ></Button>
             </LinearLayout>
         </LinearLayout>
-    </ScrollView>
 
-</LinearLayout>
+
+</ScrollView>

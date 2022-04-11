@@ -24,7 +24,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.app_hola.ObjectForApp.Content;
-import com.example.app_hola.ObjectForApp.User;
+import com.example.app_hola.ObjectForApp.ImageContent;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -34,7 +34,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class HomeActivity extends AppCompatActivity  {
     public static final String EXTRA_MESSAGE="com.example.app_hola.MESSAGE";
@@ -42,30 +41,21 @@ public class HomeActivity extends AppCompatActivity  {
     String txtUser,txtTitle,txtMaincontent,txtDate,txtLink;
     String[] list;
     Button btnUpload;
-    List<Content> contents;
-    List<User> users;
     ArrayList<Content> listContent = new ArrayList<Content>();
     ListView listViewContent;
     ActionBar actionBar;
     SharedPreferences prefer;
     FirebaseAuth mAuth;
     FirebaseUser currentUser;
-    DatabaseReference reference;
-    ContentApdapter contentApdapter;
+    DatabaseReference dataRef;
     boolean search =false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        listViewContent=(ListView) findViewById(R.id.listContent) ;
-        contents=new ArrayList<>();
-
-            contentApdapter = new ContentApdapter(this, contents);
-            listViewContent.setAdapter(contentApdapter);
 
         Mapping();
-        addList();
         customActionBar();
         getInfOfContent();
 
@@ -80,16 +70,10 @@ public class HomeActivity extends AppCompatActivity  {
         listViewContent.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Intent intent=new Intent(HomeActivity.this,ReadContent.class);
-                txtUser=contents.get(i).getUserID().getUsername();
-                txtDate=contents.get(i).getDate();
-                txtLink=contents.get(i).getImageContent().getLink();
-                txtMaincontent=contents.get(i).getMainContent();
-                txtTitle=contents.get(i).getTitle();
-                list=new String[]{txtTitle,txtUser,txtLink,txtDate,txtMaincontent};
-                intent.putExtra(EXTRA_MESSAGE,list);
+                Content content = listContent.get(i);
+                Intent intent = new Intent(HomeActivity.this, ReadContent.class);
+                intent.putExtra("content", content);
                 startActivity(intent);
-                Toast.makeText(HomeActivity.this, list[1], Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -100,24 +84,42 @@ public class HomeActivity extends AppCompatActivity  {
                 startActivity(intent);
             }
         });
+        Content content = new Content();
+        content.setTitle("Test");
+        content.setDate("11/04/2022");
+        ImageContent img = new ImageContent();
+        img.setLink("https://firebasestorage.googleapis.com/v0/b/hola-travel.appspot.com" +
+                "/o/avatar.png?alt=media&token=7733012b-0e01-4bcf-8e7b-cad46b2ef22c");
+        content.setImageContent(img);
+        content.setMainContent("sdfowbroinwoerwer" +
+                "werjkwberjbkwer" +
+                "werwebrowernwer" +
+                "werjbewrkberwer" +
+                "wrkjwebrjkwber" +
+                "wrkwebrkwerbkjwberwelwerlwkmmmmmmmmmmmmmmm" +
+                "mmmmmmmmmmmmmmmmmmmmmmm" +
+                "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww" +
+                "mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm");
+        ArrayList<ImageContent> listImg = new ArrayList<>();
+        listImg.add(new ImageContent("sfsd12asdasweqq", "https://firebasestorage.googlea" +
+                "pis.com/v0/b/hola-travel.appspot.com/o/avatar.png?alt=media&to" +
+                "ken=7733012b-0e01-4bcf-8e7b-cad46b2ef22c","1"));
+        content.setListImage(listImg);
+        listContent.add(content);
+        ContentAdapter adapter = new ContentAdapter(listContent, this);
+        listViewContent.setAdapter(adapter);
 
     }
+
+
+    ///Lấy danh sách content
     private void getInfOfContent(){
-//        users=new ArrayList<>();
-//        reference= FirebaseDatabase.getInstance().getReference("Users");
-//        User user=new User("1951012131","thien@gmail.com","123456");
-//        reference.child("Thien's acount").setValue(user);
-//        reference=FirebaseDatabase.getInstance().getReference();
-//        ImageContent imageContent=new ImageContent("HaNoi.jfif","HaNoi");
-//        reference.child("ImageContents").child(imageContent.getContentID()).setValue(imageContent);
-//        Content content=new Content(imageContent,"Nội dung","Phong cảnh Hà Nội",user,"0","10/04/2022");
-//        reference.child("Contents").child(content.getID()).setValue(content);
-        reference= FirebaseDatabase.getInstance().getReference("Contents");
-        reference.addChildEventListener(new ChildEventListener() {
+        dataRef= FirebaseDatabase.getInstance().getReference("Contents");
+        dataRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                contents.add(snapshot.getValue(Content.class));
-                contentApdapter.notifyDataSetChanged();
+//                listContent.add(snapshot.getValue(Content.class));
+//                contentApdapter.notifyDataSetChanged();
             }
 
             @Override
@@ -142,16 +144,14 @@ public class HomeActivity extends AppCompatActivity  {
         });
     }
 
+    //Ánh xạ
     private void Mapping(){
         hScrollView = (HorizontalScrollView) findViewById(R.id.hScrollView);
         btnUpload = (Button) findViewById(R.id.btn_upload);
         listViewContent = (ListView) findViewById(R.id.listContent);
-        prefer = getSharedPreferences("rememberlogin",MODE_PRIVATE);
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
-    }
-
-    private void addList(){
+        listContent = new ArrayList<>();
     }
 
     //Tạo và bắt sự kiện cho menu
@@ -216,7 +216,7 @@ public class HomeActivity extends AppCompatActivity  {
         return super.onOptionsItemSelected(item);
     }
 
-    private void testFilter(){
+    private void Filter(){
 
     }
 
