@@ -1,34 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="400dp"
     android:layout_height="700dp"
     android:padding="5dp"
     android:orientation="vertical"
     >
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="Bình luận"
-        android:textSize="30dp"
-        android:textColor="@color/black"
-        ></TextView>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:background="@color/black"
-        ></View>
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="3000dp"
         android:weightSum="10"
         android:orientation="vertical"
         android:layout_marginBottom="30dp"
         >
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textAlignment="center"
+            android:text="Bình luận"
+            android:textSize="30dp"
+            android:textColor="@color/black"
+            ></TextView>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@color/black"
+            ></View>
         <ListView
             android:id="@+id/list_cmt"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="610dp"
             android:layout_weight="8.3"
             ></ListView>
         <View
@@ -37,18 +40,18 @@
             android:background="@color/black"
             ></View>
         <LinearLayout
-            android:layout_width="350dp"
-            android:layout_height="0dp"
+            android:layout_width="match_parent"
+            android:layout_height="3500dp"
             android:layout_weight="0.7"
             android:weightSum="6"
             android:padding="5dp"
             android:layout_gravity="center"
             >
             <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="5"
                 android:background="@drawable/background_edittext"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="5"
                 android:padding="2dp"
                 android:paddingLeft="10dp"
                 >
@@ -56,6 +59,8 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
                     android:id="@+id/edit_cmt"
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginStart="20dp"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@drawable/background_none"
@@ -64,14 +69,14 @@
 
             <Button
                 android:id="@+id/btn_send"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
+                android:layout_width="20dp"
+                android:layout_height="50dp"
                 android:layout_weight="0.8"
                 android:background="@drawable/icon_send"
                 android:scaleType="center"
-                ></Button>
+                tools:ignore="TouchTargetSizeCheck"></Button>
         </LinearLayout>
 
     </LinearLayout>
 
-</LinearLayout>
+</ScrollView>
