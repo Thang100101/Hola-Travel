@@ -23,6 +23,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.app_hola.ObjectForApp.ImageContent;
 import com.example.app_hola.ObjectForApp.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -227,8 +228,10 @@ public class WellcomeActivity extends AppCompatActivity implements Serializable{
                                         user.setBirth(birth);
                                         user.setName("Chưa có tên");
                                         user.setSex("Nam");
-                                        user.setAvatar("https://firebasestorage.googleapis.com/v0/b/hola-travel.appspot" +
+                                        ImageContent img = new ImageContent();
+                                        img.setLink("https://firebasestorage.googleapis.com/v0/b/hola-travel.appspot" +
                                                 ".com/o/avatar.png?alt=media&token=7733012b-0e01-4bcf-8e7b-cad46b2ef22c");
+                                        user.setAvatar(img);
                                         DatabaseReference dataRef = FirebaseDatabase.getInstance().getReference("Users");
                                         dataRef.child(user.getUserID()).setValue(user);
                                         dialogRegist.dismiss();

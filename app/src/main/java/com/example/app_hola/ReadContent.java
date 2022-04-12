@@ -150,7 +150,7 @@ public class ReadContent extends AppCompatActivity {
         listCmt.clear();
         txtTitle.setText(content.getTitle());
         txtUser.setText(content.getUser().getName());
-        Picasso.get().load(content.getUser().getAvatar()).into(imgAvatar);
+        Picasso.get().load(content.getUser().getAvatar().getLink()).into(imgAvatar);
         txtDate.setText(content.getDate());
         txtMainContent.setText(content.getMainContent());
 

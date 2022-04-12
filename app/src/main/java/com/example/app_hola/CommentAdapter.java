@@ -63,7 +63,7 @@ public class CommentAdapter extends BaseAdapter {
                 if(task.isSuccessful())
                 {
                     User user = task.getResult().getValue(User.class);
-                    Picasso.get().load(user.getAvatar()).into(imgAvatar);
+                    Picasso.get().load(user.getAvatar().getLink()).into(imgAvatar);
                     txtName.setText(user.getName());
                 }
             }

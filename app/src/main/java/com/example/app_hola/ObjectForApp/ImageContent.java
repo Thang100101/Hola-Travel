@@ -3,10 +3,11 @@ package com.example.app_hola.ObjectForApp;
 import java.io.Serializable;
 
 public class ImageContent implements Serializable {
-    String Link;
+    String Link, Name;
 
-    public ImageContent(String id, String link, String contentID) {
+    public ImageContent(String link, String name) {
         Link = link;
+        Name = name;
     }
 
     public ImageContent() {
@@ -20,5 +21,11 @@ public class ImageContent implements Serializable {
         Link = link;
     }
 
+    public String getName() {
+        return Name;
+    }
 
+    public void setName(String name) {
+        Name = name;
+    }
 }

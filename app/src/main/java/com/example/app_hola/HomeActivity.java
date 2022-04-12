@@ -108,7 +108,8 @@ public class HomeActivity extends AppCompatActivity  {
         btnHome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Filter(ALL);
+                listContent.clear();
+                getInfOfContent();
             }
         });
 

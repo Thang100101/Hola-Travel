@@ -132,4 +132,96 @@
         </LinearLayout>
 
     </LinearLayout>
+    <LinearLayout
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="5"
+        >
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1.5"
+            android:text="Tài khoản "
+            android:gravity="center|left"
+            android:textSize="20dp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:layout_marginLeft="10dp"
+            ></TextView>
+        <TextView
+            android:id="@+id/txt_email"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2.5"
+            android:text=""
+            android:gravity="center|left"
+            android:textSize="20dp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:layout_marginLeft="10dp"
+            ></TextView>
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="5"
+        >
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1.5"
+            android:text="Mật khẩu "
+            android:gravity="center|left"
+            android:textSize="20dp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:layout_marginLeft="10dp"
+            ></TextView>
+        <TextView
+            android:id="@+id/txt_pass"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2.5"
+            android:text="Mật khẩu "
+            android:gravity="center|left"
+            android:textSize="20dp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:layout_marginLeft="10dp"
+            android:inputType="textPassword"
+            ></TextView>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:padding="10dp"
+            >
+            <Button
+                android:id="@+id/btn_edit_pass"
+                android:background="@drawable/icon_edit"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                ></Button>
+        </LinearLayout>
+    </LinearLayout>
+    <TextView
+        android:layout_marginTop="20dp"
+        android:id="@+id/txt_count_content"
+        android:layout_marginLeft="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Số lượng bài viết "
+        android:textColor="@color/black"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        ></TextView>
+    <ImageView
+        android:layout_gravity="center"
+        android:layout_marginTop="70dp"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:src="@drawable/logo_3"
+        ></ImageView>
 </LinearLayout>

@@ -8,7 +8,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Html;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,28 +25,41 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.app_hola.ObjectForApp.Content;
+import com.example.app_hola.ObjectForApp.ImageContent;
 import com.example.app_hola.ObjectForApp.User;
+import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 import org.w3c.dom.Text;
 
+import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 public class ProfileActivity extends AppCompatActivity {
-    Button btnEditName, btnEditBirth, btnEditSex;
-    TextView txtName, txtBirth, txtSex;
+    Button btnEditName, btnEditBirth, btnEditSex, btnEditPass;
+    TextView txtName, txtBirth, txtSex, txtEmail, txtPassword, txtCountContent;
     ImageView imgAvatar;
     FirebaseAuth mAuth;
     DatabaseReference dataRef;
     User user;
     Dialog dialogLoading;
+    int countContent =0;
     int REQUEST_CODE_TAKE_IMAGE =1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,11 +78,23 @@ public class ProfileActivity extends AppCompatActivity {
                 if(task.isSuccessful())
                 {
                     user = task.getResult().getValue(User.class);
+                    txtEmail.setText(user.getUsername());
+                    txtPassword.setText(user.getPassword());
+                    Query query = dataRef.child("Contents").orderByChild("user/userID").equalTo(user.getUserID());
+                    if(query!=null) {
+                        countContentForuser(query,"count");
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                dialogLoading.dismiss();
+                            }
+                        }, 1000);
+                    }
                     loadingProfile();
-                    dialogLoading.dismiss();
                 }
             }
         });
+
 
         eventHandler();
 
@@ -76,9 +105,13 @@ public class ProfileActivity extends AppCompatActivity {
         btnEditName = (Button) findViewById(R.id.btn_edit_name);
         btnEditBirth = (Button) findViewById(R.id.btn_edit_birth);
         btnEditSex = (Button) findViewById(R.id.btn_edit_sex);
+        btnEditPass = (Button) findViewById(R.id.btn_edit_pass);
+        txtEmail = (TextView) findViewById(R.id.txt_email);
+        txtPassword = (TextView) findViewById(R.id.txt_pass);
         txtBirth = (TextView) findViewById(R.id.txt_birth);
         txtName = (TextView) findViewById(R.id.txt_name);
         txtSex = (TextView) findViewById(R.id.txt_sex);
+        txtCountContent = (TextView) findViewById(R.id.txt_count_content);
         imgAvatar = (ImageView) findViewById(R.id.img_avatar);
         mAuth = FirebaseAuth.getInstance();
         dataRef = FirebaseDatabase.getInstance().getReference();
@@ -99,11 +132,51 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void loadingProfile(){
         if(user!=null) {
-            Picasso.get().load(user.getAvatar()).into(imgAvatar);
+            Picasso.get().load(user.getAvatar().getLink()).into(imgAvatar);
             txtName.setText(user.getName());
             txtBirth.setText(user.getBirth());
             txtSex.setText(user.getSex());
         }
+    }
+
+    ///Đếm số lượng bài viết
+    private void countContentForuser(Query query, String type)
+    {
+        query.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                if(type.equals("count")) {
+                    countContent++;
+                    txtCountContent.setText(txtCountContent.getText().toString() + countContent + "");
+                }
+                else
+                {
+                    Content content = snapshot.getValue(Content.class);
+                    content.setUser(user);
+                    dataRef.child("Contents").child(content.getID()).setValue(content);
+                }
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
 
@@ -135,6 +208,12 @@ public class ProfileActivity extends AppCompatActivity {
                 startActivityForResult(intent, REQUEST_CODE_TAKE_IMAGE);
             }
         });
+        btnEditPass.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
     }
 
     @Override
@@ -142,8 +221,56 @@ public class ProfileActivity extends AppCompatActivity {
         if(requestCode == REQUEST_CODE_TAKE_IMAGE && resultCode == RESULT_OK && data!=null)
         {
             Picasso.get().load(data.getData()).into(imgAvatar);
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    upLoadImg();
+                }
+            },500);
+
+
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    //Upload Avatar
+    private void upLoadImg() {
+        Dialog dialogLoading = new Dialog(ProfileActivity.this);
+        dialogLoading.setContentView(R.layout.dialog_loading);
+        dialogLoading.show();
+        dialogLoading.setCancelable(false);
+        Calendar calendar = Calendar.getInstance();
+        String name = user.getUserID() + calendar.getTimeInMillis();
+        imgAvatar.setDrawingCacheEnabled(true);
+        imgAvatar.buildDrawingCache();
+        Bitmap bitmap = ((BitmapDrawable) imgAvatar.getDrawable()).getBitmap();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+        byte[] dataImg = baos.toByteArray();
+        StorageReference storage = FirebaseStorage.getInstance().getReference();
+        StorageReference imgRef = storage.child("imageAvatar/" + name + ".png");
+        StorageReference deleteImg = storage.child("imageAvatar/" + user.getAvatar().getName());
+        deleteImg.delete();
+        UploadTask uploadTask = imgRef.putBytes(dataImg);
+        Task<Uri> uriTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+            @Override
+            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                if(task.isSuccessful())
+                    return imgRef.getDownloadUrl();
+                return null;
+            }
+        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+            @Override
+            public void onComplete(@NonNull Task<Uri> task) {
+                ImageContent img = new ImageContent();
+                img.setName(name+".png");
+                img.setLink(task.getResult().toString());
+                user.setAvatar(img);
+                dataRef.child("Users").child(user.getUserID()).setValue(user);
+                Toast.makeText(ProfileActivity.this, "Cập nhật thành công", Toast.LENGTH_SHORT).show();
+                dialogLoading.dismiss();
+            }
+        });
     }
 
     //Show các dialog theo các View
@@ -164,6 +291,10 @@ public class ProfileActivity extends AppCompatActivity {
                     user.setBirth(birth);
                     txtBirth.setText(birth);
                     dataRef.child("Users").child(user.getUserID()).setValue(user);
+                    Query query = dataRef.child("Contents").orderByChild("user/userID").equalTo(user.getUserID());
+                    if(query!=null) {
+                        countContentForuser(query, "change");
+                    }
                 }
             }, year, month, day);
             dialog.show();
@@ -181,6 +312,10 @@ public class ProfileActivity extends AppCompatActivity {
                         user.setName(editName.getText().toString());
                         txtName.setText(editName.getText().toString());
                         dataRef.child("Users").child(user.getUserID()).setValue(user);
+                        Query query = dataRef.child("Contents").orderByChild("user/userID").equalTo(user.getUserID());
+                        if(query!=null) {
+                            countContentForuser(query, "change");
+                        }
                         dialog.dismiss();
                     }else
                     {
@@ -210,12 +345,20 @@ public class ProfileActivity extends AppCompatActivity {
                         user.setSex("Nam");
                         txtSex.setText("Nam");
                         dataRef.child("Users").child(user.getUserID()).setValue(user);
+                        Query query = dataRef.child("Contents").orderByChild("user/userID").equalTo(user.getUserID());
+                        if(query!=null) {
+                            countContentForuser(query, "change");
+                        }
                         dialog.dismiss();
                     }
                     else if(rdFemale.isChecked() && !(user.getSex().toString().equals("Nữ"))){
                         user.setSex("Nữ");
                         txtSex.setText("Nữ");
                         dataRef.child("Users").child(user.getUserID()).setValue(user);
+                        Query query = dataRef.child("Contents").orderByChild("user/userID").equalTo(user.getUserID());
+                        if(query!=null) {
+                            countContentForuser(query, "change");
+                        }
                         dialog.dismiss();
                     }
                     else

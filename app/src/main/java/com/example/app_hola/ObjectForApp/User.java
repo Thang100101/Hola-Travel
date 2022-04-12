@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 public class User implements Serializable {
     String userID, Name, Username, Password, Birth, Sex;
-    String Avatar;
+    ImageContent Avatar;
     ArrayList<Content> listContent = new ArrayList<>();
 
     public User(String userID, String username, String password) {
@@ -45,7 +45,7 @@ public class User implements Serializable {
         return Sex;
     }
 
-    public String getAvatar() {
+    public ImageContent getAvatar() {
         return Avatar;
     }
 
@@ -77,7 +77,7 @@ public class User implements Serializable {
         Sex = sex;
     }
 
-    public void setAvatar(String avatar) {
+    public void setAvatar(ImageContent avatar) {
         Avatar = avatar;
     }
 

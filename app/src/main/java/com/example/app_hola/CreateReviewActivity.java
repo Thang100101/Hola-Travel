@@ -229,6 +229,9 @@ public class CreateReviewActivity extends AppCompatActivity implements View.OnCl
         listButtonDelete[imgCount-1].setVisibility(View.GONE);
         listImage[imgCount-1].setImageBitmap(null);
         imgCount--;
+        if(imgCount==0)
+            hori.setVisibility(View.GONE);
+
     }
 
     //Xử lí đăng bài viết
@@ -327,6 +330,7 @@ public class CreateReviewActivity extends AppCompatActivity implements View.OnCl
                 public void onComplete(@NonNull Task<Uri> task) {
                     if (task.isSuccessful()) {
                         ImageContent img = new ImageContent();
+                        img.setName(name+".png");
                         img.setLink(task.getResult().toString());
                         listImgContent.add(img);
                         }
