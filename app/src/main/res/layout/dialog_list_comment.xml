@@ -60,6 +60,7 @@
                     android:layout_weight="8"
                     android:background="@drawable/background_edittext"
                     android:padding="10dp"
+                    android:layout_marginLeft="30dp"
                     ></EditText>
                 <View
                     android:layout_width="0dp"
@@ -72,6 +73,7 @@
                     android:layout_height="50dp"
                     android:layout_weight="1.5"
                     android:background="@drawable/icon_send"
+                    android:layout_marginRight="30dp"
                     ></Button>
             </LinearLayout>
         </LinearLayout>
