@@ -175,13 +175,14 @@ public class HomeActivity extends AppCompatActivity  {
         adapter = new ContentAdapter(listContent, this);
         listViewContent.setAdapter(adapter);
         dataRef = FirebaseDatabase.getInstance().getReference();
-        dataRef.child("Users").child(currentUser.getUid()).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DataSnapshot> task) {
-                if(task.isSuccessful())
-                    mainUser = task.getResult().getValue(User.class);
-            }
-        });
+        if(currentUser!=null)
+            dataRef.child("Users").child(currentUser.getUid()).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DataSnapshot> task) {
+                    if(task.isSuccessful())
+                        mainUser = task.getResult().getValue(User.class);
+                }
+            });
     }
 
     //Tạo và bắt sự kiện cho menu

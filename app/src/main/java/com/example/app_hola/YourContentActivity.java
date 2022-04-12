@@ -82,7 +82,9 @@ public class YourContentActivity extends AppCompatActivity {
         btnYourContent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(!user.getUid().equals(ownerID))
+                if(user==null)
+                    Toast.makeText(YourContentActivity.this, "Đăng nhập để xem danh sách bài viết của bạn", Toast.LENGTH_LONG).show();
+                else if(!user.getUid().equals(ownerID))
                 {
                     Intent intent = new Intent(YourContentActivity.this, YourContentActivity.class);
                     intent.putExtra("userID", currentUser.getUserID());
@@ -112,13 +114,14 @@ public class YourContentActivity extends AppCompatActivity {
         dataRef = FirebaseDatabase.getInstance().getReference();
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
-        dataRef.child("Users").child(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DataSnapshot> task) {
-                if(task.isSuccessful())
-                    currentUser = task.getResult().getValue(User.class);
-            }
-        });
+        if(user!=null)
+            dataRef.child("Users").child(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DataSnapshot> task) {
+                    if(task.isSuccessful())
+                        currentUser = task.getResult().getValue(User.class);
+                }
+            });
         adapter = new ContentAdapter(listContent,YourContentActivity.this);
         listViewContent.setAdapter(adapter);
     }
