@@ -267,6 +267,10 @@ public class ProfileActivity extends AppCompatActivity {
                 img.setLink(task.getResult().toString());
                 user.setAvatar(img);
                 dataRef.child("Users").child(user.getUserID()).setValue(user);
+                Query query = dataRef.child("Contents").orderByChild("user/userID").equalTo(user.getUserID());
+                if(query!=null) {
+                    countContentForuser(query, "change");
+                }
                 Toast.makeText(ProfileActivity.this, "Cập nhật thành công", Toast.LENGTH_SHORT).show();
                 dialogLoading.dismiss();
             }

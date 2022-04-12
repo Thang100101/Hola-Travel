@@ -31,6 +31,7 @@ import com.example.app_hola.ObjectForApp.Comment;
 import com.example.app_hola.ObjectForApp.Content;
 import com.example.app_hola.ObjectForApp.ImageContent;
 import com.example.app_hola.ObjectForApp.Like;
+import com.example.app_hola.ObjectForApp.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -171,8 +172,9 @@ public class ReadContent extends AppCompatActivity {
         listLike.clear();
         listCmt.clear();
         txtTitle.setText(content.getTitle());
-        txtUser.setText(content.getUser().getName());
-        Picasso.get().load(content.getUser().getAvatar().getLink()).into(imgAvatar);
+        User user = content.getUser();
+        txtUser.setText(user.getName());
+        Picasso.get().load(user.getAvatar().getLink()).into(imgAvatar);
         txtDate.setText(content.getDate());
         txtMainContent.setText(content.getMainContent());
 
