@@ -11,6 +11,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class Content implements Serializable {
     ImageContent imageContent;
@@ -104,39 +105,9 @@ public class Content implements Serializable {
         return  listContent;
     }
 
-    private static int check;
-    public static void setContent(Content content){
-        check=0;
-        dataRef.child("Contents").push().setValue(content);
-        dataRef.child("Contents").addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                if (check==0) {
-                    check++;
-                    content.setID(snapshot.getKey());
-                }
-            }
 
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
+    public static void setContent(Content content, String id){
+        dataRef.child("Contents").child(id).setValue(content);
     }
 
 }

@@ -16,7 +16,7 @@
         ></item>
     <item
         android:id="@+id/menu_noti"
-        android:title="Message"
+        android:title="Thông báo"
         android:icon="@drawable/icon_bell"
         app:showAsAction="always"
         ></item>

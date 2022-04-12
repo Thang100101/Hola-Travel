@@ -40,7 +40,7 @@ public class CommentAdapter extends BaseAdapter {
 
     @Override
     public Object getItem(int i) {
-        return null;
+        return i;
     }
 
     @Override

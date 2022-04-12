@@ -55,6 +55,7 @@ public class ReadContent extends AppCompatActivity {
     public ImageView imgAvatar;
     private ArrayList<ImageContent> imageContentList;
     private ImageAdapter adapter;
+    CommentAdapter adapterCMT;
     DatabaseReference dataRef;
     FirebaseAuth mAuth;
     FirebaseUser currentUser;
@@ -132,18 +133,29 @@ public class ReadContent extends AppCompatActivity {
         listLike = new ArrayList<>();
         listCmt = new ArrayList<>();
         imgAvatar = (ImageView) findViewById(R.id.img_avatar);
+        if(currentUser==null)
+        {
+            btnLike.setVisibility(View.GONE);
+            btnCmt.setVisibility(View.GONE);
+        }
     }
 
     ///Load thông tin bài viết
     public void getInfOfContent(){
+        Dialog dialogLoading = new Dialog(ReadContent.this);
+        dialogLoading.setContentView(R.layout.dialog_loading);
+        dialogLoading.show();
+        dialogLoading.setCancelable(false);
+        listLike.clear();
+        listCmt.clear();
         txtTitle.setText(content.getTitle());
-//        txtUser.setText(content.getUser().getName());
-//        Picasso.get().load(content.getUser().getAvatar()).into(imgAvatar);
+        txtUser.setText(content.getUser().getName());
+        Picasso.get().load(content.getUser().getAvatar()).into(imgAvatar);
         txtDate.setText(content.getDate());
         txtMainContent.setText(content.getMainContent());
 
         //Load lượt like, cmt
-        Query queryLike = dataRef.child("Likes").equalTo(content.getID(),"contentID");
+        Query queryLike = dataRef.child("Likes").orderByChild("contentID").equalTo(content.getID());
         queryLike.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
@@ -170,7 +182,7 @@ public class ReadContent extends AppCompatActivity {
 
             }
         });
-        Query queryCmt = dataRef.child("Comments").equalTo(content.getID(), "contentID");
+        Query queryCmt = dataRef.child("Comments").orderByChild("contentID").equalTo(content.getID());
         queryCmt.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
@@ -198,17 +210,23 @@ public class ReadContent extends AppCompatActivity {
 
             }
         });
-
-        txtLikeCount.setText(listLike.size()+"");
-        txtCmtCount.setText(listCmt.size()+"");
-        for(int i = 0; i< listLike.size(); i++)
-        {
-            if(listLike.get(i).getUserID() == currentUser.getUid())
-            {
-                btnLike.setBackgroundResource(R.drawable.icon_like);
-                like = listLike.get(i);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                txtLikeCount.setText(listLike.size()+"");
+                txtCmtCount.setText(listCmt.size()+"");
+                for(int i = 0; i< listLike.size(); i++)
+                {
+                    if(listLike.get(i).getUserID() == currentUser.getUid())
+                    {
+                        btnLike.setBackgroundResource(R.drawable.icon_like);
+                        like = listLike.get(i);
+                    }
+                }
+                dialogLoading.dismiss();
             }
-        }
+        },2000);
+
 
     }
 
@@ -248,8 +266,9 @@ public class ReadContent extends AppCompatActivity {
         ListView listViewComment = (ListView) dialog.findViewById(R.id.list_cmt);
         EditText editCmt = (EditText) dialog.findViewById(R.id.edit_cmt);
         Button btnSend = (Button) dialog.findViewById(R.id.btn_send);
-        CommentAdapter adapter = new CommentAdapter(listCmt,ReadContent.this);
-        listViewComment.setAdapter(adapter);
+        ArrayList<Comment> listCmtDialog = listCmt;
+        adapterCMT = new CommentAdapter(listCmtDialog,ReadContent.this);
+        listViewComment.setAdapter(adapterCMT);
         btnSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -261,14 +280,19 @@ public class ReadContent extends AppCompatActivity {
                     comment.setDate(simpleDateFormat.format(calendar.getTime()));
                     comment.setUserID(currentUser.getUid());
                     comment.setMainContent(editCmt.getText().toString());
-                    dataRef.child("Comments").push().setValue(comment);
-                    listCmt.add(comment);
-                    adapter.notifyDataSetChanged();
+                    listCmtDialog.add(comment);
+                    adapterCMT.notifyDataSetChanged();
                     editCmt.setText("");
+                    dataRef.child("Comments").push().setValue(comment);
                 }
             }
         });
-
+        dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialogInterface) {
+                getInfOfContent();
+            }
+        });
 
     }
 

@@ -1,9 +1,11 @@
 package com.example.app_hola;
 
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -32,15 +34,16 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class HomeActivity extends AppCompatActivity  {
     public static final String EXTRA_MESSAGE="com.example.app_hola.MESSAGE";
     HorizontalScrollView hScrollView;
-    String txtUser,txtTitle,txtMaincontent,txtDate,txtLink;
     String[] list;
-    Button btnUpload;
+    Button btnUpload, btnHome, btnYourReview;
     ArrayList<Content> listContent = new ArrayList<Content>();
     ListView listViewContent;
     ActionBar actionBar;
@@ -48,6 +51,9 @@ public class HomeActivity extends AppCompatActivity  {
     FirebaseAuth mAuth;
     FirebaseUser currentUser;
     DatabaseReference dataRef;
+    ContentAdapter adapter;
+    int  ALL = 0, TOP10 = 1, FOOD = 2, HOTEL = 3, REVIEW = 4, TIP = 5, EXP = 6;
+
     boolean search =false;
 
     @Override
@@ -80,46 +86,46 @@ public class HomeActivity extends AppCompatActivity  {
         btnUpload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(HomeActivity.this, CreateReviewActivity.class);
-                startActivity(intent);
+                if(currentUser==null)
+                    Toast.makeText(HomeActivity.this, "Đăng nhập để đăng tải bài viết", Toast.LENGTH_LONG).show();
+                else {
+                    Intent intent = new Intent(HomeActivity.this, CreateReviewActivity.class);
+                    startActivity(intent);
+                }
             }
         });
-        Content content = new Content();
-        content.setTitle("Test");
-        content.setDate("11/04/2022");
-        ImageContent img = new ImageContent();
-        img.setLink("https://firebasestorage.googleapis.com/v0/b/hola-travel.appspot.com" +
-                "/o/avatar.png?alt=media&token=7733012b-0e01-4bcf-8e7b-cad46b2ef22c");
-        content.setImageContent(img);
-        content.setMainContent("sdfowbroinwoerwer" +
-                "werjkwberjbkwer" +
-                "werwebrowernwer" +
-                "werjbewrkberwer" +
-                "wrkjwebrjkwber" +
-                "wrkwebrkwerbkjwberwelwerlwkmmmmmmmmmmmmmmm" +
-                "mmmmmmmmmmmmmmmmmmmmmmm" +
-                "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww" +
-                "mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm");
-        ArrayList<ImageContent> listImg = new ArrayList<>();
-        listImg.add(new ImageContent("sfsd12asdasweqq", "https://firebasestorage.googlea" +
-                "pis.com/v0/b/hola-travel.appspot.com/o/avatar.png?alt=media&to" +
-                "ken=7733012b-0e01-4bcf-8e7b-cad46b2ef22c","1"));
-        content.setListImage(listImg);
-        listContent.add(content);
-        ContentAdapter adapter = new ContentAdapter(listContent, this);
-        listViewContent.setAdapter(adapter);
+        btnYourReview.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(currentUser==null)
+                    Toast.makeText(HomeActivity.this, "Đăng nhập để xem danh sách bài viết của bạn", Toast.LENGTH_LONG).show();
+                else
+                {
+
+                }
+            }
+        });
+        btnHome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Filter(ALL);
+            }
+        });
 
     }
 
-
     ///Lấy danh sách content
     private void getInfOfContent(){
+        Dialog dialogLoading = new Dialog(HomeActivity.this);
+        dialogLoading.setContentView(R.layout.dialog_loading);
+        dialogLoading.show();
+        dialogLoading.setCancelable(false);
         dataRef= FirebaseDatabase.getInstance().getReference("Contents");
         dataRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-//                listContent.add(snapshot.getValue(Content.class));
-//                contentApdapter.notifyDataSetChanged();
+                listContent.add(snapshot.getValue(Content.class));
+                adapter.notifyDataSetChanged();
             }
 
             @Override
@@ -142,16 +148,27 @@ public class HomeActivity extends AppCompatActivity  {
 
             }
         });
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                dialogLoading.dismiss();
+            }
+        },2000);
+
     }
 
     //Ánh xạ
     private void Mapping(){
         hScrollView = (HorizontalScrollView) findViewById(R.id.hScrollView);
         btnUpload = (Button) findViewById(R.id.btn_upload);
+        btnHome = (Button) findViewById(R.id.btn_home);
+        btnYourReview = (Button) findViewById(R.id.btn_your_review);
         listViewContent = (ListView) findViewById(R.id.listContent);
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
         listContent = new ArrayList<>();
+        adapter = new ContentAdapter(listContent, this);
+        listViewContent.setAdapter(adapter);
     }
 
     //Tạo và bắt sự kiện cho menu
@@ -216,7 +233,7 @@ public class HomeActivity extends AppCompatActivity  {
         return super.onOptionsItemSelected(item);
     }
 
-    private void Filter(){
+    private void Filter(int TYPE){
 
     }
 

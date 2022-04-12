@@ -52,7 +52,8 @@ public class ContentAdapter extends BaseAdapter {
 
         txtDate.setText(content.getDate());
         txtContent.setText(content.getTitle());
-        Picasso.get().load(content.getImageContent().getLink()).into(imgContent);
+        if(content.getImageContent()!=null)
+            Picasso.get().load(content.getImageContent().getLink()).into(imgContent);
         animation = AnimationUtils.loadAnimation(context,R.anim.alpha_type_2);
         view.startAnimation(animation);
 
