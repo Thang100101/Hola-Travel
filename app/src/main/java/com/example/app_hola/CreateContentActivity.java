@@ -12,14 +12,12 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.HorizontalScrollView;
@@ -47,7 +45,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-public class CreateReviewActivity extends AppCompatActivity implements View.OnClickListener{
+public class CreateContentActivity extends AppCompatActivity implements View.OnClickListener{
 
     Content content;
     EditText editTitle, editContent;
@@ -93,7 +91,7 @@ public class CreateReviewActivity extends AppCompatActivity implements View.OnCl
                     intent.setType("image/*");
                     startActivityForResult(intent, REQUEST_CODE_TAKE_IMAGE);
                 }else
-                    Toast.makeText(CreateReviewActivity.this, "Tối đa 5 ảnh", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CreateContentActivity.this, "Tối đa 5 ảnh", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -155,7 +153,7 @@ public class CreateReviewActivity extends AppCompatActivity implements View.OnCl
                         && editContent.getText().toString().replace(" ","").equals("")) && haveSave==false)
                     CreateDialog();
                 else
-                    CreateReviewActivity.this.finish();
+                    CreateContentActivity.this.finish();
                 break;
             case R.id.menu_save:
                 editPrefer.putString("title",editTitle.getText().toString());
@@ -175,7 +173,7 @@ public class CreateReviewActivity extends AppCompatActivity implements View.OnCl
                 && editContent.getText().toString().replace(" ","").equals(""))  && haveSave==false)
             CreateDialog();
         else {
-            CreateReviewActivity.this.finish();
+            CreateContentActivity.this.finish();
         }
 //        super.onBackPressed();
     }
@@ -183,7 +181,7 @@ public class CreateReviewActivity extends AppCompatActivity implements View.OnCl
     //Tạo dialog thông báo
     private void CreateDialog()
     {
-        AlertDialog.Builder dialog = new AlertDialog.Builder(CreateReviewActivity.this);
+        AlertDialog.Builder dialog = new AlertDialog.Builder(CreateContentActivity.this);
         dialog.setTitle("Thông báo!!");
         dialog.setMessage("Bài viết của bạn chưa được lưu bạn có chắc chắn muốn thoát?");
         dialog.setPositiveButton("Có", new DialogInterface.OnClickListener() {
@@ -192,7 +190,7 @@ public class CreateReviewActivity extends AppCompatActivity implements View.OnCl
                 editPrefer.remove("title");
                 editPrefer.remove("content");
                 editPrefer.commit();
-                CreateReviewActivity.this.finish();
+                CreateContentActivity.this.finish();
             }
         });
         dialog.setNegativeButton("Không", new DialogInterface.OnClickListener() {
@@ -241,7 +239,7 @@ public class CreateReviewActivity extends AppCompatActivity implements View.OnCl
          && editContent.getText().toString().length()>= 500 && imgCount>=1) {
             Calendar calendar = Calendar.getInstance();
             String id = calendar.getTimeInMillis()+currentUser.getUid();
-            Dialog dialogLoading = new Dialog(CreateReviewActivity.this);
+            Dialog dialogLoading = new Dialog(CreateContentActivity.this);
             dialogLoading.setContentView(R.layout.dialog_loading);
             dialogLoading.show();
             dialogLoading.setCancelable(false);
@@ -278,11 +276,11 @@ public class CreateReviewActivity extends AppCompatActivity implements View.OnCl
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
                                         if (task.isSuccessful()) {
-                                            Toast.makeText(CreateReviewActivity.this, "Đăng bài thành công", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(CreateContentActivity.this, "Đăng bài thành công", Toast.LENGTH_SHORT).show();
                                             dialogLoading.dismiss();
-                                            CreateReviewActivity.this.finish();
+                                            CreateContentActivity.this.finish();
                                         } else
-                                            Toast.makeText(CreateReviewActivity.this, "Lỗi rồi", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(CreateContentActivity.this, "Lỗi rồi", Toast.LENGTH_SHORT).show();
                                     }
                                 });
                             }

@@ -111,6 +111,28 @@ public class ReadContent extends AppCompatActivity {
             }
         });
 
+        imgAvatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(ReadContent.this, YourContentActivity.class);
+                intent.putExtra("userID", content.getUser().getUserID());
+                intent.putExtra("userName", content.getUser().getName());
+                startActivity(intent);
+                finish();
+            }
+        });
+
+        txtUser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(ReadContent.this, YourContentActivity.class);
+                intent.putExtra("userID", content.getUser().getUserID());
+                intent.putExtra("userName", content.getUser().getName());
+                startActivity(intent);
+                finish();
+            }
+        });
+
     }
 
     ///Ánh xạ

@@ -1,9 +1,14 @@
 package com.example.app_hola;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.KeyEvent;
@@ -14,16 +19,9 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.HorizontalScrollView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.app_hola.ObjectForApp.Content;
 import com.example.app_hola.ObjectForApp.User;
@@ -36,75 +34,39 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 
 import java.util.ArrayList;
 
-public class HomeActivity extends AppCompatActivity  {
-    public static final String EXTRA_MESSAGE="com.example.app_hola.MESSAGE";
-    HorizontalScrollView hScrollView;
-    String[] list;
-    Button btnUpload, btnHome, btnYourReview;
-    ArrayList<Content> listContent = new ArrayList<Content>();
+public class YourContentActivity extends AppCompatActivity {
+    Button btnUpload, btnHome, btnYourContent;
     ListView listViewContent;
-    ActionBar actionBar;
-    SharedPreferences prefer;
-    FirebaseAuth mAuth;
-    FirebaseUser currentUser;
     DatabaseReference dataRef;
+    FirebaseAuth mAuth;
+    FirebaseUser user;
+    User currentUser;
+    String ownerID, ownerName;
+    ArrayList<Content> listContent = new ArrayList<>();
     ContentAdapter adapter;
-    User mainUser;
-    int  ALL = 0, TOP10 = 1, FOOD = 2, HOTEL = 3, REVIEW = 4, TIP = 5, EXP = 6;
-
-    boolean search =false;
-
+    ActionBar actionBar;
+    boolean search=false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
-
+        setContentView(R.layout.activity_your_content);
         Mapping();
+        Intent intent = getIntent();
+        ownerID = intent.getStringExtra("userID");
+        ownerName = intent.getStringExtra("userName");
+        getListContent();
         customActionBar();
-        getInfOfContent();
-
-        btnUpload.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                Toast.makeText(HomeActivity.this, "Đăng bài", Toast.LENGTH_SHORT).show();
-                return false;
-            }
-        });
-
-        listViewContent.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Content content = listContent.get(i);
-                Intent intent = new Intent(HomeActivity.this, ReadContent.class);
-                intent.putExtra("content", content);
-                startActivity(intent);
-            }
-        });
-
         btnUpload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(currentUser==null)
-                    Toast.makeText(HomeActivity.this, "Đăng nhập để đăng tải bài viết", Toast.LENGTH_LONG).show();
+                    Toast.makeText(YourContentActivity.this, "Đăng nhập để đăng tải bài viết", Toast.LENGTH_LONG).show();
                 else {
-                    Intent intent = new Intent(HomeActivity.this, CreateContentActivity.class);
-                    startActivity(intent);
-                }
-            }
-        });
-        btnYourReview.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(currentUser==null)
-                    Toast.makeText(HomeActivity.this, "Đăng nhập để xem danh sách bài viết của bạn", Toast.LENGTH_LONG).show();
-                else
-                {
-                    Intent intent = new Intent(HomeActivity.this, YourContentActivity.class);
-                    intent.putExtra("userID", currentUser.getUid());
-                    intent.putExtra("userName", mainUser.getName());
+                    Intent intent = new Intent(YourContentActivity.this, CreateContentActivity.class);
                     startActivity(intent);
                 }
             }
@@ -112,21 +74,62 @@ public class HomeActivity extends AppCompatActivity  {
         btnHome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                listContent.clear();
-                getInfOfContent();
+                Intent home = new Intent(YourContentActivity.this, HomeActivity.class);
+                startActivity(home);
+                finish();
             }
         });
+        btnYourContent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(!user.getUid().equals(ownerID))
+                {
+                    Intent intent = new Intent(YourContentActivity.this, YourContentActivity.class);
+                    intent.putExtra("userID", currentUser.getUserID());
+                    intent.putExtra("userName",currentUser.getName());
+                    startActivity(intent);
+                }
 
+            }
+        });
+        listViewContent.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Content content = listContent.get(i);
+                Intent intent = new Intent(YourContentActivity.this, ReadContent.class);
+                intent.putExtra("content", content);
+                startActivity(intent);
+            }
+        });
     }
 
-    ///Lấy danh sách content
-    private void getInfOfContent(){
-        Dialog dialogLoading = new Dialog(HomeActivity.this);
+
+    private void Mapping() {
+        btnUpload = (Button) findViewById(R.id.btn_upload);
+        btnHome = (Button) findViewById(R.id.btn_home);
+        btnYourContent = (Button) findViewById(R.id.btn_your_review);
+        listViewContent = (ListView) findViewById(R.id.listContent);
+        dataRef = FirebaseDatabase.getInstance().getReference();
+        mAuth = FirebaseAuth.getInstance();
+        user = mAuth.getCurrentUser();
+        dataRef.child("Users").child(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                if(task.isSuccessful())
+                    currentUser = task.getResult().getValue(User.class);
+            }
+        });
+        adapter = new ContentAdapter(listContent,YourContentActivity.this);
+        listViewContent.setAdapter(adapter);
+    }
+
+    private void getListContent() {
+        Dialog dialogLoading = new Dialog(YourContentActivity.this);
+        dialogLoading.setCancelable(false);
         dialogLoading.setContentView(R.layout.dialog_loading);
         dialogLoading.show();
-        dialogLoading.setCancelable(false);
-        dataRef= FirebaseDatabase.getInstance().getReference("Contents");
-        dataRef.addChildEventListener(new ChildEventListener() {
+        Query query = dataRef.child("Contents").orderByChild("user/userID").equalTo(ownerID);
+        query.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                 listContent.add(snapshot.getValue(Content.class));
@@ -158,48 +161,28 @@ public class HomeActivity extends AppCompatActivity  {
             public void run() {
                 dialogLoading.dismiss();
             }
-        },2000);
-
+        },1000);
     }
-
-    //Ánh xạ
-    private void Mapping(){
-        hScrollView = (HorizontalScrollView) findViewById(R.id.hScrollView);
-        btnUpload = (Button) findViewById(R.id.btn_upload);
-        btnHome = (Button) findViewById(R.id.btn_home);
-        btnYourReview = (Button) findViewById(R.id.btn_your_review);
-        listViewContent = (ListView) findViewById(R.id.listContent);
-        mAuth = FirebaseAuth.getInstance();
-        currentUser = mAuth.getCurrentUser();
-        listContent = new ArrayList<>();
-        adapter = new ContentAdapter(listContent, this);
-        listViewContent.setAdapter(adapter);
-        dataRef = FirebaseDatabase.getInstance().getReference();
-        dataRef.child("Users").child(currentUser.getUid()).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DataSnapshot> task) {
-                if(task.isSuccessful())
-                    mainUser = task.getResult().getValue(User.class);
-            }
-        });
+    private void customActionBar()
+    {
+        actionBar = getSupportActionBar();
+        actionBar.setBackgroundDrawable(getDrawable(R.drawable.background_actionbar));
+        actionBar.setTitle("Bài viết của "+ownerName);
     }
-
-    //Tạo và bắt sự kiện cho menu
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if(currentUser!=null)
+        if(user!=null)
             getMenuInflater().inflate(R.menu.main_menu,menu);
         else
             getMenuInflater().inflate(R.menu.main_menu_without_signin,menu);
         return super.onCreateOptionsMenu(menu);
     }
-
+    //Bắt sự kiện click trên menu
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId())
         {
             case R.id.menu_profile:
-                Intent profile = new Intent(HomeActivity.this, ProfileActivity.class);
+                Intent profile = new Intent(YourContentActivity.this, ProfileActivity.class);
                 startActivity(profile);
                 break;
             case R.id.menu_search:
@@ -211,7 +194,7 @@ public class HomeActivity extends AppCompatActivity  {
                         public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
                             if(i == EditorInfo.IME_ACTION_SEARCH)
                             {
-                                Toast.makeText(HomeActivity.this, "Search!!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(YourContentActivity.this, "Search!!", Toast.LENGTH_SHORT).show();
                             }
                             return false;
                         }
@@ -245,24 +228,7 @@ public class HomeActivity extends AppCompatActivity  {
         }
         return super.onOptionsItemSelected(item);
     }
-
-    private void Filter(int TYPE){
-
-    }
-
-    //Thay đổi UI của actionBar
-    private void customActionBar()
-    {
-        actionBar = getSupportActionBar();
-        actionBar.setBackgroundDrawable(getDrawable(R.drawable.background_actionbar));
-        actionBar.setTitle("");
-        actionBar.setLogo(R.drawable.logo_3);
-        actionBar.setDisplayShowHomeEnabled(true);
-        actionBar.setDisplayUseLogoEnabled(true);
-    }
-
-    //Thay đổi trạng thái search/nosearch
-
+    //Thay đổi thanh tìm kiếm
     private void searchActionBar(boolean haveSearch)
     {
         if(haveSearch)
@@ -281,7 +247,6 @@ public class HomeActivity extends AppCompatActivity  {
             search=false;
         }
     }
-
     //Dialog thoát
     private void acceptOut()
     {
@@ -308,6 +273,4 @@ public class HomeActivity extends AppCompatActivity  {
         });
         dialog.show();
     }
-
-
 }
