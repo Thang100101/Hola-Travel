@@ -34,12 +34,14 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -200,18 +202,18 @@ public class ProfileActivity extends AppCompatActivity {
                 showDialogEdit("birth");
             }
         });
+        btnEditPass.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showDialogEdit("password");
+            }
+        });
         imgAvatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(Intent.ACTION_PICK);
                 intent.setType("image/*");
                 startActivityForResult(intent, REQUEST_CODE_TAKE_IMAGE);
-            }
-        });
-        btnEditPass.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
             }
         });
     }
@@ -367,6 +369,50 @@ public class ProfileActivity extends AppCompatActivity {
                     }
                     else
                         dialog.dismiss();
+                }
+            });
+        }
+        else if (type.equals("password")){
+            Dialog dialog = new Dialog(ProfileActivity.this);
+            dialog.setContentView(R.layout.dialog_edit_password);
+            Button btnSubmit = (Button) dialog.findViewById(R.id.btn_submit);
+            EditText editOldPass = (EditText) dialog.findViewById(R.id.edit_old_password);
+            EditText editNewPass = (EditText) dialog.findViewById(R.id.edit_new_password);
+            EditText editConfirm = (EditText) dialog.findViewById(R.id.edit_confirm_password);
+
+            String UID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+            String oldPassword = user.getPassword();
+
+            dialog.show();
+
+            btnSubmit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (!editOldPass.getText().toString().equals(oldPassword)) {
+                        Toast.makeText(ProfileActivity.this,
+                                "Sai mật khẩu hiện tại!", Toast.LENGTH_LONG).show();
+                    }else if (!editNewPass.getText().toString().equals(editConfirm.getText().toString())) {
+                        Toast.makeText(ProfileActivity.this,
+                                "Xác nhận mật khẩu không chính xác!", Toast.LENGTH_LONG).show();
+                    }else if (oldPassword.equals(editNewPass.getText().toString())){
+                        Toast.makeText(ProfileActivity.this,
+                                "Mật khẩu mới phải khác mật khẩu hiện tại!", Toast.LENGTH_LONG).show();
+                    }else if (editNewPass.getText().toString().length() < 8){
+                        Toast.makeText(ProfileActivity.this,
+                                "Mật khẩu phải đủ 8 kí tự!",Toast.LENGTH_LONG).show();
+                    }else {
+                        mAuth.getCurrentUser().updatePassword(editNewPass.getText().toString());
+                        user.setPassword(editNewPass.getText().toString());
+                        dataRef.child("Users").child(user.getUserID()).setValue(user);
+                        Query query = dataRef.child("Contents").orderByChild("user/userID").equalTo(user.getUserID());
+                        if(query!=null) {
+                            countContentForuser(query, "change");
+                        }
+                        dialog.dismiss();
+                        txtPassword.setText(user.getPassword());
+                        Toast.makeText(ProfileActivity.this,
+                                "Đổi mật khẩu thành công", Toast.LENGTH_LONG).show();
+                    }
                 }
             });
         }
