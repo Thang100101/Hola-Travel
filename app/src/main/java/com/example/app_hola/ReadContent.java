@@ -64,6 +64,7 @@ public class ReadContent extends AppCompatActivity {
     FirebaseUser currentUser;
     Content content;
     ArrayList<Comment> listCmt;
+    ArrayList<Like> listLike;
     Like like;
     Query queryLike,queryCMT;
     private Handler slideHandler=new Handler();
@@ -85,25 +86,27 @@ public class ReadContent extends AppCompatActivity {
             public void onClick(View view) {
                 if(like!=null)
                 {
-                    content.getLikes().remove(like);
+                    listLike.remove(like);
                     like=null;
+                    content.setListLike(listLike);
                     dataRef.child("Contents").child(content.getID()).setValue(content).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             btnLike.setBackgroundResource(R.drawable.icon_unlike);
-                            txtLikeCount.setText(content.getLikes().size()+"");
+                            txtLikeCount.setText(listLike.size()+"");
                         }
                     });
 
                 }else
                 {
                     like = new Like(content.getID()+currentUser.getUid(),currentUser.getUid(), content.getID());
-                    content.getLikes().add(like);
+                    listLike.add(like);
+                    content.setListLike(listLike);
                     dataRef.child("Contents").child(content.getID()).setValue(content).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             btnLike.setBackgroundResource(R.drawable.icon_like);
-                            txtLikeCount.setText(content.getLikes().size()+"");
+                            txtLikeCount.setText(listLike.size()+"");
                         }
                     });
                 }
@@ -160,6 +163,7 @@ public class ReadContent extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
         listCmt = new ArrayList<>();
+        listLike = content.getListLike();
         adapterCMT = new CommentAdapter(listCmt,ReadContent.this);
         imgAvatar = (ImageView) findViewById(R.id.img_avatar);
         queryCMT = dataRef.child("Comments").orderByChild("contentID").equalTo(content.getID());
@@ -198,14 +202,14 @@ public class ReadContent extends AppCompatActivity {
     //Load lượt like, cmt
     private void loadCountLC()
     {
-        txtLikeCount.setText(content.getLikes().size()+"");
+        txtLikeCount.setText(listLike.size()+"");
         txtCmtCount.setText(listCmt.size()+"");
-        for(int i = 0; i< content.getLikes().size(); i++)
+        for(int i = 0; i< listLike.size(); i++)
         {
-            if(content.getLikes().get(i).getUserID().equals(currentUser.getUid()))
+            if(listLike.get(i).getUserID().equals(currentUser.getUid()))
             {
                 btnLike.setBackgroundResource(R.drawable.icon_like);
-                like = content.getLikes().get(i);
+                like = listLike.get(i);
             }
         }
     }
@@ -213,33 +217,6 @@ public class ReadContent extends AppCompatActivity {
     //Load danh sách like, cmt
     private void loadLikeCmt()
     {
-//        queryLike.addChildEventListener(new ChildEventListener() {
-//            @Override
-//            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-//                if(snapshot.getValue(Like.class)!=null)
-//                    listLike.add(snapshot.getValue(Like.class));
-//
-//            }
-//            @Override
-//            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-//
-//            }
-//
-//            @Override
-//            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-//
-//            }
-//
-//            @Override
-//            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//
-//            }
-//        });
         queryCMT.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {

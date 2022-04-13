@@ -11,7 +11,7 @@ public class Content implements Serializable {
     String mainContent, Title, Location, ID;
     User user;
     String date;
-    ArrayList<Like> Likes = new ArrayList<Like>();
+    ArrayList<Like> listLike = new ArrayList<Like>();
     ArrayList<ImageContent> listImage = new ArrayList<ImageContent>();
     static DatabaseReference dataRef;
     public Content() {
@@ -58,8 +58,8 @@ public class Content implements Serializable {
         return listImage;
     }
 
-    public ArrayList<Like> getLikes() {
-        return Likes;
+    public ArrayList<Like> getListLike() {
+        return listLike;
     }
     ////SET
 
@@ -96,8 +96,8 @@ public class Content implements Serializable {
         this.date = date;
     }
 
-    public void setLikes(ArrayList<Like> likes) {
-        Likes = likes;
+    public void setListLike(ArrayList<Like> listLike) {
+        this.listLike = listLike;
     }
 
     public ArrayList<Content> getAllContent(){
