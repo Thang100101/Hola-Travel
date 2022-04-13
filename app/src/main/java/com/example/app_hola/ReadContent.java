@@ -304,7 +304,6 @@ public class ReadContent extends AppCompatActivity {
                     comment.setDate(simpleDateFormat.format(calendar.getTime()));
                     comment.setUserID(currentUser.getUid());
                     comment.setMainContent(editCmt.getText().toString());
-                    listCmtDialog.add(comment);
                     adapterCMT.notifyDataSetChanged();
                     editCmt.setText("");
                     dataRef.child("Comments").push().setValue(comment);
