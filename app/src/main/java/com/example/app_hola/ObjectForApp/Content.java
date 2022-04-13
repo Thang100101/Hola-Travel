@@ -1,23 +1,17 @@
 package com.example.app_hola.ObjectForApp;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-
-import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Calendar;
 
 public class Content implements Serializable {
     ImageContent imageContent;
     String mainContent, Title, Location, ID;
     User user;
     String date;
+    ArrayList<Like> Likes = new ArrayList<Like>();
     ArrayList<ImageContent> listImage = new ArrayList<ImageContent>();
     static DatabaseReference dataRef;
     public Content() {
@@ -60,9 +54,12 @@ public class Content implements Serializable {
     public User getUser() { return user; }
     public String getLocation() { return Location; }
     public String getID() { return ID; }
-
     public ArrayList<ImageContent> getListImage() {
         return listImage;
+    }
+
+    public ArrayList<Like> getLikes() {
+        return Likes;
     }
     ////SET
 
@@ -97,6 +94,10 @@ public class Content implements Serializable {
 
     public void setDate(String date) {
         this.date = date;
+    }
+
+    public void setLikes(ArrayList<Like> likes) {
+        Likes = likes;
     }
 
     public ArrayList<Content> getAllContent(){

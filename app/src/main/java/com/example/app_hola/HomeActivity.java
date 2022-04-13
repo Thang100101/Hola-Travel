@@ -26,6 +26,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.app_hola.ObjectForApp.Content;
+import com.example.app_hola.ObjectForApp.Like;
 import com.example.app_hola.ObjectForApp.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -53,7 +54,7 @@ public class HomeActivity extends AppCompatActivity  {
     DatabaseReference dataRef;
     ContentAdapter adapter;
     User mainUser;
-    int  ALL = 0, TOP10 = 1, FOOD = 2, HOTEL = 3, REVIEW = 4, TIP = 5, EXP = 6;
+    final int ALL = 0, TOP10 = 1, FOOD = 2, HOTEL = 3, REVIEW = 4, TIP = 5, EXP = 6;
 
     boolean search =false;
 
@@ -112,8 +113,7 @@ public class HomeActivity extends AppCompatActivity  {
         btnHome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                listContent.clear();
-                getInfOfContent();
+                Filter(ALL);
             }
         });
 
@@ -248,8 +248,33 @@ public class HomeActivity extends AppCompatActivity  {
     }
 
     private void Filter(int TYPE){
+        switch (TYPE)
+        {
+            case ALL:
+                listContent.clear();
+                getInfOfContent();
+                break;
+            case TOP10:
+                break;
+            case TIP:
+                listContent.clear();
 
+                break;
+            case EXP:
+                listContent.clear();
+
+                break;
+            case HOTEL:
+                listContent.clear();
+
+                break;
+            case FOOD:
+                break;
+            case REVIEW:
+                break;
+        }
     }
+
 
     //Thay đổi UI của actionBar
     private void customActionBar()

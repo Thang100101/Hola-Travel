@@ -1,6 +1,8 @@
 package com.example.app_hola.ObjectForApp;
 
-public class Like {
+import java.io.Serializable;
+
+public class Like implements Serializable {
     String ID, userID, contentID;
 
     public Like(String ID, String userID, String contentID) {

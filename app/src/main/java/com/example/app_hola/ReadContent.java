@@ -32,6 +32,8 @@ import com.example.app_hola.ObjectForApp.Content;
 import com.example.app_hola.ObjectForApp.ImageContent;
 import com.example.app_hola.ObjectForApp.Like;
 import com.example.app_hola.ObjectForApp.User;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -61,7 +63,6 @@ public class ReadContent extends AppCompatActivity {
     FirebaseAuth mAuth;
     FirebaseUser currentUser;
     Content content;
-    ArrayList<Like> listLike;
     ArrayList<Comment> listCmt;
     Like like;
     Query queryLike,queryCMT;
@@ -84,22 +85,27 @@ public class ReadContent extends AppCompatActivity {
             public void onClick(View view) {
                 if(like!=null)
                 {
-                    dataRef.child("Likes").child(like.getID()).removeValue(new DatabaseReference.CompletionListener() {
+                    content.getLikes().remove(like);
+                    like=null;
+                    dataRef.child("Contents").child(content.getID()).setValue(content).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
-                        public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
+                        public void onComplete(@NonNull Task<Void> task) {
                             btnLike.setBackgroundResource(R.drawable.icon_unlike);
-                            listLike.remove(like);
-                            like=null;
-                            txtLikeCount.setText(listLike.size()+"");
+                            txtLikeCount.setText(content.getLikes().size()+"");
                         }
                     });
+
                 }else
                 {
                     like = new Like(content.getID()+currentUser.getUid(),currentUser.getUid(), content.getID());
-                    dataRef.child("Likes").child(like.getID()).setValue(like);
-                    btnLike.setBackgroundResource(R.drawable.icon_like);
-                    listLike.add(like);
-                    txtLikeCount.setText(listLike.size()+"");
+                    content.getLikes().add(like);
+                    dataRef.child("Contents").child(content.getID()).setValue(content).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            btnLike.setBackgroundResource(R.drawable.icon_like);
+                            txtLikeCount.setText(content.getLikes().size()+"");
+                        }
+                    });
                 }
             }
         });
@@ -153,12 +159,11 @@ public class ReadContent extends AppCompatActivity {
         txtCmtCount = (TextView) findViewById(R.id.txt_cmt_count);
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
-        listLike = new ArrayList<>();
         listCmt = new ArrayList<>();
         adapterCMT = new CommentAdapter(listCmt,ReadContent.this);
         imgAvatar = (ImageView) findViewById(R.id.img_avatar);
         queryCMT = dataRef.child("Comments").orderByChild("contentID").equalTo(content.getID());
-        queryLike = dataRef.child("Likes").orderByChild("contentID").equalTo(content.getID());
+//        queryLike = dataRef.child("Contents").orderByChild("Likes/").equalTo(content.getID());
         if(currentUser==null)
         {
             btnLike.setVisibility(View.GONE);
@@ -172,7 +177,6 @@ public class ReadContent extends AppCompatActivity {
         dialogLoading.setContentView(R.layout.dialog_loading);
         dialogLoading.show();
         dialogLoading.setCancelable(false);
-        listLike.clear();
         listCmt.clear();
         txtTitle.setText(content.getTitle());
         User user = content.getUser();
@@ -194,14 +198,14 @@ public class ReadContent extends AppCompatActivity {
     //Load lượt like, cmt
     private void loadCountLC()
     {
-        txtLikeCount.setText(listLike.size()+"");
+        txtLikeCount.setText(content.getLikes().size()+"");
         txtCmtCount.setText(listCmt.size()+"");
-        for(int i = 0; i< listLike.size(); i++)
+        for(int i = 0; i< content.getLikes().size(); i++)
         {
-            if(listLike.get(i).getUserID() == currentUser.getUid())
+            if(content.getLikes().get(i).getUserID().equals(currentUser.getUid()))
             {
                 btnLike.setBackgroundResource(R.drawable.icon_like);
-                like = listLike.get(i);
+                like = content.getLikes().get(i);
             }
         }
     }
@@ -209,33 +213,33 @@ public class ReadContent extends AppCompatActivity {
     //Load danh sách like, cmt
     private void loadLikeCmt()
     {
-        queryLike.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                if(snapshot.getValue(Like.class)!=null)
-                    listLike.add(snapshot.getValue(Like.class));
-
-            }
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
+//        queryLike.addChildEventListener(new ChildEventListener() {
+//            @Override
+//            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+//                if(snapshot.getValue(Like.class)!=null)
+//                    listLike.add(snapshot.getValue(Like.class));
+//
+//            }
+//            @Override
+//            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+//
+//            }
+//
+//            @Override
+//            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+//
+//            }
+//
+//            @Override
+//            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//
+//            }
+//        });
         queryCMT.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
