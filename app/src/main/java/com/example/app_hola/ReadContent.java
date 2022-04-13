@@ -64,6 +64,7 @@ public class ReadContent extends AppCompatActivity {
     ArrayList<Like> listLike;
     ArrayList<Comment> listCmt;
     Like like;
+    Query queryLike,queryCMT;
     private Handler slideHandler=new Handler();
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -77,7 +78,6 @@ public class ReadContent extends AppCompatActivity {
         viewPager2.setAdapter(adapter);
         getImageContent();
         getInfOfContent();
-
         //Sự kiện click nút like
         btnLike.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -155,7 +155,10 @@ public class ReadContent extends AppCompatActivity {
         currentUser = mAuth.getCurrentUser();
         listLike = new ArrayList<>();
         listCmt = new ArrayList<>();
+        adapterCMT = new CommentAdapter(listCmt,ReadContent.this);
         imgAvatar = (ImageView) findViewById(R.id.img_avatar);
+        queryCMT = dataRef.child("Comments").orderByChild("contentID").equalTo(content.getID());
+        queryLike = dataRef.child("Likes").orderByChild("contentID").equalTo(content.getID());
         if(currentUser==null)
         {
             btnLike.setVisibility(View.GONE);
@@ -179,12 +182,39 @@ public class ReadContent extends AppCompatActivity {
         txtMainContent.setText(content.getMainContent());
 
         //Load lượt like, cmt
-        Query queryLike = dataRef.child("Likes").orderByChild("contentID").equalTo(content.getID());
+        loadLikeCmt();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                loadCountLC();
+                dialogLoading.dismiss();
+            }
+        },2000);
+    }
+    //Load lượt like, cmt
+    private void loadCountLC()
+    {
+        txtLikeCount.setText(listLike.size()+"");
+        txtCmtCount.setText(listCmt.size()+"");
+        for(int i = 0; i< listLike.size(); i++)
+        {
+            if(listLike.get(i).getUserID() == currentUser.getUid())
+            {
+                btnLike.setBackgroundResource(R.drawable.icon_like);
+                like = listLike.get(i);
+            }
+        }
+    }
+
+    //Load danh sách like, cmt
+    private void loadLikeCmt()
+    {
         queryLike.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                 if(snapshot.getValue(Like.class)!=null)
                     listLike.add(snapshot.getValue(Like.class));
+
             }
             @Override
             public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
@@ -206,12 +236,13 @@ public class ReadContent extends AppCompatActivity {
 
             }
         });
-        Query queryCmt = dataRef.child("Comments").orderByChild("contentID").equalTo(content.getID());
-        queryCmt.addChildEventListener(new ChildEventListener() {
+        queryCMT.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                if(snapshot.getValue(Comment.class)!=null)
+                if(snapshot.getValue(Comment.class)!=null) {
                     listCmt.add(snapshot.getValue(Comment.class));
+                    adapterCMT.notifyDataSetChanged();
+                }
             }
 
             @Override
@@ -234,24 +265,6 @@ public class ReadContent extends AppCompatActivity {
 
             }
         });
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                txtLikeCount.setText(listLike.size()+"");
-                txtCmtCount.setText(listCmt.size()+"");
-                for(int i = 0; i< listLike.size(); i++)
-                {
-                    if(listLike.get(i).getUserID() == currentUser.getUid())
-                    {
-                        btnLike.setBackgroundResource(R.drawable.icon_like);
-                        like = listLike.get(i);
-                    }
-                }
-                dialogLoading.dismiss();
-            }
-        },2000);
-
-
     }
 
     //Lấy danh sách ảnh
@@ -290,8 +303,6 @@ public class ReadContent extends AppCompatActivity {
         ListView listViewComment = (ListView) dialog.findViewById(R.id.list_cmt);
         EditText editCmt = (EditText) dialog.findViewById(R.id.edit_cmt);
         Button btnSend = (Button) dialog.findViewById(R.id.btn_send);
-        ArrayList<Comment> listCmtDialog = listCmt;
-        adapterCMT = new CommentAdapter(listCmtDialog,ReadContent.this);
         listViewComment.setAdapter(adapterCMT);
         btnSend.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -304,8 +315,6 @@ public class ReadContent extends AppCompatActivity {
                     comment.setDate(simpleDateFormat.format(calendar.getTime()));
                     comment.setUserID(currentUser.getUid());
                     comment.setMainContent(editCmt.getText().toString());
-                    listCmtDialog.add(comment);
-                    adapterCMT.notifyDataSetChanged();
                     editCmt.setText("");
                     dataRef.child("Comments").push().setValue(comment);
                 }
@@ -314,7 +323,7 @@ public class ReadContent extends AppCompatActivity {
         dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override
             public void onCancel(DialogInterface dialogInterface) {
-                getInfOfContent();
+                loadCountLC();
             }
         });
 
