@@ -60,7 +60,7 @@ public class HomeActivity extends AppCompatActivity  {
     ContentAdapter adapter;
     Dialog dialogLoading;
     User mainUser;
-    long contentCountCheck=0;
+    long contentCountCheck;
     ArrayList<Content> listFilter = new ArrayList<>();
     final int ALL = 0, TOP10 = 1, FOOD = 2, HOTEL = 3, REVIEW = 4, TIP = 5, EXP = 6, BYTAG = 7;
 
@@ -178,62 +178,76 @@ public class HomeActivity extends AppCompatActivity  {
     ///Lấy danh sách content
     private void getInfOfContent(){
         dialogLoading.show();
-
+        contentCountCheck=-1;
         dataRef= FirebaseDatabase.getInstance().getReference("Contents");
-        dataRef.addValueEventListener(new ValueEventListener() {
+        dataRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                contentCountCheck = snapshot.getChildrenCount();
-            }
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                if(contentCountCheck<0) {
+                    contentCountCheck = task.getResult().getChildrenCount();
+                    dataRef.addChildEventListener(new ChildEventListener() {
+                        @Override
+                        public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                            contentCountCheck--;
+                            listContent.add(snapshot.getValue(Content.class));
+                            listFilter.add(snapshot.getValue(Content.class));
+                            adapter.notifyDataSetChanged();
+                            if(contentCountCheck<=0) {
+                                dialogLoading.dismiss();
+                                Intent intent = getIntent();
+                                tagID = intent.getStringExtra("tagid");
+                                if (tagID != null) {
+                                    Filter(BYTAG);
+                                }
+                            }
+                        }
+                            @Override
+                            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                                for(int i =0; i<listContent.size(); i++)
+                                    if(listContent.get(i).getID().equals(snapshot.getValue(Content.class).getID()))
+                                    {
+                                        listContent.set(i,snapshot.getValue(Content.class));
+                                        adapter.notifyDataSetChanged();
+                                    }
+                            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+                            @Override
+                            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
 
+                            }
+
+                            @Override
+                            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                    });
+                    if (contentCountCheck==0)
+                        dialogLoading.dismiss();
+                }
             }
         });
-        if(contentCountCheck>=0)
-            dataRef.addChildEventListener(new ChildEventListener() {
-                @Override
-                public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                    contentCountCheck--;
-                    listContent.add(snapshot.getValue(Content.class));
-                    listFilter.add(snapshot.getValue(Content.class));
-                    adapter.notifyDataSetChanged();
-                    if(contentCountCheck<=0) {
-                        dialogLoading.dismiss();
-                        Intent intent = getIntent();
-                        tagID = intent.getStringExtra("tagid");
-                        if (tagID != null) {
-                            Filter(BYTAG);
-                        }
-                    }
-                }
-                @Override
-                public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                    for(int i =0; i<listContent.size(); i++)
-                        if(listContent.get(i).getID().equals(snapshot.getValue(Content.class).getID()))
-                        {
-                            listContent.set(i,snapshot.getValue(Content.class));
-                            adapter.notifyDataSetChanged();
-                        }
-                }
 
-                @Override
-                public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+//        dataRef.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                contentCountCheck = snapshot.getChildrenCount();
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//
+//            }
+//        });
+//        if(contentCountCheck>0)
 
-                }
-
-                @Override
-                public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-
-                }
-            });
         //
+
 
     }
 
