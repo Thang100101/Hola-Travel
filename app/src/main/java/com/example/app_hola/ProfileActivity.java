@@ -157,7 +157,7 @@ public class ProfileActivity extends AppCompatActivity {
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                 if(type.equals("count")) {
                     countContent++;
-                    txtCountContent.setText(txtCountContent.getText().toString() + countContent + "");
+                    txtCountContent.setText(countContent + "");
                 }
                 else
                 {
