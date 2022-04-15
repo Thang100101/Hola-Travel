@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.KeyEvent;
@@ -120,33 +121,56 @@ public class HomeActivity extends AppCompatActivity  {
             @Override
             public void onClick(View view) {
                 Filter(ALL);
+                unCheckButtonAll();
             }
         });
         btnTop10.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Filter(TOP10);
+                unCheckButtonAll();
+                btnTop10.setBackgroundResource(R.drawable.button_have_check_type_1);
             }
         });
         btnExp.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) { Filter(EXP);}
+            public void onClick(View view) {
+                Filter(EXP);
+                unCheckButtonAll();
+                btnExp.setBackgroundResource(R.drawable.button_have_check_type_1);
+            }
         });
         btnTip.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) { Filter(TIP);}
+            public void onClick(View view) {
+                Filter(TIP);
+                unCheckButtonAll();
+                btnTip.setBackgroundResource(R.drawable.button_have_check_type_1);
+            }
         });
         btnFood.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) { Filter(FOOD);}
+            public void onClick(View view) {
+                Filter(FOOD);
+                unCheckButtonAll();
+                btnFood.setBackgroundResource(R.drawable.button_have_check_type_1);
+            }
         });
         btnHotel.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) { Filter(HOTEL);}
+            public void onClick(View view) {
+                Filter(HOTEL);
+                unCheckButtonAll();
+                btnHotel.setBackgroundResource(R.drawable.button_have_check_type_1);
+            }
         });
         btnReview.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) { Filter(REVIEW);}
+            public void onClick(View view) {
+                Filter(REVIEW);
+                unCheckButtonAll();
+                btnReview.setBackgroundResource(R.drawable.button_have_check_type_1);
+            }
         });
 
     }
@@ -470,6 +494,14 @@ public class HomeActivity extends AppCompatActivity  {
             }
         });
         dialog.show();
+    }
+    private void unCheckButtonAll(){
+        btnExp.setBackgroundResource(R.drawable.button_type_2);
+        btnTip.setBackgroundResource(R.drawable.button_type_2);
+        btnHotel.setBackgroundResource(R.drawable.button_type_2);
+        btnFood.setBackgroundResource(R.drawable.button_type_2);
+        btnReview.setBackgroundResource(R.drawable.button_type_2);
+        btnTop10.setBackgroundResource(R.drawable.button_type_2);
     }
 
 }

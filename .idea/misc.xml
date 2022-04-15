@@ -3,24 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/Users/ASUS/Desktop/Hola/Project-Android/app/src/main/res/drawable/background_actionbar.xml" value="0.1" />
-        <entry key="..\:/Users/ASUS/Desktop/Hola/Project-Android/app/src/main/res/drawable/background_edittext.xml" value="0.1" />
-        <entry key="..\:/Users/ASUS/Desktop/Hola/Project-Android/app/src/main/res/drawable/background_none.xml" value="0.1735" />
-        <entry key="..\:/Users/ASUS/Desktop/Hola/Project-Android/app/src/main/res/drawable/background_type_1.xml" value="0.1735" />
-        <entry key="..\:/Users/ASUS/Desktop/Hola/Project-Android/app/src/main/res/drawable/background_type_2.xml" value="0.1735" />
-        <entry key="..\:/Users/ASUS/Desktop/Hola/Project-Android/app/src/main/res/drawable/button_type_2.xml" value="0.1" />
-        <entry key="..\:/Users/ASUS/Desktop/Hola/Project-Android/app/src/main/res/drawable/custom_button_radius.xml" value="0.148" />
-        <entry key="..\:/Users/ASUS/Desktop/Hola/Project-Android/app/src/main/res/drawable/custom_click_icon.xml" value="0.1735" />
-        <entry key="..\:/Users/ASUS/Desktop/Hola/Project-Android/app/src/main/res/drawable/custom_dialog_listcomment.xml" value="0.1735" />
-        <entry key="..\:/Users/ASUS/Desktop/Hola/Project-Android/app/src/main/res/drawable/custom_dialog_radius.xml" value="0.1735" />
-        <entry key="..\:/Users/ASUS/Desktop/Hola/Project-Android/app/src/main/res/drawable/custom_top_dialog.xml" value="0.1735" />
-        <entry key="..\:/Users/ASUS/Desktop/Hola/Project-Android/app/src/main/res/layout/activity_home.xml" value="0.25" />
-        <entry key="..\:/Users/ASUS/Desktop/Hola/Project-Android/app/src/main/res/layout/activity_profile.xml" value="0.2" />
-        <entry key="..\:/Users/ASUS/Desktop/Hola/Project-Android/app/src/main/res/layout/dialog_edit_name.xml" value="0.2" />
         <entry key="..\:/Users/ASUS/Desktop/Hola/Project-Android/app/src/main/res/layout/dialog_edit_password.xml" value="0.25" />
-        <entry key="..\:/Users/ASUS/Desktop/Hola/Project-Android/app/src/main/res/layout/dialog_edit_sex.xml" value="0.2" />
-        <entry key="..\:/Users/ASUS/Desktop/Hola/Project-Android/app/src/main/res/layout/dialog_regist.xml" value="0.25" />
-        <entry key="..\:/Users/ASUS/Desktop/Hola/Project-Android/app/src/main/res/layout/dialog_signin.xml" value="0.2" />
         <entry key="..\:/Users/USER/Desktop/App Hola Travel/Project-Android/app/src/main/res/drawable/background_actionbar.xml" value="0.1265" />
         <entry key="..\:/Users/USER/Desktop/App Hola Travel/Project-Android/app/src/main/res/drawable/background_edittext.xml" value="0.136" />
         <entry key="..\:/Users/USER/Desktop/App Hola Travel/Project-Android/app/src/main/res/drawable/background_none.xml" value="0.1265" />
@@ -28,6 +11,7 @@
         <entry key="..\:/Users/USER/Desktop/App Hola Travel/Project-Android/app/src/main/res/drawable/background_type_2.xml" value="0.1265" />
         <entry key="..\:/Users/USER/Desktop/App Hola Travel/Project-Android/app/src/main/res/drawable/background_type_3.xml" value="0.1265" />
         <entry key="..\:/Users/USER/Desktop/App Hola Travel/Project-Android/app/src/main/res/drawable/background_type_4.xml" value="0.136" />
+        <entry key="..\:/Users/USER/Desktop/App Hola Travel/Project-Android/app/src/main/res/drawable/button_have_check_type_1.xml" value="0.136" />
         <entry key="..\:/Users/USER/Desktop/App Hola Travel/Project-Android/app/src/main/res/drawable/button_type_1.xml" value="0.1265" />
         <entry key="..\:/Users/USER/Desktop/App Hola Travel/Project-Android/app/src/main/res/drawable/button_type_2.xml" value="0.1265" />
         <entry key="..\:/Users/USER/Desktop/App Hola Travel/Project-Android/app/src/main/res/drawable/button_type_3.xml" value="0.1265" />
@@ -46,6 +30,7 @@
         <entry key="..\:/Users/USER/Desktop/App Hola Travel/Project-Android/app/src/main/res/layout/activity_wellcome.xml" value="0.22826086956521738" />
         <entry key="..\:/Users/USER/Desktop/App Hola Travel/Project-Android/app/src/main/res/layout/activity_your_content.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/USER/Desktop/App Hola Travel/Project-Android/app/src/main/res/layout/dialog_edit_name.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/USER/Desktop/App Hola Travel/Project-Android/app/src/main/res/layout/dialog_edit_password.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/USER/Desktop/App Hola Travel/Project-Android/app/src/main/res/layout/dialog_edit_sex.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/USER/Desktop/App Hola Travel/Project-Android/app/src/main/res/layout/dialog_list_comment.xml" value="0.22857142857142856" />
         <entry key="..\:/Users/USER/Desktop/App Hola Travel/Project-Android/app/src/main/res/layout/dialog_list_tag.xml" value="0.25416666666666665" />
