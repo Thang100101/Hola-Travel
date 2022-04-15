@@ -334,5 +334,4 @@ public class HomeActivity extends AppCompatActivity  {
         dialog.show();
     }
 
-
 }
