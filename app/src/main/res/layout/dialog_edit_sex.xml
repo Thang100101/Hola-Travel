@@ -1,16 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
-    android:layout_width="200dp"
-    android:layout_height="250dp">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/custom_dialog_radius"
+    android:layout_margin="20dp">
     <TextView
-        android:layout_marginTop="10dp"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Giới tính"
-        android:textSize="30dp"
-        android:textColor="@color/black"
+        android:textSize="25dp"
+        android:textColor="@color/white"
         android:layout_gravity="center"
+        android:textAlignment="center"
+        android:background="@drawable/custom_top_dialog"
+        android:padding="10dp"
         ></TextView>
     <RadioGroup
         android:id="@+id/rdg"
@@ -18,13 +22,14 @@
         android:layout_marginTop="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:padding="10dp"
         >
         <RadioButton
             android:id="@+id/rd_male"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Nam"
-            android:textSize="25dp"
+            android:textSize="20dp"
             ></RadioButton>
         <RadioButton
             android:id="@+id/rd_female"
@@ -32,15 +37,37 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Nữ"
-            android:textSize="25dp"
+            android:textSize="20dp"
             ></RadioButton>
     </RadioGroup>
-    <Button
-        android:layout_marginTop="15dp"
-        android:id="@+id/btn_submit"
-        android:layout_width="100dp"
-        android:layout_height="50dp"
-        android:layout_gravity="center"
-        android:text="Xác nhận"
-        ></Button>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center">
+        <Button
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:id="@+id/btn_cancel"
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:text="Hủy"
+            android:layout_gravity="center"
+            android:background="#CCC8C8"
+            android:textColor="@color/black"
+            android:layout_marginRight="20dp"
+            ></Button>
+        <Button
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:id="@+id/btn_submit"
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:text="Xác nhận"
+            android:layout_gravity="center"
+            android:background="#0BA511"
+            android:textColor="@color/white"
+            android:layout_marginLeft="20dp"
+            ></Button>
+    </LinearLayout>
 </LinearLayout>

@@ -9,13 +9,18 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Html;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -67,11 +72,8 @@ public class ProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+        InitActionBar();
         Mapping();
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setBackgroundDrawable(getDrawable(R.drawable.background_actionbar));
-        actionBar.setTitle("Thông tin cá nhân");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         dialogLoading.show();
         dataRef.child("Users").child(mAuth.getCurrentUser().getUid()).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
@@ -100,6 +102,12 @@ public class ProfileActivity extends AppCompatActivity {
 
         eventHandler();
 
+    }
+    private void InitActionBar(){
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setBackgroundDrawable(getDrawable(R.drawable.background_actionbar));
+        actionBar.setTitle("Thông tin cá nhân");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     //Ánh xạ
@@ -308,9 +316,12 @@ public class ProfileActivity extends AppCompatActivity {
         else if(type.equals("name"))
         {
             Dialog dialog = new Dialog(ProfileActivity.this);
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             dialog.setContentView(R.layout.dialog_edit_name);
+            InitDialog(dialog);
             EditText editName = (EditText) dialog.findViewById(R.id.edit_name);
             Button btnSubmit = (Button) dialog.findViewById(R.id.btn_submit);
+            Button btnCancel = (Button) dialog.findViewById(R.id.btn_cancel);
             btnSubmit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -330,12 +341,21 @@ public class ProfileActivity extends AppCompatActivity {
                 }
             });
             dialog.show();
+            btnCancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dialog.dismiss();
+                }
+            });
         }
         else if(type.equals("sex"))
         {
             Dialog dialog = new Dialog(ProfileActivity.this);
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             dialog.setContentView(R.layout.dialog_edit_sex);
+            InitDialog(dialog);
             Button btnSubmit = (Button) dialog.findViewById(R.id.btn_submit);
+            Button btnCancel = (Button) dialog.findViewById(R.id.btn_cancel);
             RadioGroup Rdg = (RadioGroup) dialog.findViewById(R.id.rdg);
             RadioButton rdMale = (RadioButton) dialog.findViewById(R.id.rd_male);
             RadioButton rdFemale = (RadioButton) dialog.findViewById(R.id.rd_female);
@@ -371,11 +391,20 @@ public class ProfileActivity extends AppCompatActivity {
                         dialog.dismiss();
                 }
             });
+            btnCancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dialog.dismiss();
+                }
+            });
         }
         else if (type.equals("password")){
             Dialog dialog = new Dialog(ProfileActivity.this);
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             dialog.setContentView(R.layout.dialog_edit_password);
+            InitDialog(dialog);
             Button btnSubmit = (Button) dialog.findViewById(R.id.btn_submit);
+            Button btnCancel = (Button) dialog.findViewById(R.id.btn_cancel);
             EditText editOldPass = (EditText) dialog.findViewById(R.id.edit_old_password);
             EditText editNewPass = (EditText) dialog.findViewById(R.id.edit_new_password);
             EditText editConfirm = (EditText) dialog.findViewById(R.id.edit_confirm_password);
@@ -415,7 +444,24 @@ public class ProfileActivity extends AppCompatActivity {
                     }
                 }
             });
+            btnCancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dialog.dismiss();
+                }
+            });
         }
+    }
+
+    private void InitDialog(Dialog dialog) {
+        //Init Dialog
+        Window window = dialog.getWindow();
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        WindowManager.LayoutParams windowAttributes = window.getAttributes();
+        windowAttributes.gravity = Gravity.CENTER;
+        window.setAttributes(windowAttributes);
     }
 
 }
