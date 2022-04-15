@@ -11,6 +11,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
+import com.example.app_hola.ObjectForApp.Tag;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class LogoActivity extends AppCompatActivity {
@@ -26,6 +27,7 @@ public class LogoActivity extends AppCompatActivity {
         imgLogo.startAnimation(animation);
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
+//        Tag.createListTag();
 
         if(mAuth.getCurrentUser()!=null) {
             new Handler().postDelayed(new Runnable() {

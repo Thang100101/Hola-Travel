@@ -13,6 +13,7 @@ public class Content implements Serializable {
     String date;
     ArrayList<Like> listLike = new ArrayList<Like>();
     ArrayList<ImageContent> listImage = new ArrayList<ImageContent>();
+    ArrayList<Tag> listTag = new ArrayList<>();
     static DatabaseReference dataRef;
     public Content() {
         dataRef = FirebaseDatabase.getInstance().getReference();
@@ -57,7 +58,7 @@ public class Content implements Serializable {
     public ArrayList<ImageContent> getListImage() {
         return listImage;
     }
-
+    public ArrayList<Tag> getListTag() { return listTag; }
     public ArrayList<Like> getListLike() {
         return listLike;
     }
@@ -67,38 +68,31 @@ public class Content implements Serializable {
     public void setListImage(ArrayList<ImageContent> listImage) {
         this.listImage = listImage;
     }
-
     public void setImageContent(ImageContent imageContent) {
         this.imageContent = imageContent;
     }
-
     public void setMainContent(String mainContent) {
         this.mainContent = mainContent;
     }
-
     public void setTitle(String title) {
         Title = title;
     }
-
     public void setUser(User user) {
         this.user = user;
     }
-
     public void setLocation(String location) {
         Location = location;
     }
-
     public void setID(String ID) {
         this.ID = ID;
     }
-
     public void setDate(String date) {
         this.date = date;
     }
-
     public void setListLike(ArrayList<Like> listLike) {
         this.listLike = listLike;
     }
+    public void setListTag(ArrayList<Tag> listTag) { this.listTag = listTag; }
 
     public ArrayList<Content> getAllContent(){
         ArrayList<Content> listContent = new ArrayList<>();

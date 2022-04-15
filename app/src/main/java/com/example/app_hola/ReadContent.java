@@ -31,6 +31,7 @@ import com.example.app_hola.ObjectForApp.Comment;
 import com.example.app_hola.ObjectForApp.Content;
 import com.example.app_hola.ObjectForApp.ImageContent;
 import com.example.app_hola.ObjectForApp.Like;
+import com.example.app_hola.ObjectForApp.Tag;
 import com.example.app_hola.ObjectForApp.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -42,6 +43,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
@@ -50,11 +52,12 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
-public class ReadContent extends AppCompatActivity {
+public class ReadContent extends AppCompatActivity implements View.OnClickListener{
     ActionBar actionBar;
     private ViewPager2 viewPager2;
     public TextView txtTitle,txtUser,txtMainContent,txtDate, txtLikeCount, txtCmtCount;
-    Button btnLike, btnCmt;
+    Button btnLike, btnCmt, btnLocation;
+    Button [] listButtonTag = new Button[3];
     public ImageView imgAvatar;
     private ArrayList<ImageContent> imageContentList;
     private ImageAdapter adapter;
@@ -65,6 +68,7 @@ public class ReadContent extends AppCompatActivity {
     Content content;
     ArrayList<Comment> listCmt;
     ArrayList<Like> listLike;
+    ArrayList<Tag> listTag;
     Like like;
     Query queryLike,queryCMT;
     private Handler slideHandler=new Handler();
@@ -75,7 +79,7 @@ public class ReadContent extends AppCompatActivity {
 
         Mapping();
         customActionBar();
-
+        resetContent();
         adapter = new ImageAdapter(content.getListImage(), viewPager2);
         viewPager2.setAdapter(adapter);
         getImageContent();
@@ -93,7 +97,6 @@ public class ReadContent extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             btnLike.setBackgroundResource(R.drawable.icon_unlike);
-                            txtLikeCount.setText(listLike.size()+"");
                         }
                     });
 
@@ -106,7 +109,6 @@ public class ReadContent extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             btnLike.setBackgroundResource(R.drawable.icon_like);
-                            txtLikeCount.setText(listLike.size()+"");
                         }
                     });
                 }
@@ -152,20 +154,23 @@ public class ReadContent extends AppCompatActivity {
         txtUser=findViewById(R.id.txtUser);
         txtMainContent=findViewById(R.id.txtMainContent);
         txtDate=findViewById(R.id.txtDate);
-        imageContentList = new ArrayList<>();
-        Intent intent = getIntent();
-        content = (Content) intent.getSerializableExtra("content");
-        dataRef = FirebaseDatabase.getInstance().getReference();
         btnLike = (Button) findViewById(R.id.btn_like);
         btnCmt = (Button) findViewById(R.id.btn_cmt);
         txtLikeCount = (TextView) findViewById(R.id.txt_like_count);
         txtCmtCount = (TextView) findViewById(R.id.txt_cmt_count);
+        imgAvatar = (ImageView) findViewById(R.id.img_avatar);
+
+        Intent intent = getIntent();
+        content = (Content) intent.getSerializableExtra("content");
+        dataRef = FirebaseDatabase.getInstance().getReference();
+
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
         listCmt = new ArrayList<>();
         listLike = content.getListLike();
+        listTag = content.getListTag();
+        imageContentList = new ArrayList<>();
         adapterCMT = new CommentAdapter(listCmt,ReadContent.this);
-        imgAvatar = (ImageView) findViewById(R.id.img_avatar);
         queryCMT = dataRef.child("Comments").orderByChild("contentID").equalTo(content.getID());
 //        queryLike = dataRef.child("Contents").orderByChild("Likes/").equalTo(content.getID());
         if(currentUser==null)
@@ -173,6 +178,17 @@ public class ReadContent extends AppCompatActivity {
             btnLike.setVisibility(View.GONE);
             btnCmt.setVisibility(View.GONE);
         }
+        for(int i =0; i<listTag.size(); i++)
+        {
+            String btnID = "btn_tag_" + (i + 1);
+            int resID = getResources().getIdentifier(btnID, "id", getPackageName());
+            listButtonTag[i] = (Button) findViewById(resID);
+            listButtonTag[i].setVisibility(View.VISIBLE);
+            listButtonTag[i].setOnClickListener(this);
+            listButtonTag[i].setTag(listTag.get(i));
+            listButtonTag[i].setText(listTag.get(i).getName());
+        }
+        btnLocation = (Button) findViewById(R.id.btn_location);
     }
 
     ///Load thông tin bài viết
@@ -181,23 +197,33 @@ public class ReadContent extends AppCompatActivity {
         dialogLoading.setContentView(R.layout.dialog_loading);
         dialogLoading.show();
         dialogLoading.setCancelable(false);
-        listCmt.clear();
-        txtTitle.setText(content.getTitle());
-        User user = content.getUser();
-        txtUser.setText(user.getName());
-        Picasso.get().load(user.getAvatar().getLink()).into(imgAvatar);
-        txtDate.setText(content.getDate());
-        txtMainContent.setText(content.getMainContent());
-
-        //Load lượt like, cmt
-        loadLikeCmt();
-        new Handler().postDelayed(new Runnable() {
+        dataRef.child("Contents").child(content.getID()).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
-            public void run() {
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                content = task.getResult().getValue(Content.class);
+                listCmt.clear();
+                txtTitle.setText(content.getTitle());
+                User user = content.getUser();
+                txtUser.setText(user.getName());
+                Picasso.get().load(user.getAvatar().getLink()).into(imgAvatar);
+                txtDate.setText(content.getDate());
+                txtMainContent.setText(content.getMainContent());
+                loadLikeCmt();
+                //Load lượt like, cmt
                 loadCountLC();
                 dialogLoading.dismiss();
             }
-        },2000);
+        });
+
+
+        //Load lượt like, cmt
+//
+//        new Handler().postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//
+//            }
+//        },2000);
     }
     //Load lượt like, cmt
     private void loadCountLC()
@@ -223,6 +249,7 @@ public class ReadContent extends AppCompatActivity {
                 if(snapshot.getValue(Comment.class)!=null) {
                     listCmt.add(snapshot.getValue(Comment.class));
                     adapterCMT.notifyDataSetChanged();
+                    loadCountLC();
                 }
             }
 
@@ -239,6 +266,24 @@ public class ReadContent extends AppCompatActivity {
             @Override
             public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
 
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    //Realtime
+    private void resetContent()
+    {
+        dataRef.child("Contents").child(content.getID()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                content = snapshot.getValue(Content.class);
+                listLike = content.getListLike();
+                loadCountLC();
             }
 
             @Override
@@ -415,5 +460,13 @@ public class ReadContent extends AppCompatActivity {
         actionBar.setBackgroundDrawable(getDrawable(R.drawable.background_actionbar));
         actionBar.setTitle(content.getTitle());
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+    @Override
+    public void onClick(View view) {
+        Tag tag = (Tag) ((Button)view).getTag();
+        Intent intent = new Intent(ReadContent.this,HomeActivity.class);
+        intent.putExtra("tagid",tag.getID());
+        startActivity(intent);
     }
 }

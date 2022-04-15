@@ -23,6 +23,57 @@
         ></EditText>
     <LinearLayout
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="10"
+        >
+        <Button
+            android:id="@+id/btn_tag_1"
+            android:layout_width="0dp"
+            android:layout_height="35dp"
+            android:layout_weight="3"
+            android:textAllCaps="false"
+            android:text="Kinh nghiệm"
+            android:gravity="center"
+            android:textSize="12dp"
+            android:drawableRight="@drawable/icon_x_3"
+            ></Button>
+        <Button
+            android:id="@+id/btn_tag_2"
+            android:layout_width="0dp"
+            android:layout_weight="3"
+            android:layout_height="35dp"
+            android:textAllCaps="false"
+            android:text="Kinh nghiệm"
+            android:gravity="center"
+            android:textSize="12dp"
+            android:drawableRight="@drawable/icon_x_3"
+            ></Button>
+        <Button
+            android:id="@+id/btn_tag_3"
+            android:layout_width="0dp"
+            android:layout_weight="3"
+            android:layout_height="35dp"
+            android:textAllCaps="false"
+            android:text="Kinh nghiệm"
+            android:gravity="center"
+            android:textSize="12dp"
+            android:drawableRight="@drawable/icon_x_3"
+            ></Button>
+        <Button
+            android:id="@+id/btn_location"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="35dp"
+            android:textAllCaps="false"
+            android:textSize="12dp"
+            android:drawableRight="@drawable/icon_location_2"
+            ></Button>
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:weightSum="10"
         android:orientation="vertical"
@@ -30,7 +81,7 @@
         <EditText
             android:layout_weight="6.5"
             android:background="@drawable/background_none"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="10dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:id="@+id/edit_content"
@@ -190,6 +241,7 @@
                 android:background="@drawable/icon_location_3"
                 >
                 <Button
+                    android:id="@+id/btn_add_location"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@drawable/custom_click_icon"

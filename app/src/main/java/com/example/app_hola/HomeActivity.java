@@ -14,6 +14,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Filter;
 import android.widget.HorizontalScrollView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -27,6 +28,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.app_hola.ObjectForApp.Content;
 import com.example.app_hola.ObjectForApp.Like;
+import com.example.app_hola.ObjectForApp.Tag;
 import com.example.app_hola.ObjectForApp.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -37,6 +39,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -44,7 +47,8 @@ public class HomeActivity extends AppCompatActivity  {
     public static final String EXTRA_MESSAGE="com.example.app_hola.MESSAGE";
     HorizontalScrollView hScrollView;
     String[] list;
-    Button btnUpload, btnHome, btnYourReview;
+    String tagID = "";
+    Button btnUpload, btnHome, btnYourReview, btnTop10, btnFood, btnHotel, btnReview, btnTip, btnExp;
     ArrayList<Content> listContent = new ArrayList<Content>();
     ListView listViewContent;
     ActionBar actionBar;
@@ -53,8 +57,11 @@ public class HomeActivity extends AppCompatActivity  {
     FirebaseUser currentUser;
     DatabaseReference dataRef;
     ContentAdapter adapter;
+    Dialog dialogLoading;
     User mainUser;
-    final int ALL = 0, TOP10 = 1, FOOD = 2, HOTEL = 3, REVIEW = 4, TIP = 5, EXP = 6;
+    long contentCountCheck=0;
+    ArrayList<Content> listFilter = new ArrayList<>();
+    final int ALL = 0, TOP10 = 1, FOOD = 2, HOTEL = 3, REVIEW = 4, TIP = 5, EXP = 6, BYTAG = 7;
 
     boolean search =false;
 
@@ -78,7 +85,7 @@ public class HomeActivity extends AppCompatActivity  {
         listViewContent.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Content content = listContent.get(i);
+                Content content = listFilter.get(i);
                 Intent intent = new Intent(HomeActivity.this, ReadContent.class);
                 intent.putExtra("content", content);
                 startActivity(intent);
@@ -116,36 +123,44 @@ public class HomeActivity extends AppCompatActivity  {
                 Filter(ALL);
             }
         });
+        btnTop10.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Filter(TOP10);
+            }
+        });
+        btnExp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) { Filter(EXP);}
+        });
+        btnTip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) { Filter(TIP);}
+        });
+        btnFood.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) { Filter(FOOD);}
+        });
+        btnHotel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) { Filter(HOTEL);}
+        });
+        btnReview.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) { Filter(REVIEW);}
+        });
 
     }
 
     ///Lấy danh sách content
     private void getInfOfContent(){
-        Dialog dialogLoading = new Dialog(HomeActivity.this);
-        dialogLoading.setContentView(R.layout.dialog_loading);
         dialogLoading.show();
-        dialogLoading.setCancelable(false);
+
         dataRef= FirebaseDatabase.getInstance().getReference("Contents");
-        dataRef.addChildEventListener(new ChildEventListener() {
+        dataRef.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                listContent.add(snapshot.getValue(Content.class));
-                adapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                contentCountCheck = snapshot.getChildrenCount();
             }
 
             @Override
@@ -153,12 +168,49 @@ public class HomeActivity extends AppCompatActivity  {
 
             }
         });
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                dialogLoading.dismiss();
-            }
-        },2000);
+        if(contentCountCheck>=0)
+            dataRef.addChildEventListener(new ChildEventListener() {
+                @Override
+                public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                    contentCountCheck--;
+                    listContent.add(snapshot.getValue(Content.class));
+                    listFilter.add(snapshot.getValue(Content.class));
+                    adapter.notifyDataSetChanged();
+                    if(contentCountCheck<=0) {
+                        dialogLoading.dismiss();
+                        Intent intent = getIntent();
+                        tagID = intent.getStringExtra("tagid");
+                        if (tagID != null) {
+                            Filter(BYTAG);
+                        }
+                    }
+                }
+                @Override
+                public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                    for(int i =0; i<listContent.size(); i++)
+                        if(listContent.get(i).getID().equals(snapshot.getValue(Content.class).getID()))
+                        {
+                            listContent.set(i,snapshot.getValue(Content.class));
+                            adapter.notifyDataSetChanged();
+                        }
+                }
+
+                @Override
+                public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+                }
+
+                @Override
+                public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+        //
 
     }
 
@@ -168,12 +220,15 @@ public class HomeActivity extends AppCompatActivity  {
         btnUpload = (Button) findViewById(R.id.btn_upload);
         btnHome = (Button) findViewById(R.id.btn_home);
         btnYourReview = (Button) findViewById(R.id.btn_your_review);
+        btnTop10 = (Button) findViewById(R.id.btn_top_10);
+        btnReview = (Button) findViewById(R.id.btn_community);
+        btnFood = (Button) findViewById(R.id.btn_food);
+        btnHotel = (Button) findViewById(R.id.btn_hotel);
+        btnTip = (Button) findViewById(R.id.btn_tip);
+        btnExp = (Button) findViewById(R.id.btn_exp);
         listViewContent = (ListView) findViewById(R.id.listContent);
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
-        listContent = new ArrayList<>();
-        adapter = new ContentAdapter(listContent, this);
-        listViewContent.setAdapter(adapter);
         dataRef = FirebaseDatabase.getInstance().getReference();
         if(currentUser!=null)
             dataRef.child("Users").child(currentUser.getUid()).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
@@ -183,6 +238,11 @@ public class HomeActivity extends AppCompatActivity  {
                         mainUser = task.getResult().getValue(User.class);
                 }
             });
+        adapter = new ContentAdapter(listFilter, this);
+        listViewContent.setAdapter(adapter);
+        dialogLoading = new Dialog(HomeActivity.this);
+        dialogLoading.setContentView(R.layout.dialog_loading);
+        dialogLoading.setCancelable(false);
     }
 
     //Tạo và bắt sự kiện cho menu
@@ -251,26 +311,104 @@ public class HomeActivity extends AppCompatActivity  {
         switch (TYPE)
         {
             case ALL:
-                listContent.clear();
-                getInfOfContent();
+                listFilter.clear();
+                for(Content content : listContent)
+                    listFilter.add(content);
+                adapter.notifyDataSetChanged();
                 break;
             case TOP10:
+                listFilter.clear();
+                dialogLoading.show();
+                for(Content content : listContent) {
+                    if (listFilter.size() < 10)
+                        listFilter.add(content);
+                    else {
+                        int min = 0;
+                        for (int i = 0; i < listFilter.size() - 1; i++) {
+                            if (listFilter.get(i).getListLike().size() > listFilter.get(i + 1).getListLike().size())
+                                min = i + 1;
+                        }
+                        if (content.getListLike().size() > listFilter.get(min).getListLike().size()) {
+                            listFilter.remove(min);
+                            listFilter.add(content);
+                        }
+                    }
+                }
+                adapter.notifyDataSetChanged();
+                dialogLoading.dismiss();
                 break;
+
             case TIP:
-                listContent.clear();
-
+                listFilter.clear();
+                for(Content content : listContent) {
+                    if(content.getListTag()!=null)
+                        for(Tag tag : content.getListTag())
+                            if(tag.getID().equals("tag2"))
+                                listFilter.add(content);
+                }
+                adapter.notifyDataSetChanged();
                 break;
+
             case EXP:
-                listContent.clear();
-
+                listFilter.clear();
+                for(Content content : listContent) {
+                    if(content.getListTag()!=null)
+                        for(Tag tag : content.getListTag())
+                            if(tag.getID().equals("tag3"))
+                                listFilter.add(content);
+                }
+                adapter.notifyDataSetChanged();
                 break;
+
             case HOTEL:
-                listContent.clear();
+                listFilter.clear();
+                for(Content content : listContent) {
+                    if(content.getListTag()!=null)
+                        for(Tag tag : content.getListTag())
+                            if(tag.getID().equals("tag4"))
+                                listFilter.add(content);
+                }
+                adapter.notifyDataSetChanged();
+                break;
 
-                break;
             case FOOD:
+                listFilter.clear();
+                for(Content content : listContent) {
+                    if(content.getListTag()!=null)
+                        for(Tag tag : content.getListTag())
+                            if(tag.getID().equals("tag1"))
+                                listFilter.add(content);
+                }
+                adapter.notifyDataSetChanged();
                 break;
+
             case REVIEW:
+                listFilter.clear();
+                for(Content content : listContent) {
+                    boolean check = true;
+                    for (Tag tag : content.getListTag()) {
+                        if (tag.getID().equals("tag1") || tag.getID().equals("tag2") ||
+                                tag.getID().equals("tag3") || tag.getID().equals("tag4")) {
+                            check = false;
+                            break;
+                        }
+                    }
+                    if(check)
+                        listFilter.add(content);
+                }
+                adapter.notifyDataSetChanged();
+                break;
+            case BYTAG:
+                listFilter.clear();
+                for(Content content : listContent){
+                    for(Tag tag : content.getListTag()){
+                        if(tagID.equals(tag.getID())) {
+                            listFilter.add(content);
+                            break;
+                        }
+                    }
+                }
+                adapter.notifyDataSetChanged();
                 break;
         }
     }

@@ -18,21 +18,28 @@ import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.GridView;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.app_hola.ObjectForApp.Content;
 import com.example.app_hola.ObjectForApp.ImageContent;
+import com.example.app_hola.ObjectForApp.Tag;
 import com.example.app_hola.ObjectForApp.User;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -49,9 +56,10 @@ public class CreateContentActivity extends AppCompatActivity implements View.OnC
 
     Content content;
     EditText editTitle, editContent;
-    Button btnUpload, btnAddImg, btnAddTag;
+    Button btnUpload, btnAddImg, btnAddTag, btnLocation;
     Button [] listButtonDelete = new Button[5];
     ImageView [] listImage = new ImageView[5];
+    Button [] listButtonTag = new Button[3];
     SharedPreferences prefer;
     SharedPreferences.Editor editPrefer;
     ArrayList<ImageContent> listImgContent;
@@ -95,6 +103,61 @@ public class CreateContentActivity extends AppCompatActivity implements View.OnC
             }
         });
 
+        btnAddTag.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Dialog dialogTag = new Dialog(CreateContentActivity.this);
+                dialogTag.setContentView(R.layout.dialog_list_tag);
+                dialogTag.show();
+                ListView listView = (ListView) dialogTag.findViewById(R.id.list_tag);
+                ArrayList<Tag> listTag = new ArrayList<Tag>();
+                ArrayAdapter<Tag> adapter = new ArrayAdapter<>(CreateContentActivity.this,
+                        android.R.layout.simple_list_item_1,listTag);
+                listView.setAdapter(adapter);
+                dataRef.child("Tags").addChildEventListener(new ChildEventListener() {
+                    @Override
+                    public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                        listTag.add(snapshot.getValue(Tag.class));
+                        adapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) { }
+                    @Override
+                    public void onChildRemoved(@NonNull DataSnapshot snapshot) { }
+                    @Override
+                    public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) { }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) { }
+                });
+                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                        for(int j = 0; j<listButtonTag.length; j++)
+                        {
+                            if(listButtonTag[j].getTag()!=null)
+                                if(((Tag)listButtonTag[j].getTag()).toString().equals(listTag.get(i).toString())) {
+                                    Toast.makeText(CreateContentActivity.this, "Đã có thẻ " + listTag.get(i).toString(), Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+                        }
+                        for(int j = 0; j<listButtonTag.length; j++)
+                        {
+                            if(((Tag)listButtonTag[j].getTag())==null) {
+                                listButtonTag[j].setTag(listTag.get(i));
+                                listButtonTag[j].setVisibility(View.VISIBLE);
+                                listButtonTag[j].setText(((Tag)listButtonTag[j].getTag()).toString());
+                                return;
+                            }
+                        }
+                        Toast.makeText(CreateContentActivity.this, "Tối đa 3 thẻ", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+            }
+        });
+
     }
 
     @Override
@@ -135,6 +198,17 @@ public class CreateContentActivity extends AppCompatActivity implements View.OnC
             int resID = getResources().getIdentifier(btnID, "id", getPackageName());
             listImage[i] = (ImageView) findViewById(resID);
         }
+        for(int i =0; i<listButtonTag.length; i++)
+        {
+            String btnID = "btn_tag_" + (i + 1);
+            int resID = getResources().getIdentifier(btnID, "id", getPackageName());
+            listButtonTag[i] = (Button) findViewById(resID);
+            listButtonTag[i].setVisibility(View.GONE);
+            listButtonTag[i].setOnClickListener(this);
+        }
+        btnLocation = (Button) findViewById(R.id.btn_location);
+        btnLocation.setVisibility(View.GONE);
+
     }
 
     //Tạo và bắt sự kiện cho menu
@@ -213,22 +287,28 @@ public class CreateContentActivity extends AppCompatActivity implements View.OnC
     @Override
     public void onClick(View view) {
         String btnDeleteID = view.getResources().getResourceEntryName(view.getId());
-        int position = Integer.parseInt(btnDeleteID.substring(btnDeleteID.length()-1,btnDeleteID.length()));
-        position--;
+        int position = Integer.parseInt(btnDeleteID.substring(btnDeleteID.length() - 1, btnDeleteID.length()));
+        if(((Button)view).getTag()==null) {
+            position--;
 
-        for(int i = position; i<imgCount-1; i++)
-        {
-            listImage[i+1].setDrawingCacheEnabled(true);
-            listImage[i+1].buildDrawingCache();
-            Bitmap bit = ((BitmapDrawable) listImage[i+1].getDrawable()).getBitmap();
-            listImage[i].setImageBitmap(bit);
+            for (int i = position; i < imgCount - 1; i++) {
+                listImage[i + 1].setDrawingCacheEnabled(true);
+                listImage[i + 1].buildDrawingCache();
+                Bitmap bit = ((BitmapDrawable) listImage[i + 1].getDrawable()).getBitmap();
+                listImage[i].setImageBitmap(bit);
+            }
+
+            listButtonDelete[imgCount - 1].setVisibility(View.GONE);
+            listImage[imgCount - 1].setImageBitmap(null);
+            imgCount--;
+            if (imgCount == 0)
+                hori.setVisibility(View.GONE);
         }
-
-        listButtonDelete[imgCount-1].setVisibility(View.GONE);
-        listImage[imgCount-1].setImageBitmap(null);
-        imgCount--;
-        if(imgCount==0)
-            hori.setVisibility(View.GONE);
+        else
+        {
+            listButtonTag[position-1].setTag(null);
+            listButtonTag[position-1].setVisibility(View.GONE);
+        }
 
     }
 
@@ -254,6 +334,13 @@ public class CreateContentActivity extends AppCompatActivity implements View.OnC
                         User user = task.getResult().getValue(User.class);
                         Content content = new Content();
                         addImgForContent();
+                        ArrayList<Tag> listTag = new ArrayList<>();
+                        for(int i=0; i<listButtonTag.length; i++)
+                            if(listButtonTag[i].getTag()!=null)
+                            {
+                                Tag tag = (Tag)listButtonTag[i].getTag();
+                                listTag.add(tag);
+                            }
 
                         //
                         new Handler().postDelayed(new Runnable() {
@@ -266,6 +353,7 @@ public class CreateContentActivity extends AppCompatActivity implements View.OnC
                                 content.setMainContent(editContent.getText().toString());
                                 content.setDate(new SimpleDateFormat("dd/MM/yyyy").format(calendar.getTime()));
                                 content.setTitle(editTitle.getText().toString());
+                                content.setListTag(listTag);
                             }
                         },4000);
                         //upload content lên database
