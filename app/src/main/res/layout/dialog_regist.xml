@@ -1,76 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="300dp"
-    android:layout_height="300dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
+    android:background="@drawable/custom_dialog_radius"
+    android:layout_margin="20dp"
     >
 
-    <LinearLayout
-        android:layout_marginTop="10dp"
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:weightSum="10"
-        >
-        <LinearLayout
-            android:layout_weight="1.5"
-            android:layout_width="0dp"
-            android:padding="5dp"
-            android:layout_height="match_parent"
-            >
-            <Button
-                android:id="@+id/btn_back"
-                android:background="@drawable/icon_back"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                ></Button>
-        </LinearLayout>
+        android:padding="12dp"
+        android:gravity="center"
+        android:text="Đăng kí"
+        android:textSize="25dp"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:background="@drawable/custom_top_dialog"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="20dp"
+        android:orientation="vertical">
 
-        <TextView
-            android:layout_weight="7"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="Đăng kí"
-            android:gravity="center"
-            android:textColor="@color/black"
-            android:textStyle="bold"
-            android:textSize="30dp"
-            ></TextView>
+        <EditText
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="20dp"
+            android:id="@+id/edit_user"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:hint="Email"/>
+        <EditText
+            android:layout_marginBottom="20dp"
+            android:id="@+id/edit_pass"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:hint="Mật khẩu"
+            android:inputType="textPassword"/>
+        <EditText
+            android:layout_marginBottom="20dp"
+            android:id="@+id/edit_confirm"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:hint="Xác nhận mật khẩu"
+            android:inputType="textPassword"/>
     </LinearLayout>
-    <EditText
-        android:id="@+id/edit_user"
-        android:layout_marginRight="20dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="10dp"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:hint="Tài khoản"
-        ></EditText>
-    <EditText
-        android:id="@+id/edit_pass"
-        android:layout_marginRight="20dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="10dp"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:hint="Mật khẩu"
-        android:inputType="textPassword"
-        ></EditText>
-    <EditText
-        android:id="@+id/edit_confirm"
-        android:layout_marginRight="20dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="10dp"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:hint="Xác nhận mật khẩu"
-        android:inputType="textPassword"
-        ></EditText>
-    <Button
-        android:id="@+id/btn_submit"
-        android:layout_width="100dp"
-        android:layout_height="50dp"
-        android:text="Xác nhận"
-        android:layout_gravity="center"
-        ></Button>
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:layout_marginBottom="20dp">
+
+        <Button
+            android:id="@+id/btn_back"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:background="#CCC8C8"
+            android:layout_marginRight="20dp"
+            android:text="Hủy"/>
+        <Button
+            android:id="@+id/btn_submit"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:background="#0BA511"
+            android:textColor="@color/white"
+            android:layout_marginLeft="20dp"
+            android:text="Đăng kí"/>
+    </LinearLayout>
 </LinearLayout>

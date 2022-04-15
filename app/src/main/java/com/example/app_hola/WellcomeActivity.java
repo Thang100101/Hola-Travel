@@ -11,9 +11,14 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.view.Gravity;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
@@ -133,13 +138,28 @@ public class WellcomeActivity extends AppCompatActivity implements Serializable{
         mAuth = FirebaseAuth.getInstance();
 
         dialogSignin = new Dialog(WellcomeActivity.this);
+        dialogSignin.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialogSignin.setContentView(R.layout.dialog_signin);
+        InitDialog(dialogSignin);
 
         dialogRegist = new Dialog(WellcomeActivity.this);
+        dialogRegist.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialogRegist.setContentView(R.layout.dialog_regist);
+        InitDialog(dialogRegist);
 
         dialogLoading = new Dialog(WellcomeActivity.this);
         dialogLoading.setContentView(R.layout.dialog_loading);
+    }
+
+    private void InitDialog(Dialog dialog) {
+        //Init Dialog
+        Window window = dialog.getWindow();
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        WindowManager.LayoutParams windowAttributes = window.getAttributes();
+        windowAttributes.gravity = Gravity.CENTER;
+        window.setAttributes(windowAttributes);
     }
 
     //Chạy animation
@@ -400,4 +420,5 @@ public class WellcomeActivity extends AppCompatActivity implements Serializable{
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
+
 }
