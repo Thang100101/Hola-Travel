@@ -248,6 +248,7 @@ public class WellcomeActivity extends AppCompatActivity implements Serializable{
                                         user.setBirth(birth);
                                         user.setName("Chưa có tên");
                                         user.setSex("Nam");
+                                        user.setHaveNotification(false);
                                         ImageContent img = new ImageContent();
                                         img.setLink("https://firebasestorage.googleapis.com/v0/b/hola-travel.appspot" +
                                                 ".com/o/avatar.png?alt=media&token=7733012b-0e01-4bcf-8e7b-cad46b2ef22c");

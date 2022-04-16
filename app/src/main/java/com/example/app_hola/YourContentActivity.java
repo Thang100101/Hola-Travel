@@ -35,6 +35,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -47,6 +48,7 @@ public class YourContentActivity extends AppCompatActivity {
     User currentUser;
     String ownerID, ownerName;
     ArrayList<Content> listContent = new ArrayList<>();
+    ArrayList<Content> listFilter = new ArrayList<>();
     ContentAdapter adapter;
     ActionBar actionBar;
     boolean search=false;
@@ -122,7 +124,7 @@ public class YourContentActivity extends AppCompatActivity {
                         currentUser = task.getResult().getValue(User.class);
                 }
             });
-        adapter = new ContentAdapter(listContent,YourContentActivity.this);
+        adapter = new ContentAdapter(listFilter,YourContentActivity.this);
         listViewContent.setAdapter(adapter);
     }
 
@@ -136,6 +138,7 @@ public class YourContentActivity extends AppCompatActivity {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                 listContent.add(snapshot.getValue(Content.class));
+                listFilter.add(snapshot.getValue(Content.class));
                 adapter.notifyDataSetChanged();
             }
 
@@ -173,8 +176,32 @@ public class YourContentActivity extends AppCompatActivity {
         actionBar.setTitle("Bài viết của "+ownerName);
     }
     public boolean onCreateOptionsMenu(Menu menu) {
-        if(user!=null)
-            getMenuInflater().inflate(R.menu.main_menu,menu);
+        if(user!=null) {
+            getMenuInflater().inflate(R.menu.main_menu, menu);
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if(currentUser.isHaveNotification())
+                        menu.getItem(1).setIcon(R.drawable.icon_bell_noti);
+                }
+            },2000);
+            dataRef.child("Users").child(user.getUid()).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    currentUser = snapshot.getValue(User.class);
+                    if(currentUser.isHaveNotification()){
+                        menu.getItem(1).setIcon(R.drawable.icon_bell_noti);
+                    }
+                    else
+                        menu.getItem(1).setIcon(R.drawable.icon_bell);
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+        }
         else
             getMenuInflater().inflate(R.menu.main_menu_without_signin,menu);
         return super.onCreateOptionsMenu(menu);
@@ -197,11 +224,19 @@ public class YourContentActivity extends AppCompatActivity {
                         public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
                             if(i == EditorInfo.IME_ACTION_SEARCH)
                             {
-                                Toast.makeText(YourContentActivity.this, "Search!!", Toast.LENGTH_SHORT).show();
+                                String search = editSearch.getText().toString();
+                                listFilter.clear();
+                                for(Content content : listContent) {
+                                    if(content.getTitle().toLowerCase().indexOf(search.toLowerCase())>=0)
+                                        listFilter.add(content);
+                                    else if(content.getMainContent().toLowerCase().indexOf(search.toLowerCase())>=0)
+                                        listFilter.add(content); }
+                                adapter.notifyDataSetChanged();
                             }
                             return false;
                         }
                     });
+                    editSearch.setText("");
                 }
                 else
                     searchActionBar(false);
@@ -228,6 +263,12 @@ public class YourContentActivity extends AppCompatActivity {
                 mAuth.signOut();
                 startActivity(intent3);
                 finish();
+            case R.id.menu_noti:
+                dataRef.child("Users").child(currentUser.getUserID()).child("haveNotification").setValue(false);
+                item.setIcon(R.drawable.icon_bell);
+                Intent intent4 = new Intent(getApplicationContext(),NotificationActivity.class);
+                startActivity(intent4);
+                break;
         }
         return super.onOptionsItemSelected(item);
     }

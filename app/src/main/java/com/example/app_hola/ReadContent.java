@@ -36,6 +36,7 @@ import com.example.app_hola.ObjectForApp.Comment;
 import com.example.app_hola.ObjectForApp.Content;
 import com.example.app_hola.ObjectForApp.ImageContent;
 import com.example.app_hola.ObjectForApp.Like;
+import com.example.app_hola.ObjectForApp.NotificationContent;
 import com.example.app_hola.ObjectForApp.Tag;
 import com.example.app_hola.ObjectForApp.User;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -76,6 +77,7 @@ public class ReadContent extends AppCompatActivity implements View.OnClickListen
     ArrayList<Tag> listTag;
     Like like;
     Query queryLike,queryCMT;
+    User user;
     private Handler slideHandler=new Handler();
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -104,6 +106,21 @@ public class ReadContent extends AppCompatActivity implements View.OnClickListen
                             btnLike.setBackgroundResource(R.drawable.icon_unlike);
                         }
                     });
+                    if(listLike.size()>0) {
+                        //Create Noti
+                        Calendar calendar = Calendar.getInstance();
+                        NotificationContent noti = new NotificationContent(content.getUser().getUserID(), content.getID(),
+                                user.getName(), "like", listLike.size(), false);
+                        noti.setImg(content.getImageContent());
+                        noti.setID(content.getID() + "like");
+                        noti.setMainContent("Có " + listLike.size() + " người đã thích bài viết của bạn");
+                        SimpleDateFormat simpleDateFormat1 = new SimpleDateFormat("dd/MM/yyyy/HH/mm/ss");
+                        noti.setDate(simpleDateFormat1.format(calendar.getTime()));
+                        dataRef.child("Notifications").child(content.getID() + "like").setValue(noti);
+                        dataRef.child("Users").child(content.getUser().getUserID()).child("haveNotification").setValue(true);
+                    }
+                    else if(listLike.size()==0)
+                        dataRef.child("Notifications").child(content.getID() + "like").removeValue();
 
                 }else
                 {
@@ -116,6 +133,18 @@ public class ReadContent extends AppCompatActivity implements View.OnClickListen
                             btnLike.setBackgroundResource(R.drawable.icon_like);
                         }
                     });
+                    //Create Noti
+                    Calendar calendar = Calendar.getInstance();
+                    NotificationContent noti = new NotificationContent(content.getUser().getUserID(),content.getID(),
+                            user.getName(),"like", listLike.size()-1, false);
+                    noti.setImg(content.getImageContent());
+                    noti.setID(content.getID() + "like");
+                    SimpleDateFormat simpleDateFormat1 = new SimpleDateFormat("dd/MM/yyyy/HH/mm/ss");
+                    noti.setDate(simpleDateFormat1.format(calendar.getTime()));
+                    if(listLike.size()==1)
+                        noti.setMainContent(noti.getReaderName()+ " đã thích bài viết của bạn");
+                    dataRef.child("Notifications").child(content.getID() + "like").setValue(noti);
+                    dataRef.child("Users").child(content.getUser().getUserID()).child("haveNotification").setValue(true);
                 }
             }
         });
@@ -194,6 +223,12 @@ public class ReadContent extends AppCompatActivity implements View.OnClickListen
             listButtonTag[i].setText(listTag.get(i).getName());
         }
         btnLocation = (Button) findViewById(R.id.btn_location);
+        dataRef.child("Users").child(currentUser.getUid()).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                user= task.getResult().getValue(User.class);
+            }
+        });
     }
 
     ///Load thông tin bài viết
@@ -341,6 +376,7 @@ public class ReadContent extends AppCompatActivity implements View.OnClickListen
             @Override
             public void onClick(View view) {
                 if(!editCmt.getText().toString().equals("")) {
+                    //upLoad comment
                     Calendar calendar = Calendar.getInstance();
                     Comment comment = new Comment();
                     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
@@ -350,6 +386,18 @@ public class ReadContent extends AppCompatActivity implements View.OnClickListen
                     comment.setMainContent(editCmt.getText().toString());
                     editCmt.setText("");
                     dataRef.child("Comments").push().setValue(comment);
+
+                    //Create Noti
+                    NotificationContent noti = new NotificationContent(content.getUser().getUserID(),content.getID(),
+                            user.getName(),"comment", listCmt.size(), false);
+                    noti.setImg(content.getImageContent());
+                    noti.setID(content.getID() + "comment");
+                    SimpleDateFormat simpleDateFormat1 = new SimpleDateFormat("dd/MM/yyyy/HH/mm/ss");
+                    noti.setDate(simpleDateFormat1.format(calendar.getTime()));
+                    dataRef.child("Notifications").child(content.getID() + "comment").setValue(noti);
+
+                    dataRef.child("Users").child(content.getUser().getUserID()).child("haveNotification").setValue(true);
+
                 }
             }
         });
@@ -384,8 +432,32 @@ public class ReadContent extends AppCompatActivity implements View.OnClickListen
     //Tạo thanh menu
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if(currentUser!=null)
-            getMenuInflater().inflate(R.menu.menu_read,menu);
+        if(currentUser!=null) {
+            getMenuInflater().inflate(R.menu.menu_read, menu);
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if(user.isHaveNotification())
+                        menu.getItem(1).setIcon(R.drawable.icon_bell_noti);
+                }
+            },2000);
+            dataRef.child("Users").child(currentUser.getUid()).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    user = snapshot.getValue(User.class);
+                    if(user.isHaveNotification()){
+                        menu.getItem(1).setIcon(R.drawable.icon_bell_noti);
+                    }
+                    else
+                        menu.getItem(1).setIcon(R.drawable.icon_bell);
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+        }
         else
             getMenuInflater().inflate(R.menu.menu_read_without_signin,menu);
         return super.onCreateOptionsMenu(menu);
@@ -429,6 +501,11 @@ public class ReadContent extends AppCompatActivity implements View.OnClickListen
             case android.R.id.home:
                 finish();
                 break;
+            case R.id.menu_noti:
+                dataRef.child("Users").child(user.getUserID()).child("haveNotification").setValue(false);
+                item.setIcon(R.drawable.icon_bell);
+                Intent intent4 = new Intent(getApplicationContext(),NotificationActivity.class);
+                startActivity(intent4);
         }
         return super.onOptionsItemSelected(item);
     }

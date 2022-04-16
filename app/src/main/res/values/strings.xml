@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Hola travel</string>
+    <string name="notification_like">đã thích bài viết của bạn</string>
 </resources>

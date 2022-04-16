@@ -179,6 +179,7 @@ public class HomeActivity extends AppCompatActivity  {
     private void getInfOfContent(){
         dialogLoading.show();
         contentCountCheck=-1;
+        DatabaseReference dataRef;
         dataRef= FirebaseDatabase.getInstance().getReference("Contents");
         dataRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
@@ -271,10 +272,11 @@ public class HomeActivity extends AppCompatActivity  {
             dataRef.child("Users").child(currentUser.getUid()).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<DataSnapshot> task) {
-                    if(task.isSuccessful())
+                    if (task.isSuccessful())
                         mainUser = task.getResult().getValue(User.class);
                 }
             });
+
         adapter = new ContentAdapter(listFilter, this);
         listViewContent.setAdapter(adapter);
         dialogLoading = new Dialog(HomeActivity.this);
@@ -285,13 +287,41 @@ public class HomeActivity extends AppCompatActivity  {
     //Tạo và bắt sự kiện cho menu
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if(currentUser!=null)
-            getMenuInflater().inflate(R.menu.main_menu,menu);
+        if(currentUser!=null) {
+            getMenuInflater().inflate(R.menu.main_menu, menu);
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if(mainUser.isHaveNotification())
+                        menu.getItem(2).setIcon(R.drawable.icon_bell_noti);
+                }
+            },2000);
+            dataRef.child("Users").child(currentUser.getUid()).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    mainUser = snapshot.getValue(User.class);
+                    if(mainUser.isHaveNotification()){
+                        menu.getItem(2).setIcon(R.drawable.icon_bell_noti);
+                    }
+                    else
+                        menu.getItem(2).setIcon(R.drawable.icon_bell);
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+
+        }
         else
             getMenuInflater().inflate(R.menu.main_menu_without_signin,menu);
+
+
         return super.onCreateOptionsMenu(menu);
     }
 
+    ///Bắt sự kiện click cái item trên menu
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId())
@@ -309,11 +339,19 @@ public class HomeActivity extends AppCompatActivity  {
                         public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
                             if(i == EditorInfo.IME_ACTION_SEARCH)
                             {
-                                Toast.makeText(HomeActivity.this, "Search!!", Toast.LENGTH_SHORT).show();
+                                String search = editSearch.getText().toString();
+                                listFilter.clear();
+                                for(Content content : listContent) {
+                                    if(content.getTitle().toLowerCase().indexOf(search.toLowerCase())>=0)
+                                        listFilter.add(content);
+                                    else if(content.getMainContent().toLowerCase().indexOf(search.toLowerCase())>=0)
+                                        listFilter.add(content); }
+                                adapter.notifyDataSetChanged();
                             }
                             return false;
                         }
                     });
+                    editSearch.setText("");
                 }
                 else
                     searchActionBar(false);
@@ -340,10 +378,16 @@ public class HomeActivity extends AppCompatActivity  {
                 mAuth.signOut();
                 startActivity(intent3);
                 finish();
+            case R.id.menu_noti:
+                dataRef.child("Users").child(mainUser.getUserID()).child("haveNotification").setValue(false);
+                item.setIcon(R.drawable.icon_bell);
+                Intent intent4 = new Intent(getApplicationContext(),NotificationActivity.class);
+                startActivity(intent4);
         }
         return super.onOptionsItemSelected(item);
     }
 
+    //Hàm lọc danh sách content
     private void Filter(int TYPE){
         switch (TYPE)
         {

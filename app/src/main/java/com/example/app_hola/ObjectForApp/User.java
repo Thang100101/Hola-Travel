@@ -7,7 +7,7 @@ public class User implements Serializable {
     String userID, Name, Username, Password, Birth, Sex;
     ImageContent Avatar;
     ArrayList<Content> listContent = new ArrayList<>();
-
+    boolean haveNotification;
     public User(String userID, String username, String password) {
         this.userID = userID;
         Username = username;
@@ -53,6 +53,11 @@ public class User implements Serializable {
         return Name;
     }
 
+    public boolean isHaveNotification() {
+        return haveNotification;
+    }
+
+
 
     ///SET
 
@@ -83,5 +88,9 @@ public class User implements Serializable {
 
     public void setName(String name) {
         Name = name;
+    }
+
+    public void setHaveNotification(boolean haveNotification) {
+        this.haveNotification = haveNotification;
     }
 }
