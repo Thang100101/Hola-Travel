@@ -295,7 +295,7 @@ public class HomeActivity extends AppCompatActivity  {
                     if(mainUser.isHaveNotification())
                         menu.getItem(2).setIcon(R.drawable.icon_bell_noti);
                 }
-            },2000);
+            },4000);
             dataRef.child("Users").child(currentUser.getUid()).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {

@@ -223,12 +223,13 @@ public class ReadContent extends AppCompatActivity implements View.OnClickListen
             listButtonTag[i].setText(listTag.get(i).getName());
         }
         btnLocation = (Button) findViewById(R.id.btn_location);
-        dataRef.child("Users").child(currentUser.getUid()).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DataSnapshot> task) {
-                user= task.getResult().getValue(User.class);
-            }
-        });
+        if(currentUser!=null)
+            dataRef.child("Users").child(currentUser.getUid()).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DataSnapshot> task) {
+                    user= task.getResult().getValue(User.class);
+                }
+            });
     }
 
     ///Load thông tin bài viết
@@ -270,14 +271,15 @@ public class ReadContent extends AppCompatActivity implements View.OnClickListen
     {
         txtLikeCount.setText(listLike.size()+"");
         txtCmtCount.setText(listCmt.size()+"");
-        for(int i = 0; i< listLike.size(); i++)
-        {
-            if(listLike.get(i).getUserID().equals(currentUser.getUid()))
+        if(currentUser!=null)
+            for(int i = 0; i< listLike.size(); i++)
             {
-                btnLike.setBackgroundResource(R.drawable.icon_like);
-                like = listLike.get(i);
+                if(listLike.get(i).getUserID().equals(currentUser.getUid()))
+                {
+                    btnLike.setBackgroundResource(R.drawable.icon_like);
+                    like = listLike.get(i);
+                }
             }
-        }
     }
 
     //Load danh sách like, cmt
