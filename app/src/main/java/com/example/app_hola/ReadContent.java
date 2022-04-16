@@ -3,12 +3,17 @@ package com.example.app_hola;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
@@ -324,7 +329,9 @@ public class ReadContent extends AppCompatActivity implements View.OnClickListen
     private void createDialogCmt()
     {
         Dialog dialog = new Dialog(ReadContent.this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialog_list_comment);
+        InitDialog(dialog);
         dialog.show();
         ListView listViewComment = (ListView) dialog.findViewById(R.id.list_cmt);
         EditText editCmt = (EditText) dialog.findViewById(R.id.edit_cmt);
@@ -468,5 +475,14 @@ public class ReadContent extends AppCompatActivity implements View.OnClickListen
         Intent intent = new Intent(ReadContent.this,HomeActivity.class);
         intent.putExtra("tagid",tag.getID());
         startActivity(intent);
+    }
+    private void InitDialog(Dialog dialog) {
+        //Init Dialog
+        Window window = dialog.getWindow();
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+
+        WindowManager.LayoutParams windowAttributes = window.getAttributes();
+        windowAttributes.gravity = Gravity.CENTER;
+        window.setAttributes(windowAttributes);
     }
 }
