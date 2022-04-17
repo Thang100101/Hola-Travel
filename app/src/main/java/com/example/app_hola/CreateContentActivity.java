@@ -317,7 +317,8 @@ public class CreateContentActivity extends AppCompatActivity implements View.OnC
     //Xử lí đăng bài viết
     private void uploadContent()
     {
-        if(!(editContent.getText().toString().equals("") && editTitle.getText().toString().equals(""))
+        if(!(editContent.getText().toString().replace(" ","").equals("")
+                || editTitle.getText().toString().replace(" ","").equals(""))
          && editContent.getText().toString().length()>= 500 && imgCount>=1) {
             Calendar calendar = Calendar.getInstance();
             String id = calendar.getTimeInMillis()+currentUser.getUid();
@@ -385,8 +386,10 @@ public class CreateContentActivity extends AppCompatActivity implements View.OnC
         else if (imgCount<1){
             Toast.makeText(this, "Phải có tối thiểu 1 hình ảnh", Toast.LENGTH_SHORT).show();
         }
+        else if(editContent.getText().toString().length()<500)
+            Toast.makeText(this, "Bài viết tối thiểu 500 kí tự", Toast.LENGTH_SHORT).show();
         else
-            Toast.makeText(this, "Bài viết không hợp lệ hoặc quá ngắn", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Bài viết không hợp lệ", Toast.LENGTH_SHORT).show();
     }
     //Nạp danh sách ảnh vào content
     private void addImgForContent()

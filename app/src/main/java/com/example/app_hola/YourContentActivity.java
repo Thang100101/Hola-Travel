@@ -182,7 +182,7 @@ public class YourContentActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     if(currentUser.isHaveNotification())
-                        menu.getItem(1).setIcon(R.drawable.icon_bell_noti);
+                        menu.getItem(2).setIcon(R.drawable.icon_bell_noti);
                 }
             },2000);
             dataRef.child("Users").child(user.getUid()).addValueEventListener(new ValueEventListener() {
@@ -190,10 +190,10 @@ public class YourContentActivity extends AppCompatActivity {
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     currentUser = snapshot.getValue(User.class);
                     if(currentUser.isHaveNotification()){
-                        menu.getItem(1).setIcon(R.drawable.icon_bell_noti);
+                        menu.getItem(2).setIcon(R.drawable.icon_bell_noti);
                     }
                     else
-                        menu.getItem(1).setIcon(R.drawable.icon_bell);
+                        menu.getItem(2).setIcon(R.drawable.icon_bell);
                 }
 
                 @Override
