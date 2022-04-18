@@ -75,4 +75,12 @@
     <string name="like_type_2">thích bài viết của bạn</string>
     <string name="comment">đã bình luận bài viết của bạn</string>
     <string name="like_type_1">người đã thích bài viết của bạn</string>
+    <string name="tag1">Đồ ăn</string>
+    <string name="tag2">Típ</string>
+    <string name="tag3">Kinh nghiệm</string>
+    <string name="tag4">Khách sạn</string>
+    <string name="tag5">Đà lạt</string>
+    <string name="tag6">Vũng Tàu</string>
+    <string name="tag7">Nha Trang</string>
+    <string name="tag8">Phú Quốc</string>
 </resources>

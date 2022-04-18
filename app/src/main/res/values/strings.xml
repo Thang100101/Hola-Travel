@@ -74,4 +74,12 @@
     <string name="like_type_2">liked your post</string>
     <string name="comment">Commented on your post</string>
     <string name="like_type_1">people liked your post</string>
+    <string name="tag1">Food</string>
+    <string name="tag2">Tips</string>
+    <string name="tag3">" Experience"</string>
+    <string name="tag4">Hotel</string>
+    <string name="tag5">Da Lat</string>
+    <string name="tag6">Vung Tau</string>
+    <string name="tag7">Nha Trang</string>
+    <string name="tag8">Phu Quoc</string>
 </resources>

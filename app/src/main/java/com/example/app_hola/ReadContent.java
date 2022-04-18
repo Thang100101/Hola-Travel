@@ -215,12 +215,13 @@ public class ReadContent extends AppCompatActivity implements View.OnClickListen
         for(int i =0; i<listTag.size(); i++)
         {
             String btnID = "btn_tag_" + (i + 1);
+            listTag.get(i).setContext(ReadContent.this);
             int resID = getResources().getIdentifier(btnID, "id", getPackageName());
             listButtonTag[i] = (Button) findViewById(resID);
             listButtonTag[i].setVisibility(View.VISIBLE);
             listButtonTag[i].setOnClickListener(this);
             listButtonTag[i].setTag(listTag.get(i));
-            listButtonTag[i].setText(listTag.get(i).getName());
+            listButtonTag[i].setText(listTag.get(i).toString());
         }
         btnLocation = (Button) findViewById(R.id.btn_location);
         if(currentUser!=null)

@@ -122,7 +122,9 @@ public class CreateContentActivity extends AppCompatActivity implements View.OnC
                 dataRef.child("Tags").addChildEventListener(new ChildEventListener() {
                     @Override
                     public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                        listTag.add(snapshot.getValue(Tag.class));
+                        Tag tag = snapshot.getValue(Tag.class);
+                        tag.setContext(CreateContentActivity.this);
+                        listTag.add(tag);
                         adapter.notifyDataSetChanged();
                     }
 
