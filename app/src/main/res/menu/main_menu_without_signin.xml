@@ -6,15 +6,15 @@
         android:id="@+id/menu_search"
         android:icon="@drawable/icon_search"
         app:showAsAction="always"
-        android:title="Search"
+        android:title="@string/search"
         ></item>
     <item
         android:id="@+id/menu_signin"
-        android:title="Đăng nhập"
+        android:title="@string/sign_in"
         ></item>
     <item
         android:id="@+id/menu_exit"
-        android:title="Thoát"
+        android:title="@string/exit"
         ></item>
 
 </menu>

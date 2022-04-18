@@ -14,7 +14,7 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:id="@+id/edit_title"
-        android:hint="Tiêu đề bài viết"
+        android:hint="@string/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="@color/black"
@@ -85,7 +85,7 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:id="@+id/edit_content"
-            android:hint="Nội dung"
+            android:hint="@string/main_content"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:textColor="@color/black"
@@ -199,8 +199,8 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="3"
-                android:text="Bạn muốn thêm gì ?"
-                android:textSize="20dp"
+                android:text="@string/add"
+                android:textSize="18dp"
                 android:gravity="center"
                 android:textColor="@color/black"
                 >
@@ -255,7 +255,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:text="Đăng bài"
+            android:text="@string/upload_2"
             android:textSize="30dp"
             ></Button>
     </LinearLayout>

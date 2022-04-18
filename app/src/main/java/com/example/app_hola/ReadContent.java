@@ -113,7 +113,7 @@ public class ReadContent extends AppCompatActivity implements View.OnClickListen
                                 user.getName(), "like", listLike.size(), false);
                         noti.setImg(content.getImageContent());
                         noti.setID(content.getID() + "like");
-                        noti.setMainContent("Có " + listLike.size() + " người đã thích bài viết của bạn");
+                        noti.setMainContent("like_type_1");
                         SimpleDateFormat simpleDateFormat1 = new SimpleDateFormat("dd/MM/yyyy/HH/mm/ss");
                         noti.setDate(simpleDateFormat1.format(calendar.getTime()));
                         dataRef.child("Notifications").child(content.getID() + "like").setValue(noti);
@@ -142,7 +142,7 @@ public class ReadContent extends AppCompatActivity implements View.OnClickListen
                     SimpleDateFormat simpleDateFormat1 = new SimpleDateFormat("dd/MM/yyyy/HH/mm/ss");
                     noti.setDate(simpleDateFormat1.format(calendar.getTime()));
                     if(listLike.size()==1)
-                        noti.setMainContent(noti.getReaderName()+ " đã thích bài viết của bạn");
+                        noti.setMainContent("like_type_2");
                     dataRef.child("Notifications").child(content.getID() + "like").setValue(noti);
                     dataRef.child("Users").child(content.getUser().getUserID()).child("haveNotification").setValue(true);
                 }
@@ -396,6 +396,7 @@ public class ReadContent extends AppCompatActivity implements View.OnClickListen
                     noti.setID(content.getID() + "comment");
                     SimpleDateFormat simpleDateFormat1 = new SimpleDateFormat("dd/MM/yyyy/HH/mm/ss");
                     noti.setDate(simpleDateFormat1.format(calendar.getTime()));
+                    noti.setMainContent("comment");
                     dataRef.child("Notifications").child(content.getID() + "comment").setValue(noti);
 
                     dataRef.child("Users").child(content.getUser().getUserID()).child("haveNotification").setValue(true);
@@ -516,10 +517,10 @@ public class ReadContent extends AppCompatActivity implements View.OnClickListen
     private void acceptOut()
     {
         AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-        dialog.setTitle("Khoan đã!!");
-        dialog.setMessage("Bạn có chắc chắn muốn thoát không?");
+        dialog.setTitle(getResources().getString(R.string.wait));
+        dialog.setMessage(getResources().getString(R.string.want_exit));
         dialog.setIcon(R.drawable.icon_crying);
-        dialog.setPositiveButton("Có", new DialogInterface.OnClickListener() {
+        dialog.setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 Intent intent = new Intent(getApplicationContext(), WellcomeActivity.class);
@@ -531,7 +532,7 @@ public class ReadContent extends AppCompatActivity implements View.OnClickListen
                 finish();
             }
         });
-        dialog.setNegativeButton("Không", new DialogInterface.OnClickListener() {
+        dialog.setNegativeButton(getResources().getString(R.string.no), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
             }

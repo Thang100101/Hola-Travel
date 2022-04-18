@@ -52,7 +52,7 @@ public class NotificationActivity extends AppCompatActivity {
         setContentView(R.layout.activity_notification);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setBackgroundDrawable(getDrawable(R.drawable.background_actionbar));
-        actionBar.setTitle("Thông báo");
+        actionBar.setTitle(getResources().getString(R.string.noti_title));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         Mapping();
         getNotificationForUser();

@@ -3,18 +3,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     >
+
     <TextView
         android:id="@+id/tvTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="Bình luận"
-        android:textStyle="bold"
-        android:textSize="30dp"
-        android:textColor="@color/black"
-        android:textAlignment="center"
         android:padding="10dp"
-        ></TextView>
+        android:text="@string/cmt"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="30dp"
+        android:textStyle="bold"></TextView>
     <View
         android:id="@+id/topLine"
         android:layout_width="match_parent"

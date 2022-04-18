@@ -4,28 +4,28 @@
     >
 
     <item
-        android:title="Quản lí tài khoản"
+        android:title="@string/profile"
         android:icon="@drawable/icon_profile"
         app:showAsAction="always"
         android:id="@+id/menu_profile"
         ></item>
     <item
         android:id="@+id/menu_noti"
-        android:title="Message"
+        android:title="@string/noti"
         android:icon="@drawable/icon_bell"
         app:showAsAction="always"
         ></item>
     <item
         android:id="@+id/menu_signout"
-        android:title="Đăng xuất"
+        android:title="@string/sign_out"
         ></item>
     <item
         android:id="@+id/menu_another"
-        android:title="Tài khoản khác"
+        android:title="@string/another_account"
         ></item>
     <item
         android:id="@+id/menu_exit"
-        android:title="Thoát"
+        android:title="@string/exit"
         ></item>
 
 </menu>

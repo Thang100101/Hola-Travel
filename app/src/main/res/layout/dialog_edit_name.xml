@@ -7,7 +7,7 @@
     android:background="@drawable/custom_dialog_radius">
 
     <TextView
-        android:text="Đổi tên"
+        android:text="@string/change_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="25dp"
@@ -25,7 +25,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="20dp"
-        android:hint="Tên mới"
+        android:hint="@string/new_name"
         ></EditText>
     <LinearLayout
         android:layout_width="match_parent"
@@ -40,7 +40,7 @@
             android:id="@+id/btn_cancel"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:text="Hủy"
+            android:text="@string/btn_cancel"
             android:layout_gravity="center"
             android:background="#CCC8C8"
             android:textColor="@color/black"
@@ -52,7 +52,7 @@
             android:id="@+id/btn_submit"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:text="Xác nhận"
+            android:text="@string/btn_submit"
             android:layout_gravity="center"
             android:background="#0BA511"
             android:textColor="@color/white"

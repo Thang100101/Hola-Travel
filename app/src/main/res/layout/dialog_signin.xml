@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:padding="12dp"
         android:gravity="center"
-        android:text="Đăng nhập"
+        android:text="@string/sign_in"
         android:textSize="25dp"
         android:textStyle="bold"
         android:textColor="@color/white"
@@ -35,7 +35,7 @@
             android:id="@+id/edit_pass"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:hint="Mật khẩu"
+            android:hint="@string/pass"
             android:inputType="textPassword"/>
     </LinearLayout>
     <LinearLayout
@@ -50,7 +50,7 @@
             android:layout_height="wrap_content"
             android:background="#CCC8C8"
             android:layout_marginRight="20dp"
-            android:text="Hủy"/>
+            android:text="@string/btn_cancel"/>
         <Button
             android:id="@+id/btn_submit"
             android:layout_width="120dp"
@@ -58,6 +58,6 @@
             android:background="#0BA511"
             android:textColor="@color/white"
             android:layout_marginLeft="20dp"
-            android:text="Đăng nhập"/>
+            android:text="@string/btn_submit"/>
     </LinearLayout>
 </LinearLayout>
