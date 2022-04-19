@@ -28,7 +28,7 @@
             android:id="@+id/rd_male"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Nam"
+            android:text="@string/male"
             android:textSize="20dp"
             ></RadioButton>
         <RadioButton
@@ -36,7 +36,7 @@
             android:layout_marginTop="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Nữ"
+            android:text="@string/female"
             android:textSize="20dp"
             ></RadioButton>
     </RadioGroup>
@@ -51,7 +51,7 @@
             android:id="@+id/btn_cancel"
             android:layout_width="100dp"
             android:layout_height="50dp"
-            android:text="Hủy"
+            android:text="@string/btn_cancel"
             android:layout_gravity="center"
             android:background="#CCC8C8"
             android:textColor="@color/black"
@@ -63,7 +63,7 @@
             android:id="@+id/btn_submit"
             android:layout_width="100dp"
             android:layout_height="50dp"
-            android:text="Xác nhận"
+            android:text="@string/btn_submit"
             android:layout_gravity="center"
             android:background="#0BA511"
             android:textColor="@color/white"

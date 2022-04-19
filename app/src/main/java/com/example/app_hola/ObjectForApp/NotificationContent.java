@@ -15,7 +15,7 @@ public class NotificationContent {
         Type = type;
         this.countContact = countContact;
         this.Read=read;
-        settingMainContent();
+//        settingMainContent();
     }
     private void settingMainContent(){
         if(Type.equals("like"))

@@ -85,7 +85,7 @@ public class WellcomeActivity extends AppCompatActivity implements Serializable{
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
 
-        txtTile.setText("Chào mừng bạn đến với Hola");
+        txtTile.setText(getResources().getString(R.string.wellcome_1));
         btnExit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -175,10 +175,10 @@ public class WellcomeActivity extends AppCompatActivity implements Serializable{
     {
 
         AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-        dialog.setTitle("Khoan đã!!");
-        dialog.setMessage("Bạn có chắc chắn muốn thoát không?");
+        dialog.setTitle(getResources().getString(R.string.wait));
+        dialog.setMessage(getResources().getString(R.string.want_exit));
         dialog.setIcon(R.drawable.icon_crying);
-        dialog.setPositiveButton("Có", new DialogInterface.OnClickListener() {
+        dialog.setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 Intent intent = new Intent(getApplicationContext(), WellcomeActivity.class);
@@ -190,7 +190,7 @@ public class WellcomeActivity extends AppCompatActivity implements Serializable{
                 finish();
             }
         });
-        dialog.setNegativeButton("Không", new DialogInterface.OnClickListener() {
+        dialog.setNegativeButton(getResources().getString(R.string.no), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
             }
@@ -237,7 +237,7 @@ public class WellcomeActivity extends AppCompatActivity implements Serializable{
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     if (task.isSuccessful()) {
                                         // Sign in success, update UI with the signed-in user's information
-                                        Toast.makeText(WellcomeActivity.this, "Đăng kí thành công",
+                                        Toast.makeText(WellcomeActivity.this, getResources().getString(R.string.regist_success),
                                                 Toast.LENGTH_SHORT).show();
 
                                         ///Tạo User
@@ -246,7 +246,7 @@ public class WellcomeActivity extends AppCompatActivity implements Serializable{
                                         String birth = simpleDateFormat.format(calendar.getTime());
                                         User user = new User(mAuth.getCurrentUser().getUid(),email,pass);
                                         user.setBirth(birth);
-                                        user.setName("Chưa có tên");
+                                        user.setName(getResources().getString(R.string.name_unknow));
                                         user.setSex("Nam");
                                         user.setHaveNotification(false);
                                         ImageContent img = new ImageContent();
@@ -263,7 +263,7 @@ public class WellcomeActivity extends AppCompatActivity implements Serializable{
                                     } else {
                                         // If sign in fails, display a message to the user.
                                         Toast.makeText(WellcomeActivity.this,
-                                                "Tài khoản đã tồn tại hoặc không hợp lệ",
+                                                getResources().getString(R.string.regist_invalid),
                                                 Toast.LENGTH_SHORT).show();
                                         dialogLoading.dismiss();
                                         dialogRegist.show();
@@ -277,11 +277,16 @@ public class WellcomeActivity extends AppCompatActivity implements Serializable{
     }
     private boolean CheckRegist(String user, String pass, String confirm)
     {
-        if(!pass.equals(confirm)){
-            Toast.makeText(WellcomeActivity.this, "Mật khẩu không trùng khớp!", Toast.LENGTH_LONG).show();
+        if(user.replace(" ","").isEmpty() || pass.replace(" ","").isEmpty() ||
+                confirm.replace(" ","").isEmpty()) {
+            Toast.makeText(this, getResources().getString(R.string.empty_user_pass), Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        else if(!pass.equals(confirm)){
+            Toast.makeText(WellcomeActivity.this, getResources().getString(R.string.regist_confirm_false), Toast.LENGTH_LONG).show();
             return false;
         }else if (pass.length() < 8) {
-            Toast.makeText(WellcomeActivity.this, "Mật khẩu phải lớn hơn 8 kí tự", Toast.LENGTH_LONG).show();
+            Toast.makeText(WellcomeActivity.this, getResources().getString(R.string.regist_length_pass), Toast.LENGTH_LONG).show();
             return false;
         }else {
             return true;
@@ -309,8 +314,12 @@ public class WellcomeActivity extends AppCompatActivity implements Serializable{
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                CheckSignin(editUser.getText().toString(),
-                        editPass.getText().toString());
+                if(!(editUser.getText().toString().replace(" ","").equals("")
+                ||editPass.getText().toString().replace(" ","").equals("")))
+                    CheckSignin(editUser.getText().toString(),
+                            editPass.getText().toString());
+                else
+                    Toast.makeText(context, getResources().getString(R.string.empty_user_pass), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -334,7 +343,7 @@ public class WellcomeActivity extends AppCompatActivity implements Serializable{
                             return;
                         } else {
                             // If sign in fails, display a message to the user.
-                            Toast.makeText(WellcomeActivity.this, "Tài khoản hoặc mật khẩu không chính xác",
+                            Toast.makeText(WellcomeActivity.this, getResources().getString(R.string.user_pass_not_correct),
                                     Toast.LENGTH_SHORT).show();
                             dialogLoading.dismiss();
                             dialogSignin.show();
@@ -376,14 +385,14 @@ public class WellcomeActivity extends AppCompatActivity implements Serializable{
             public void onTick(long l) {
                 if(check==0)
                 {
-                    txtTile.setText("Chào mừng bạn đến với Hola");
+                    txtTile.setText(getResources().getString(R.string.wellcome_1));
                     txtTile.startAnimation(alpha);
                     mainLayout.setBackgroundResource(R.drawable.background_type_1);
                     check=1;
                 }
                 else
                 {
-                    txtTile.setText("Đăng kí để nhận đặc quyền của thành viên nhé!!");
+                    txtTile.setText(getResources().getString(R.string.wellcome_2));
                     txtTile.startAnimation(alpha);
                     mainLayout.setBackgroundResource(R.drawable.background_type_2);
                     check=0;

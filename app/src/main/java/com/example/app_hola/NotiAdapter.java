@@ -55,7 +55,15 @@ public class NotiAdapter extends BaseAdapter {
 
         NotificationContent noti = listNoti.get(i);
         Picasso.get().load(noti.getImg().getLink()).into(img);
-        txtMainContent.setText(noti.getMainContent());
+        String mainContent;
+        if(noti.getMainContent().equals("like_type_1"))
+            mainContent = noti.getCountContact()+" "+context.getResources().getString(R.string.like_type_1);
+        else if (noti.getMainContent().equals("like_type_2"))
+            mainContent = noti.getReaderName()+" "+context.getResources().getString(R.string.like_type_2);
+        else
+            mainContent = noti.getReaderName()+" "+context.getResources().getString(R.string.comment);
+
+        txtMainContent.setText(mainContent);
         try {
             Date date = new SimpleDateFormat("dd/MM/yyyy/HH").parse(noti.getDate());
             Calendar calendar = Calendar.getInstance();

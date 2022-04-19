@@ -106,7 +106,7 @@ public class ProfileActivity extends AppCompatActivity {
     private void InitActionBar(){
         ActionBar actionBar = getSupportActionBar();
         actionBar.setBackgroundDrawable(getDrawable(R.drawable.background_actionbar));
-        actionBar.setTitle("Thông tin cá nhân");
+        actionBar.setTitle(getResources().getString(R.string.profile));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
@@ -145,7 +145,10 @@ public class ProfileActivity extends AppCompatActivity {
             Picasso.get().load(user.getAvatar().getLink()).into(imgAvatar);
             txtName.setText(user.getName());
             txtBirth.setText(user.getBirth());
-            txtSex.setText(user.getSex());
+            if(user.getSex().equals("Nam"))
+                txtSex.setText(getResources().getString(R.string.male));
+            else
+                txtSex.setText(getResources().getString(R.string.female));
         }
     }
 
@@ -281,7 +284,7 @@ public class ProfileActivity extends AppCompatActivity {
                 if(query!=null) {
                     countContentForuser(query, "change");
                 }
-                Toast.makeText(ProfileActivity.this, "Cập nhật thành công", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ProfileActivity.this, getResources().getString(R.string.update_success), Toast.LENGTH_SHORT).show();
                 dialogLoading.dismiss();
             }
         });
@@ -336,7 +339,7 @@ public class ProfileActivity extends AppCompatActivity {
                         dialog.dismiss();
                     }else
                     {
-                        Toast.makeText(ProfileActivity.this, "Tên không được để trống", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ProfileActivity.this, getResources().getString(R.string.name_empty), Toast.LENGTH_SHORT).show();
                     }
                 }
             });
@@ -359,7 +362,7 @@ public class ProfileActivity extends AppCompatActivity {
             RadioGroup Rdg = (RadioGroup) dialog.findViewById(R.id.rdg);
             RadioButton rdMale = (RadioButton) dialog.findViewById(R.id.rd_male);
             RadioButton rdFemale = (RadioButton) dialog.findViewById(R.id.rd_female);
-            if (txtSex.getText().equals("Nam"))
+            if (user.getSex().equals("Nam"))
                 rdMale.setChecked(true);
             else
                 rdFemale.setChecked(true);
@@ -369,7 +372,7 @@ public class ProfileActivity extends AppCompatActivity {
                 public void onClick(View view) {
                     if(rdMale.isChecked() && !(user.getSex().toString().equals("Nam"))) {
                         user.setSex("Nam");
-                        txtSex.setText("Nam");
+                        txtSex.setText(getResources().getString(R.string.male));
                         dataRef.child("Users").child(user.getUserID()).setValue(user);
                         Query query = dataRef.child("Contents").orderByChild("user/userID").equalTo(user.getUserID());
                         if(query!=null) {
@@ -379,7 +382,7 @@ public class ProfileActivity extends AppCompatActivity {
                     }
                     else if(rdFemale.isChecked() && !(user.getSex().toString().equals("Nữ"))){
                         user.setSex("Nữ");
-                        txtSex.setText("Nữ");
+                        txtSex.setText(getResources().getString(R.string.female));
                         dataRef.child("Users").child(user.getUserID()).setValue(user);
                         Query query = dataRef.child("Contents").orderByChild("user/userID").equalTo(user.getUserID());
                         if(query!=null) {
@@ -419,16 +422,16 @@ public class ProfileActivity extends AppCompatActivity {
                 public void onClick(View view) {
                     if (!editOldPass.getText().toString().equals(oldPassword)) {
                         Toast.makeText(ProfileActivity.this,
-                                "Sai mật khẩu hiện tại!", Toast.LENGTH_LONG).show();
+                                getResources().getString(R.string.pass_now_wrong), Toast.LENGTH_LONG).show();
                     }else if (!editNewPass.getText().toString().equals(editConfirm.getText().toString())) {
                         Toast.makeText(ProfileActivity.this,
-                                "Xác nhận mật khẩu không chính xác!", Toast.LENGTH_LONG).show();
+                                getResources().getString(R.string.regist_confirm_false), Toast.LENGTH_LONG).show();
                     }else if (oldPassword.equals(editNewPass.getText().toString())){
                         Toast.makeText(ProfileActivity.this,
-                                "Mật khẩu mới phải khác mật khẩu hiện tại!", Toast.LENGTH_LONG).show();
+                                getResources().getString(R.string.change_pass), Toast.LENGTH_LONG).show();
                     }else if (editNewPass.getText().toString().length() < 8){
                         Toast.makeText(ProfileActivity.this,
-                                "Mật khẩu phải đủ 8 kí tự!",Toast.LENGTH_LONG).show();
+                                getResources().getString(R.string.regist_length_pass),Toast.LENGTH_LONG).show();
                     }else {
                         mAuth.getCurrentUser().updatePassword(editNewPass.getText().toString());
                         user.setPassword(editNewPass.getText().toString());
@@ -440,7 +443,7 @@ public class ProfileActivity extends AppCompatActivity {
                         dialog.dismiss();
                         txtPassword.setText(user.getPassword());
                         Toast.makeText(ProfileActivity.this,
-                                "Đổi mật khẩu thành công", Toast.LENGTH_LONG).show();
+                                getResources().getString(R.string.change_pass_success), Toast.LENGTH_LONG).show();
                     }
                 }
             });

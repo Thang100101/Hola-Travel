@@ -18,7 +18,7 @@
             android:layout_width="wrap_content"
             android:layout_height="30dp"
             android:background="@drawable/button_type_2"
-            android:text="Chưa đọc"
+            android:text="@string/unread"
             android:textAllCaps="false"
             ></Button>
         <Button
@@ -27,7 +27,7 @@
             android:layout_width="wrap_content"
             android:layout_height="30dp"
             android:background="@drawable/button_type_2"
-            android:text="Đã đọc"
+            android:text="@string/readed"
             android:textAllCaps="false"
             ></Button>
     </LinearLayout>

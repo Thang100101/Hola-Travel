@@ -1,5 +1,9 @@
 package com.example.app_hola.ObjectForApp;
 
+import android.app.Activity;
+import android.content.Context;
+
+import com.example.app_hola.R;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -7,6 +11,7 @@ import java.io.Serializable;
 
 public class Tag implements Serializable {
     String ID, Name;
+    private Context context;
 
     public Tag(String ID, String name) {
         this.ID = ID;
@@ -32,8 +37,28 @@ public class Tag implements Serializable {
         Name = name;
     }
 
+    public void setContext(Context context){ this.context=context;}
+
     @Override
     public String toString() {
+        switch (this.ID){
+            case "tag1":
+                return context.getResources().getString(R.string.tag1);
+            case "tag2":
+                return context.getResources().getString(R.string.tag2);
+            case "tag3":
+                return context.getResources().getString(R.string.tag3);
+            case "tag4":
+                return context.getResources().getString(R.string.tag4);
+            case "tag5":
+                return context.getResources().getString(R.string.tag5);
+            case "tag6":
+                return context.getResources().getString(R.string.tag6);
+            case "tag7":
+                return context.getResources().getString(R.string.tag7);
+            case "tag8":
+                return context.getResources().getString(R.string.tag8);
+        }
         return this.Name;
     }
 

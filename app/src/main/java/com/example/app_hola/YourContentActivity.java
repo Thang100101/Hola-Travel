@@ -66,7 +66,7 @@ public class YourContentActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if(currentUser==null)
-                    Toast.makeText(YourContentActivity.this, "Đăng nhập để đăng tải bài viết", Toast.LENGTH_LONG).show();
+                    Toast.makeText(YourContentActivity.this, getResources().getString(R.string.sign_in_upload), Toast.LENGTH_LONG).show();
                 else {
                     Intent intent = new Intent(YourContentActivity.this, CreateContentActivity.class);
                     startActivity(intent);
@@ -85,7 +85,7 @@ public class YourContentActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if(user==null)
-                    Toast.makeText(YourContentActivity.this, "Đăng nhập để xem danh sách bài viết của bạn", Toast.LENGTH_LONG).show();
+                    Toast.makeText(YourContentActivity.this, getResources().getString(R.string.sign_in_see_posts), Toast.LENGTH_LONG).show();
                 else if(!user.getUid().equals(ownerID))
                 {
                     Intent intent = new Intent(YourContentActivity.this, YourContentActivity.class);
@@ -173,7 +173,7 @@ public class YourContentActivity extends AppCompatActivity {
     {
         actionBar = getSupportActionBar();
         actionBar.setBackgroundDrawable(getDrawable(R.drawable.background_actionbar));
-        actionBar.setTitle("Bài viết của "+ownerName);
+        actionBar.setTitle(getResources().getString(R.string.post_of)+ " " +ownerName);
     }
     public boolean onCreateOptionsMenu(Menu menu) {
         if(user!=null) {
@@ -295,10 +295,10 @@ public class YourContentActivity extends AppCompatActivity {
     private void acceptOut()
     {
         AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-        dialog.setTitle("Khoan đã!!");
-        dialog.setMessage("Bạn có chắc chắn muốn thoát không?");
+        dialog.setTitle(getResources().getString(R.string.wait));
+        dialog.setMessage(getResources().getString(R.string.want_exit));
         dialog.setIcon(R.drawable.icon_crying);
-        dialog.setPositiveButton("Có", new DialogInterface.OnClickListener() {
+        dialog.setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 Intent intent = new Intent(getApplicationContext(), WellcomeActivity.class);
@@ -310,7 +310,7 @@ public class YourContentActivity extends AppCompatActivity {
                 finish();
             }
         });
-        dialog.setNegativeButton("Không", new DialogInterface.OnClickListener() {
+        dialog.setNegativeButton(getResources().getString(R.string.no), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
             }

@@ -38,7 +38,7 @@
                 android:background="@drawable/button_type_2"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:text="Đồ ăn"
+                android:text="@string/food"
                 android:textAllCaps="false"
                 ></Button>
 
@@ -49,7 +49,7 @@
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
                 android:background="@drawable/button_type_2"
-                android:text="Khách sạn"
+                android:text="@string/hotel"
                 android:textAllCaps="false"></Button>
 
             <Button
@@ -61,7 +61,7 @@
                 android:background="@drawable/button_type_2"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:text="Cộng đồng review"
+                android:text="@string/community"
                 android:textAllCaps="false"
                 ></Button>
 
@@ -84,7 +84,7 @@
                 android:background="@drawable/button_type_2"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:text="Chia sẻ kinh nghiệm"
+                android:text="@string/exp"
                 android:textAllCaps="false"
                 ></Button>
 

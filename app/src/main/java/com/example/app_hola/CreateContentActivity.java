@@ -54,6 +54,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
+import okio.Timeout;
+
 public class CreateContentActivity extends AppCompatActivity implements View.OnClickListener{
 
     Content content;
@@ -81,7 +83,7 @@ public class CreateContentActivity extends AppCompatActivity implements View.OnC
         loadButton();
         ActionBar actionBar = getSupportActionBar();
         actionBar.setBackgroundDrawable(getDrawable(R.drawable.background_actionbar));
-        actionBar.setTitle("Bài viết mới");
+        actionBar.setTitle(getResources().getString(R.string.new_post));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         editTitle.setText(prefer.getString("title",""));
         editContent.setText(prefer.getString("content",""));
@@ -101,7 +103,7 @@ public class CreateContentActivity extends AppCompatActivity implements View.OnC
                     intent.setType("image/*");
                     startActivityForResult(intent, REQUEST_CODE_TAKE_IMAGE);
                 }else
-                    Toast.makeText(CreateContentActivity.this, "Tối đa 5 ảnh", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CreateContentActivity.this, getResources().getString(R.string.max_img), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -120,7 +122,9 @@ public class CreateContentActivity extends AppCompatActivity implements View.OnC
                 dataRef.child("Tags").addChildEventListener(new ChildEventListener() {
                     @Override
                     public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                        listTag.add(snapshot.getValue(Tag.class));
+                        Tag tag = snapshot.getValue(Tag.class);
+                        tag.setContext(CreateContentActivity.this);
+                        listTag.add(tag);
                         adapter.notifyDataSetChanged();
                     }
 
@@ -140,7 +144,9 @@ public class CreateContentActivity extends AppCompatActivity implements View.OnC
                         {
                             if(listButtonTag[j].getTag()!=null)
                                 if(((Tag)listButtonTag[j].getTag()).toString().equals(listTag.get(i).toString())) {
-                                    Toast.makeText(CreateContentActivity.this, "Đã có thẻ " + listTag.get(i).toString(), Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(CreateContentActivity.this,
+                                            getResources().getString(R.string.already_tag) + listTag.get(i).toString(),
+                                            Toast.LENGTH_SHORT).show();
                                     return;
                                 }
                         }
@@ -153,7 +159,7 @@ public class CreateContentActivity extends AppCompatActivity implements View.OnC
                                 return;
                             }
                         }
-                        Toast.makeText(CreateContentActivity.this, "Tối đa 3 thẻ", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(CreateContentActivity.this, getResources().getString(R.string.max_tag), Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -236,7 +242,7 @@ public class CreateContentActivity extends AppCompatActivity implements View.OnC
                 editPrefer.putString("content",editContent.getText().toString());
                 editPrefer.commit();
                 haveSave=true;
-                Toast.makeText(this, "Đã lưu bản sao bài viết", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getResources().getString(R.string.post_saved), Toast.LENGTH_SHORT).show();
 
         }
         return super.onOptionsItemSelected(item);
@@ -258,9 +264,9 @@ public class CreateContentActivity extends AppCompatActivity implements View.OnC
     private void CreateDialog()
     {
         AlertDialog.Builder dialog = new AlertDialog.Builder(CreateContentActivity.this);
-        dialog.setTitle("Thông báo!!");
-        dialog.setMessage("Bài viết của bạn chưa được lưu bạn có chắc chắn muốn thoát?");
-        dialog.setPositiveButton("Có", new DialogInterface.OnClickListener() {
+        dialog.setTitle(getResources().getString(R.string.wait));
+        dialog.setMessage(getResources().getString(R.string.un_save_exit));
+        dialog.setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 editPrefer.remove("title");
@@ -269,7 +275,7 @@ public class CreateContentActivity extends AppCompatActivity implements View.OnC
                 CreateContentActivity.this.finish();
             }
         });
-        dialog.setNegativeButton("Không", new DialogInterface.OnClickListener() {
+        dialog.setNegativeButton(getResources().getString(R.string.no), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
 
@@ -358,7 +364,7 @@ public class CreateContentActivity extends AppCompatActivity implements View.OnC
                                 content.setTitle(editTitle.getText().toString());
                                 content.setListTag(listTag);
                             }
-                        },4000);
+                        },4000*imgCount);
                         //upload content lên database
                         new Handler().postDelayed(new Runnable() {
                             @Override
@@ -367,15 +373,15 @@ public class CreateContentActivity extends AppCompatActivity implements View.OnC
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
                                         if (task.isSuccessful()) {
-                                            Toast.makeText(CreateContentActivity.this, "Đăng bài thành công", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(CreateContentActivity.this, getResources().getString(R.string.upload_success), Toast.LENGTH_SHORT).show();
                                             dialogLoading.dismiss();
                                             CreateContentActivity.this.finish();
                                         } else
-                                            Toast.makeText(CreateContentActivity.this, "Lỗi rồi", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(CreateContentActivity.this, getResources().getString(R.string.erro), Toast.LENGTH_SHORT).show();
                                     }
                                 });
                             }
-                        },5000);
+                        },4000*imgCount+1000);
 
                     }
                 }
@@ -384,12 +390,12 @@ public class CreateContentActivity extends AppCompatActivity implements View.OnC
 
         }
         else if (imgCount<1){
-            Toast.makeText(this, "Phải có tối thiểu 1 hình ảnh", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getResources().getString(R.string.min_img), Toast.LENGTH_SHORT).show();
         }
         else if(editContent.getText().toString().length()<500)
-            Toast.makeText(this, "Bài viết tối thiểu 500 kí tự", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getResources().getString(R.string.min_char), Toast.LENGTH_SHORT).show();
         else
-            Toast.makeText(this, "Bài viết không hợp lệ", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getResources().getString(R.string.invalid_post), Toast.LENGTH_SHORT).show();
     }
     //Nạp danh sách ảnh vào content
     private void addImgForContent()
@@ -428,7 +434,7 @@ public class CreateContentActivity extends AppCompatActivity implements View.OnC
                     }
             });
         }
-
     }
+
 
 }
