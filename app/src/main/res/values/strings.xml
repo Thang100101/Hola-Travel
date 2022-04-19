@@ -62,7 +62,7 @@
     <string name="change_pass_success">Change password successful</string>
     <string name="noti_title">Notification</string>
     <string name="unread">Unread</string>
-    <string name="readed">Readed</string>
+    <string name="seen">Seen</string>
     <string name="change_name">Change your name</string>
     <string name="new_name">New name</string>
     <string name="change_pass_title">Change pass</string>
@@ -82,4 +82,5 @@
     <string name="tag6">Vung Tau</string>
     <string name="tag7">Nha Trang</string>
     <string name="tag8">Phu Quoc</string>
+    <string name="my_post">My post</string>
 </resources>

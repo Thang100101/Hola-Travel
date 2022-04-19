@@ -169,7 +169,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Đăng bài"
+                        android:text="@string/upload_2"
                         android:textAlignment="center"
                         android:layout_gravity="center"/>
                 </LinearLayout>
@@ -190,7 +190,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Bài viết"
+                        android:text="@string/my_post"
                         android:textAlignment="center"
                         android:layout_gravity="center"/>
                 </LinearLayout>

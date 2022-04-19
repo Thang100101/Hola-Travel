@@ -63,7 +63,7 @@
     <string name="change_pass_success">Đổi mật khẩu thành công</string>
     <string name="noti_title">Thông báo</string>
     <string name="unread">Chưa đọc</string>
-    <string name="readed">Đã đọc</string>
+    <string name="seen">Đã đọc</string>
     <string name="change_name">Đổi tên</string>
     <string name="new_name">Tên mới</string>
     <string name="change_pass_title">Đổi mật khẩu</string>
@@ -83,4 +83,5 @@
     <string name="tag6">Vũng Tàu</string>
     <string name="tag7">Nha Trang</string>
     <string name="tag8">Phú Quốc</string>
+    <string name="my_post">Bài viết</string>
 </resources>

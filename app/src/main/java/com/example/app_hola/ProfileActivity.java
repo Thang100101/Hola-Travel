@@ -143,7 +143,9 @@ public class ProfileActivity extends AppCompatActivity {
     private void loadingProfile(){
         if(user!=null) {
             Picasso.get().load(user.getAvatar().getLink()).into(imgAvatar);
-            txtName.setText(user.getName());
+            if (user.getName().equals("Chưa có tên"))
+                txtName.setText(getResources().getString(R.string.name_unknow));
+            else txtName.setText(user.getName());
             txtBirth.setText(user.getBirth());
             if(user.getSex().equals("Nam"))
                 txtSex.setText(getResources().getString(R.string.male));
