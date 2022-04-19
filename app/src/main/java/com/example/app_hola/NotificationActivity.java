@@ -11,9 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.Filter;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.example.app_hola.ObjectForApp.Content;
 import com.example.app_hola.ObjectForApp.NotificationContent;
@@ -28,7 +26,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -86,7 +83,7 @@ public class NotificationActivity extends AppCompatActivity {
                 dataRef.child("Contents").child(listNotiFilter.get(i).getContentID()).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<DataSnapshot> task) {
-                        Intent intent = new Intent(NotificationActivity.this, ReadContent.class);
+                        Intent intent = new Intent(NotificationActivity.this, ReadContentActivity.class);
                         intent.putExtra("content", task.getResult().getValue(Content.class));
 //                        listNotiFilter.get(i).setRead(true);
                         dataRef.child("Notifications").child(listNotiFilter.get(i).getID()).child("read").setValue(true);

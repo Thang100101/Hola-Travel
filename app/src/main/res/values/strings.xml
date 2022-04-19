@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">Hola travel</string>
+    <string name="map_api" translatable="false">AIzaSyBZ8if6b2MJn25LYvfYYL5Egf37fUZzh04</string>
     <string name="notification_like">like your post</string>
     <string name="user_pass_not_correct">User name or password is not correct</string>
     <string name="regist_success">Sign up success</string>
@@ -82,4 +83,6 @@
     <string name="tag6">Vung Tau</string>
     <string name="tag7">Nha Trang</string>
     <string name="tag8">Phu Quoc</string>
+    <string name="create_name_location">Name of location</string>
+    <string name="viet_nam">Viet Nam</string>
 </resources>

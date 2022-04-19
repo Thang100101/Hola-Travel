@@ -83,4 +83,6 @@
     <string name="tag6">Vũng Tàu</string>
     <string name="tag7">Nha Trang</string>
     <string name="tag8">Phú Quốc</string>
+    <string name="create_name_location">Tên của địa điểm</string>
+    <string name="viet_nam">Việt Nam</string>
 </resources>

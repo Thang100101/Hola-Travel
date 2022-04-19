@@ -100,7 +100,7 @@ public class YourContentActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Content content = listContent.get(i);
-                Intent intent = new Intent(YourContentActivity.this, ReadContent.class);
+                Intent intent = new Intent(YourContentActivity.this, ReadContentActivity.class);
                 intent.putExtra("content", content);
                 startActivity(intent);
             }

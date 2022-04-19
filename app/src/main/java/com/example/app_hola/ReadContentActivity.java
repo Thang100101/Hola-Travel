@@ -3,24 +3,19 @@ package com.example.app_hola;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -36,6 +31,7 @@ import com.example.app_hola.ObjectForApp.Comment;
 import com.example.app_hola.ObjectForApp.Content;
 import com.example.app_hola.ObjectForApp.ImageContent;
 import com.example.app_hola.ObjectForApp.Like;
+import com.example.app_hola.ObjectForApp.Location;
 import com.example.app_hola.ObjectForApp.NotificationContent;
 import com.example.app_hola.ObjectForApp.Tag;
 import com.example.app_hola.ObjectForApp.User;
@@ -55,10 +51,8 @@ import com.squareup.picasso.Picasso;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
-import java.util.Map;
 
-public class ReadContent extends AppCompatActivity implements View.OnClickListener{
+public class ReadContentActivity extends AppCompatActivity implements View.OnClickListener{
     ActionBar actionBar;
     private ViewPager2 viewPager2;
     public TextView txtTitle,txtUser,txtMainContent,txtDate, txtLikeCount, txtCmtCount;
@@ -78,6 +72,7 @@ public class ReadContent extends AppCompatActivity implements View.OnClickListen
     Like like;
     Query queryLike,queryCMT;
     User user;
+    Location location;
     private Handler slideHandler=new Handler();
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -160,7 +155,7 @@ public class ReadContent extends AppCompatActivity implements View.OnClickListen
         imgAvatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(ReadContent.this, YourContentActivity.class);
+                Intent intent = new Intent(ReadContentActivity.this, YourContentActivity.class);
                 intent.putExtra("userID", content.getUser().getUserID());
                 intent.putExtra("userName", content.getUser().getName());
                 startActivity(intent);
@@ -171,11 +166,21 @@ public class ReadContent extends AppCompatActivity implements View.OnClickListen
         txtUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(ReadContent.this, YourContentActivity.class);
+                Intent intent = new Intent(ReadContentActivity.this, YourContentActivity.class);
                 intent.putExtra("userID", content.getUser().getUserID());
                 intent.putExtra("userName", content.getUser().getName());
                 startActivity(intent);
                 finish();
+            }
+        });
+
+        btnLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(ReadContentActivity.this, GoogleMapActivity.class);
+                intent.putExtra("location",location);
+                intent.putExtra("status","read");
+                startActivity(intent);
             }
         });
 
@@ -204,7 +209,7 @@ public class ReadContent extends AppCompatActivity implements View.OnClickListen
         listLike = content.getListLike();
         listTag = content.getListTag();
         imageContentList = new ArrayList<>();
-        adapterCMT = new CommentAdapter(listCmt,ReadContent.this);
+        adapterCMT = new CommentAdapter(listCmt, ReadContentActivity.this);
         queryCMT = dataRef.child("Comments").orderByChild("contentID").equalTo(content.getID());
 //        queryLike = dataRef.child("Contents").orderByChild("Likes/").equalTo(content.getID());
         if(currentUser==null)
@@ -215,7 +220,7 @@ public class ReadContent extends AppCompatActivity implements View.OnClickListen
         for(int i =0; i<listTag.size(); i++)
         {
             String btnID = "btn_tag_" + (i + 1);
-            listTag.get(i).setContext(ReadContent.this);
+            listTag.get(i).setContext(ReadContentActivity.this);
             int resID = getResources().getIdentifier(btnID, "id", getPackageName());
             listButtonTag[i] = (Button) findViewById(resID);
             listButtonTag[i].setVisibility(View.VISIBLE);
@@ -235,7 +240,7 @@ public class ReadContent extends AppCompatActivity implements View.OnClickListen
 
     ///Load thông tin bài viết
     public void getInfOfContent(){
-        Dialog dialogLoading = new Dialog(ReadContent.this);
+        Dialog dialogLoading = new Dialog(ReadContentActivity.this);
         dialogLoading.setContentView(R.layout.dialog_loading);
         dialogLoading.show();
         dialogLoading.setCancelable(false);
@@ -250,6 +255,9 @@ public class ReadContent extends AppCompatActivity implements View.OnClickListen
                 Picasso.get().load(user.getAvatar().getLink()).into(imgAvatar);
                 txtDate.setText(content.getDate());
                 txtMainContent.setText(content.getMainContent());
+                if(content.getLocation()!=null)
+                    location=content.getLocation();
+                btnLocation.setVisibility(View.VISIBLE);
                 loadLikeCmt();
                 //Load lượt like, cmt
                 loadCountLC();
@@ -366,7 +374,7 @@ public class ReadContent extends AppCompatActivity implements View.OnClickListen
     //Tạo dialog list comment
     private void createDialogCmt()
     {
-        Dialog dialog = new Dialog(ReadContent.this);
+        Dialog dialog = new Dialog(ReadContentActivity.this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialog_list_comment);
         InitDialog(dialog);
@@ -473,7 +481,7 @@ public class ReadContent extends AppCompatActivity implements View.OnClickListen
         switch (item.getItemId())
         {
             case R.id.menu_profile:
-                Intent profile = new Intent(ReadContent.this, ProfileActivity.class);
+                Intent profile = new Intent(ReadContentActivity.this, ProfileActivity.class);
                 startActivity(profile);
                 break;
             case R.id.menu_search:
@@ -553,7 +561,7 @@ public class ReadContent extends AppCompatActivity implements View.OnClickListen
     @Override
     public void onClick(View view) {
         Tag tag = (Tag) ((Button)view).getTag();
-        Intent intent = new Intent(ReadContent.this,HomeActivity.class);
+        Intent intent = new Intent(ReadContentActivity.this,HomeActivity.class);
         intent.putExtra("tagid",tag.getID());
         startActivity(intent);
     }

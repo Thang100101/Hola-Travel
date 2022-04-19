@@ -4,7 +4,6 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.KeyEvent;
@@ -15,7 +14,6 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Filter;
 import android.widget.HorizontalScrollView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -28,7 +26,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.app_hola.ObjectForApp.Content;
-import com.example.app_hola.ObjectForApp.Like;
 import com.example.app_hola.ObjectForApp.Tag;
 import com.example.app_hola.ObjectForApp.User;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -86,7 +83,7 @@ public class HomeActivity extends AppCompatActivity  {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Content content = listFilter.get(i);
-                Intent intent = new Intent(HomeActivity.this, ReadContent.class);
+                Intent intent = new Intent(HomeActivity.this, ReadContentActivity.class);
                 intent.putExtra("content", content);
                 startActivity(intent);
             }

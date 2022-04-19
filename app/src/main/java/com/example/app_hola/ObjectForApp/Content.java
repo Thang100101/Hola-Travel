@@ -8,12 +8,13 @@ import java.util.ArrayList;
 
 public class Content implements Serializable {
     ImageContent imageContent;
-    String mainContent, Title, Location, ID;
+    String mainContent, Title, ID;
     User user;
     String date;
     ArrayList<Like> listLike = new ArrayList<Like>();
     ArrayList<ImageContent> listImage = new ArrayList<ImageContent>();
     ArrayList<Tag> listTag = new ArrayList<>();
+    Location Location;
     static DatabaseReference dataRef;
     public Content() {
         dataRef = FirebaseDatabase.getInstance().getReference();
@@ -53,7 +54,7 @@ public class Content implements Serializable {
     }
     public String getTitle() { return Title; }
     public User getUser() { return user; }
-    public String getLocation() { return Location; }
+    public Location getLocation() { return Location; }
     public String getID() { return ID; }
     public ArrayList<ImageContent> getListImage() {
         return listImage;
@@ -62,6 +63,7 @@ public class Content implements Serializable {
     public ArrayList<Like> getListLike() {
         return listLike;
     }
+
     ////SET
 
 
@@ -80,7 +82,7 @@ public class Content implements Serializable {
     public void setUser(User user) {
         this.user = user;
     }
-    public void setLocation(String location) {
+    public void setLocation(Location location) {
         Location = location;
     }
     public void setID(String ID) {
@@ -93,6 +95,8 @@ public class Content implements Serializable {
         this.listLike = listLike;
     }
     public void setListTag(ArrayList<Tag> listTag) { this.listTag = listTag; }
+
+
 
     public ArrayList<Content> getAllContent(){
         ArrayList<Content> listContent = new ArrayList<>();

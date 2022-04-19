@@ -30,6 +30,7 @@ import android.widget.Toast;
 
 import com.example.app_hola.ObjectForApp.Content;
 import com.example.app_hola.ObjectForApp.ImageContent;
+import com.example.app_hola.ObjectForApp.Location;
 import com.example.app_hola.ObjectForApp.Tag;
 import com.example.app_hola.ObjectForApp.User;
 import com.google.android.gms.tasks.Continuation;
@@ -60,7 +61,7 @@ public class CreateContentActivity extends AppCompatActivity implements View.OnC
 
     Content content;
     EditText editTitle, editContent;
-    Button btnUpload, btnAddImg, btnAddTag, btnLocation;
+    Button btnUpload, btnAddImg, btnAddTag, btnAddLocation, btnLocation;
     Button [] listButtonDelete = new Button[5];
     ImageView [] listImage = new ImageView[5];
     Button [] listButtonTag = new Button[3];
@@ -71,7 +72,8 @@ public class CreateContentActivity extends AppCompatActivity implements View.OnC
     FirebaseAuth mAuth;
     FirebaseUser currentUser;
     DatabaseReference dataRef;
-    int REQUEST_CODE_TAKE_IMAGE = 1;
+    Location location=null;
+    int REQUEST_CODE_TAKE_IMAGE = 1, REQUEST_CODE_TAKE_LOCATION=2;
     int imgCount=0;
     boolean haveSave=false;
 
@@ -166,6 +168,16 @@ public class CreateContentActivity extends AppCompatActivity implements View.OnC
             }
         });
 
+        btnAddLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(CreateContentActivity.this,GoogleMapActivity.class);
+                intent.putExtra("location",location);
+                intent.putExtra("status","create");
+                startActivityForResult(intent,REQUEST_CODE_TAKE_LOCATION);
+            }
+        });
+
     }
 
     @Override
@@ -175,6 +187,17 @@ public class CreateContentActivity extends AppCompatActivity implements View.OnC
             listButtonDelete[imgCount].setVisibility(View.VISIBLE);
             Picasso.get().load(data.getData()).into(listImage[imgCount]);
             imgCount++;
+        }
+        if(requestCode==REQUEST_CODE_TAKE_LOCATION && resultCode == RESULT_OK && data!=null){
+            location = (Location) data.getSerializableExtra("location");
+            btnLocation.setVisibility(View.VISIBLE);
+            btnLocation.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    location=null;
+                    btnLocation.setVisibility(View.GONE);
+                }
+            });
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -186,6 +209,7 @@ public class CreateContentActivity extends AppCompatActivity implements View.OnC
         btnUpload = (Button) findViewById(R.id.btn_upload);
         btnAddImg = (Button) findViewById(R.id.btn_add_img);
         btnAddTag = (Button) findViewById(R.id.btn_add_tag);
+        btnAddLocation = (Button) findViewById(R.id.btn_add_location);
         prefer = getSharedPreferences("content",MODE_PRIVATE);
         editPrefer = prefer.edit();
         hori = (HorizontalScrollView) findViewById(R.id.hori);
@@ -363,6 +387,8 @@ public class CreateContentActivity extends AppCompatActivity implements View.OnC
                                 content.setDate(new SimpleDateFormat("dd/MM/yyyy").format(calendar.getTime()));
                                 content.setTitle(editTitle.getText().toString());
                                 content.setListTag(listTag);
+                                if(location!=null)
+                                    content.setLocation(location);
                             }
                         },4000*imgCount);
                         //upload content lên database
