@@ -39,7 +39,8 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
     EditText edit;
     Button btnSearch, btnOK;
     String status;
-
+    MarkerOptions marker = new MarkerOptions();
+    Marker markerMng;
     int REQUEST_CODE_TAKE_LOCATION=2;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,15 +81,15 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
                         return false;
                     else {
                         try {
+                            markerMng.remove();
                             listAddress = geocoder.getFromLocationName(edit.getText().toString(), 1);
                             LatLng address = new LatLng(listAddress.get(0).getLatitude(), listAddress.get(0).getLongitude());
                             location.setLatitude(listAddress.get(0).getLatitude());
                             location.setLongitude(listAddress.get(0).getLongitude());
-                            Toast.makeText(GoogleMapActivity.this, listAddress.get(0).getLatitude() + " " +
-                                    listAddress.get(0).getLongitude(), Toast.LENGTH_LONG).show();
+                            map.clear();
                             map.moveCamera(CameraUpdateFactory.newLatLngZoom(address, 15));
-                            MarkerOptions marker = new MarkerOptions().position(address).draggable(true);
-                            map.addMarker(marker);
+                            marker.position(address).draggable(true);
+                            markerMng = map.addMarker(marker);
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -106,6 +107,7 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
                     return;
                 else {
                     try {
+                        markerMng.remove();
                         listAddress = geocoder.getFromLocationName(edit.getText().toString(), 1);
                         LatLng address = new LatLng(listAddress.get(0).getLatitude(), listAddress.get(0).getLongitude());
                         location.setLatitude(listAddress.get(0).getLatitude());
@@ -113,8 +115,8 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
                         Toast.makeText(GoogleMapActivity.this, listAddress.get(0).getLatitude() + " " +
                                 listAddress.get(0).getLongitude(), Toast.LENGTH_LONG).show();
                         map.moveCamera(CameraUpdateFactory.newLatLngZoom(address, 15));
-                        MarkerOptions marker = new MarkerOptions().position(address).draggable(true);
-                        map.addMarker(marker);
+                        marker.position(address).draggable(true);
+                        markerMng = map.addMarker(marker);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -143,9 +145,9 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
         if(location!=null)
         {
             LatLng address = new LatLng(location.getLatitude(),location.getLongitude());
-            map.addMarker(new MarkerOptions().position(address)
-            .draggable(status.equals("create")).title(location.getName()));
-            map.moveCamera(CameraUpdateFactory.newLatLngZoom(address,17));
+            marker.position(address).draggable(status.equals("create")).title(location.getName());
+            markerMng = map.addMarker(marker);
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(address,15));
         }
         else
         {
@@ -153,8 +155,9 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
             location.setLatitude(14.058);
             location.setLongitude(108.277);
             LatLng address = new LatLng(14.058,108.277);
-            map.addMarker(new MarkerOptions().position(address)
-                    .draggable(status.equals("create")).title(getResources().getString(R.string.viet_nam)));
+            marker.position(address)
+                    .draggable(status.equals("create")).title(getResources().getString(R.string.viet_nam));
+            markerMng = map.addMarker(marker);
             map.moveCamera(CameraUpdateFactory.newLatLngZoom(address,6));
         }
     }
