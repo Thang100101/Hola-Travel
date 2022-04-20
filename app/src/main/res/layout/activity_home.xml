@@ -91,31 +91,31 @@
         </LinearLayout>
 
     </HorizontalScrollView>
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:weightSum="12"
-        android:orientation="vertical"
         >
         <ListView
             android:id="@+id/listContent"
-            android:layout_weight="10.5"
             android:layout_marginTop="10dp"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            >
+            android:layout_height="match_parent"
+            android:layout_alignBottom="@id/bottomLine">
         </ListView>
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_weight="1.5"
+        <View
+            android:id="@+id/bottomLine"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="1dp"
+            android:background="@color/black"
+            android:layout_alignTop="@id/bottomBar"
+            ></View>
+        <LinearLayout
+            android:id="@+id/bottomBar"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="85dp"
+            android:layout_alignParentBottom="true"
             >
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/black"
-                ></View>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -207,6 +207,6 @@
             </LinearLayout>
 
         </LinearLayout>
-    </LinearLayout>
+    </RelativeLayout>
 
 </LinearLayout>
