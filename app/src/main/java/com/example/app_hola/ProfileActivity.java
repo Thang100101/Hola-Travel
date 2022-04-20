@@ -117,7 +117,7 @@ public class ProfileActivity extends AppCompatActivity {
         btnEditSex = (Button) findViewById(R.id.btn_edit_sex);
         btnEditPass = (Button) findViewById(R.id.btn_edit_pass);
         txtEmail = (TextView) findViewById(R.id.txt_email);
-        txtPassword = (TextView) findViewById(R.id.txt_pass);
+        txtPassword = (TextView) findViewById(R.id.txt_pass)    ;
         txtBirth = (TextView) findViewById(R.id.txt_birth);
         txtName = (TextView) findViewById(R.id.txt_name);
         txtSex = (TextView) findViewById(R.id.txt_sex);
