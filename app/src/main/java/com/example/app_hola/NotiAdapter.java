@@ -56,6 +56,8 @@ public class NotiAdapter extends BaseAdapter {
         NotificationContent noti = listNoti.get(i);
         Picasso.get().load(noti.getImg().getLink()).into(img);
         String mainContent;
+        if(noti.getReaderName().equals("Chưa có tên"))
+            noti.setReaderName(context.getResources().getString(R.string.name_unknow));
         if(noti.getMainContent().equals("like_type_1"))
             mainContent = noti.getCountContact()+" "+context.getResources().getString(R.string.like_type_1);
         else if (noti.getMainContent().equals("like_type_2"))

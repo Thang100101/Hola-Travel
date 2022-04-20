@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -345,12 +346,12 @@ public class HomeActivity extends AppCompatActivity  {
                 break;
             case R.id.menu_search:
                 if(search==false) {
-                    searchActionBar(true);
+                    searchActionBar(true, item);
                     EditText editSearch = (EditText) findViewById(R.id.edit_search);
                     editSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
                         @Override
                         public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
-                            if(i == EditorInfo.IME_ACTION_SEARCH)
+                            if(i == EditorInfo.IME_ACTION_SEARCH || keyEvent.getKeyCode() == KeyEvent.KEYCODE_ENTER)
                             {
                                 String search = editSearch.getText().toString();
                                 listFilter.clear();
@@ -367,7 +368,7 @@ public class HomeActivity extends AppCompatActivity  {
                     editSearch.setText("");
                 }
                 else
-                    searchActionBar(false);
+                    searchActionBar(false,item);
                 break;
             case R.id.menu_exit:
                 acceptOut();
@@ -386,11 +387,15 @@ public class HomeActivity extends AppCompatActivity  {
                 finish();
                 break;
             case R.id.menu_another:
-                Intent intent3 = new Intent(getApplicationContext(), WellcomeActivity.class);
-                intent3.putExtra("another",true);
-                mAuth.signOut();
-                startActivity(intent3);
-                finish();
+                Dialog dialogAnother = new Dialog(this);
+                dialogAnother.setContentView(R.layout.dialog_another_user);
+                dialogAnother.show();
+//                Intent intent3 = new Intent(getApplicationContext(), WellcomeActivity.class);
+//                intent3.putExtra("another",true);
+//                mAuth.signOut();
+//                startActivity(intent3);
+//                finish();
+                break;
             case R.id.menu_noti:
                 dataRef.child("Users").child(mainUser.getUserID()).child("haveNotification").setValue(false);
                 item.setIcon(R.drawable.icon_bell);
@@ -521,7 +526,7 @@ public class HomeActivity extends AppCompatActivity  {
 
     //Thay đổi trạng thái search/nosearch
 
-    private void searchActionBar(boolean haveSearch)
+    private void searchActionBar(boolean haveSearch, MenuItem item)
     {
         if(haveSearch)
         {
@@ -529,6 +534,7 @@ public class HomeActivity extends AppCompatActivity  {
             actionBar.setDisplayUseLogoEnabled(false);
             actionBar.setDisplayShowCustomEnabled(true);
             actionBar.setCustomView(R.layout.search_view);
+            item.setIcon(R.drawable.icon_x_4);
             search = true;
         }
         else
@@ -536,6 +542,7 @@ public class HomeActivity extends AppCompatActivity  {
             actionBar.setDisplayShowHomeEnabled(true);
             actionBar.setDisplayUseLogoEnabled(true);
             actionBar.setDisplayShowCustomEnabled(false);
+            item.setIcon(R.drawable.icon_search);
             search=false;
         }
     }

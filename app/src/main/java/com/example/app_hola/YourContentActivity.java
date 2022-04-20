@@ -217,12 +217,12 @@ public class YourContentActivity extends AppCompatActivity {
                 break;
             case R.id.menu_search:
                 if(search==false) {
-                    searchActionBar(true);
+                    searchActionBar(true, item);
                     EditText editSearch = (EditText) findViewById(R.id.edit_search);
                     editSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
                         @Override
                         public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
-                            if(i == EditorInfo.IME_ACTION_SEARCH)
+                            if(i == EditorInfo.IME_ACTION_SEARCH || keyEvent.getKeyCode() == KeyEvent.KEYCODE_ENTER)
                             {
                                 String search = editSearch.getText().toString();
                                 listFilter.clear();
@@ -239,7 +239,7 @@ public class YourContentActivity extends AppCompatActivity {
                     editSearch.setText("");
                 }
                 else
-                    searchActionBar(false);
+                    searchActionBar(false, item);
                 break;
             case R.id.menu_exit:
                 acceptOut();
@@ -273,7 +273,7 @@ public class YourContentActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
     //Thay đổi thanh tìm kiếm
-    private void searchActionBar(boolean haveSearch)
+    private void searchActionBar(boolean haveSearch, MenuItem item)
     {
         if(haveSearch)
         {
@@ -281,6 +281,7 @@ public class YourContentActivity extends AppCompatActivity {
             actionBar.setDisplayUseLogoEnabled(false);
             actionBar.setDisplayShowCustomEnabled(true);
             actionBar.setCustomView(R.layout.search_view);
+            item.setIcon(R.drawable.icon_x_4);
             search = true;
         }
         else
@@ -288,6 +289,7 @@ public class YourContentActivity extends AppCompatActivity {
             actionBar.setDisplayShowHomeEnabled(true);
             actionBar.setDisplayUseLogoEnabled(true);
             actionBar.setDisplayShowCustomEnabled(false);
+            item.setIcon(R.drawable.icon_x_4);
             search=false;
         }
     }

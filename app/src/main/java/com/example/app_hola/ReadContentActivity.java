@@ -131,13 +131,12 @@ public class ReadContentActivity extends AppCompatActivity implements View.OnCli
                     //Create Noti
                     Calendar calendar = Calendar.getInstance();
                     NotificationContent noti = new NotificationContent(content.getUser().getUserID(),content.getID(),
-                            user.getName(),"like", listLike.size()-1, false);
+                            user.getName(),"like", listLike.size(), false);
                     noti.setImg(content.getImageContent());
                     noti.setID(content.getID() + "like");
                     SimpleDateFormat simpleDateFormat1 = new SimpleDateFormat("dd/MM/yyyy/HH/mm/ss");
                     noti.setDate(simpleDateFormat1.format(calendar.getTime()));
-                    if(listLike.size()==1)
-                        noti.setMainContent("like_type_2");
+                    noti.setMainContent("like_type_2");
                     dataRef.child("Notifications").child(content.getID() + "like").setValue(noti);
                     dataRef.child("Users").child(content.getUser().getUserID()).child("haveNotification").setValue(true);
                 }
