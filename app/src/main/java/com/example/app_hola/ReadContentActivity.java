@@ -384,6 +384,7 @@ public class ReadContentActivity extends AppCompatActivity implements View.OnCli
         ListView listViewComment = (ListView) dialog.findViewById(R.id.list_cmt);
         EditText editCmt = (EditText) dialog.findViewById(R.id.edit_cmt);
         Button btnSend = (Button) dialog.findViewById(R.id.btn_send);
+        Button btnBack = (Button) dialog.findViewById(R.id.btn_back);
         listViewComment.setAdapter(adapterCMT);
         btnSend.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -421,7 +422,12 @@ public class ReadContentActivity extends AppCompatActivity implements View.OnCli
                 loadCountLC();
             }
         });
-
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
     }
 
     private Runnable sliderRunnable=new Runnable() {
