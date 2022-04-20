@@ -251,7 +251,10 @@ public class ReadContentActivity extends AppCompatActivity implements View.OnCli
                 listCmt.clear();
                 txtTitle.setText(content.getTitle());
                 User user = content.getUser();
-                txtUser.setText(user.getName());
+                if(user.getName().equals("Chưa có tên"))
+                    txtUser.setText(getResources().getString(R.string.name_unknow));
+                else
+                    txtUser.setText(user.getName());
                 Picasso.get().load(user.getAvatar().getLink()).into(imgAvatar);
                 txtDate.setText(content.getDate());
                 txtMainContent.setText(content.getMainContent());
