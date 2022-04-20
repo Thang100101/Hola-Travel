@@ -79,6 +79,22 @@ public class HomeActivity extends AppCompatActivity  {
             }
         });
 
+        btnHome.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                Toast.makeText(HomeActivity.this, getResources().getString(R.string.app_name), Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        });
+
+        btnYourReview.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                Toast.makeText(HomeActivity.this, getResources().getString(R.string.my_post), Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        });
+
         listViewContent.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
