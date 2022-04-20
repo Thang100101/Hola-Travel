@@ -246,7 +246,7 @@ public class WellcomeActivity extends AppCompatActivity implements Serializable{
                                         String birth = simpleDateFormat.format(calendar.getTime());
                                         User user = new User(mAuth.getCurrentUser().getUid(),email,pass);
                                         user.setBirth(birth);
-                                        user.setName(getResources().getString(R.string.name_unknow));
+                                        user.setName("Chưa có tên");
                                         user.setSex("Nam");
                                         user.setHaveNotification(false);
                                         ImageContent img = new ImageContent();
