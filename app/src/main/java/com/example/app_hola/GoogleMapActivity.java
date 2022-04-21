@@ -112,8 +112,6 @@ public class GoogleMapActivity extends AppCompatActivity implements OnMapReadyCa
                         LatLng address = new LatLng(listAddress.get(0).getLatitude(), listAddress.get(0).getLongitude());
                         location.setLatitude(listAddress.get(0).getLatitude());
                         location.setLongitude(listAddress.get(0).getLongitude());
-                        Toast.makeText(GoogleMapActivity.this, listAddress.get(0).getLatitude() + " " +
-                                listAddress.get(0).getLongitude(), Toast.LENGTH_LONG).show();
                         map.moveCamera(CameraUpdateFactory.newLatLngZoom(address, 15));
                         marker.position(address).draggable(true);
                         markerMng = map.addMarker(marker);

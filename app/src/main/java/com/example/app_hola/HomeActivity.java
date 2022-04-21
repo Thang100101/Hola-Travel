@@ -387,14 +387,11 @@ public class HomeActivity extends AppCompatActivity  {
                 finish();
                 break;
             case R.id.menu_another:
-                Dialog dialogAnother = new Dialog(this);
-                dialogAnother.setContentView(R.layout.dialog_another_user);
-                dialogAnother.show();
-//                Intent intent3 = new Intent(getApplicationContext(), WellcomeActivity.class);
-//                intent3.putExtra("another",true);
-//                mAuth.signOut();
-//                startActivity(intent3);
-//                finish();
+                Intent intent3 = new Intent(getApplicationContext(), WellcomeActivity.class);
+                intent3.putExtra("another",true);
+                mAuth.signOut();
+                startActivity(intent3);
+                finish();
                 break;
             case R.id.menu_noti:
                 dataRef.child("Users").child(mainUser.getUserID()).child("haveNotification").setValue(false);
