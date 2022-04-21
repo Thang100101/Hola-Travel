@@ -257,9 +257,10 @@ public class ReadContentActivity extends AppCompatActivity implements View.OnCli
                 Picasso.get().load(user.getAvatar().getLink()).into(imgAvatar);
                 txtDate.setText(content.getDate());
                 txtMainContent.setText(content.getMainContent());
-                if(content.getLocation()!=null)
-                    location=content.getLocation();
-                btnLocation.setVisibility(View.VISIBLE);
+                if(content.getLocation()!=null) {
+                    location = content.getLocation();
+                    btnLocation.setVisibility(View.VISIBLE);
+                }
                 loadLikeCmt();
                 //Load lượt like, cmt
                 loadCountLC();
