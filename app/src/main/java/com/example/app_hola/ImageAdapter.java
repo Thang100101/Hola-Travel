@@ -1,9 +1,13 @@
 package com.example.app_hola;
 
+import android.app.Dialog;
+import android.content.Context;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -26,11 +30,13 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
     private ViewPager2 viewPager2;
     private StorageReference storageReference;
     private DatabaseReference databaseReference;
+    Context context;
 
-    public ImageAdapter(ArrayList<ImageContent> imageContentList, ViewPager2 viewPager2)
+    public ImageAdapter(Context context,ArrayList<ImageContent> imageContentList, ViewPager2 viewPager2)
     {
         this.imageContentList=imageContentList;
         this.viewPager2=viewPager2;
+        this.context=context;
     }
     @NonNull
     @Override
@@ -42,6 +48,18 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
     @Override
     public void onBindViewHolder(@NonNull ImageViewHolder holder, int position) {
         Picasso.get().load(imageContentList.get(position).getLink()).into(holder.imageView);
+        ImageContent img = imageContentList.get(position);
+
+        holder.imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Dialog dialog = new Dialog(context);
+                dialog.setContentView(R.layout.dialog_img);
+                dialog.show();
+                ImageView imgView = (ImageView) dialog.findViewById(R.id.img);
+                Picasso.get().load(img.getLink()).into(imgView);
+            }
+        });
 //        String name=imageContentList.get(position).getLink();
 //        File file=new File(name);
 //        Bitmap bitmap=BitmapFactory.decodeFile(file.getAbsolutePath());

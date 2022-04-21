@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -82,7 +83,7 @@ public class ReadContentActivity extends AppCompatActivity implements View.OnCli
         Mapping();
         customActionBar();
         resetContent();
-        adapter = new ImageAdapter(content.getListImage(), viewPager2);
+        adapter = new ImageAdapter(this,content.getListImage(), viewPager2);
         viewPager2.setAdapter(adapter);
         getImageContent();
         getInfOfContent();
